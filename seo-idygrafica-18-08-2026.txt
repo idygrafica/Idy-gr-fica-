@@ -1,0 +1,8 @@
+Atualização SEO sem alteração visual.
+- Mantido nome principal: IDY Gráfica
+- Adicionados nomes alternativos: idygrafica, IDY Grafica, idy grafica
+- Adicionado WebSite structured data (schema.org)
+- Adicionado LocalBusiness structured data
+- Adicionado canonical da página inicial
+- Adicionado og:site_name e metadados sociais
+- Descrição da página passou a citar idygrafica como forma alternativa de busca
