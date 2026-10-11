@@ -468,20 +468,26 @@
   .hero .hero-mascot-glow{display:none!important}
 }
 
-/* WhatsApp começa abaixo do mascote e acompanha a rolagem no canto inferior. */
+/* WhatsApp sobre o tênis direito; durante a rolagem, fica no canto inferior. */
 @media (max-width:620px){
   html,body{overflow-x:clip!important}
   .whats-widget{
-    position:sticky!important;inset:auto!important;
-    top:calc(100vh - 84px - env(safe-area-inset-bottom,0px))!important;
-    top:calc(100dvh - 84px - env(safe-area-inset-bottom,0px))!important;
+    position:fixed!important;inset:auto!important;
+    --idy-whats-safe-bottom:env(safe-area-inset-bottom,0px);
+    top:var(--idy-whats-top,calc(100dvh - 84px))!important;
+    right:max(16px,env(safe-area-inset-right,0px))!important;
     align-self:flex-end!important;width:64px!important;height:64px!important;
-    padding:0!important;margin:12px 16px calc(24px + env(safe-area-inset-bottom,0px))!important;
+    padding:0!important;margin:0!important;
+    visibility:hidden!important;pointer-events:none!important;
     background:transparent!important;z-index:90!important
   }
 }
 
-/* Acabamento do atalho mobile: símbolo branco, verde IDY e foco visível. */
+@media (max-width:620px){
+  .whats-widget.whats-ready{visibility:visible!important;pointer-events:auto!important}
+}
+
+/* Acabamento do atalho mobile: símbolo branco, verde WhatsApp e foco visível. */
 @media (max-width:620px){
   .whats-widget .whats.whats-pro.whats-new{
     width:64px!important;height:64px!important;min-width:64px!important;
