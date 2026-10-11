@@ -444,6 +444,7 @@
     font-size:clamp(24px,6.8vw,30px)!important;line-height:1.1!important;
     overflow-wrap:normal
   }
+  .hero h1 span{color:#35ee48!important}
   .hero p{font-size:15px!important;line-height:1.6!important}
   .hero .badges{clear:both!important;position:relative!important;inset:auto!important;z-index:20!important}
   .hero .hero-actions{position:relative!important;inset:auto!important;z-index:20!important}
