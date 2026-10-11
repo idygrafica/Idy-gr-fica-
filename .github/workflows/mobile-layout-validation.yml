@@ -30,8 +30,8 @@ jobs:
            const requestBrowser=await chromium.launch(),requestPage=await requestBrowser.newPage();
            const repo='https://raw.githubusercontent.com/idygrafica/Idy-gr-fica-/372bc98bb538696569436e34274d6a7f044bd4e7/';
            const originalHTML=await (await requestPage.request.get(repo+'index.html')).text();
-           const originalCSS=await (await requestPage.request.get(repo+'assets/mobile-phone-reference.css')).text();
-           const overrides={'/index.html':originalHTML,'/assets/mobile-phone-reference.css':originalCSS};
+           const originalCSS=await (await requestPage.request.get(repo+'assets/mobile-phone-reference.css')).text();const originalJS=await (await requestPage.request.get(repo+'assets/app.js')).text();
+           const overrides={'/index.html':originalHTML,'/assets/mobile-phone-reference.css':originalCSS,'/assets/app.js':originalJS};
            const server=http.createServer((req,res)=>{
              const name=new URL(req.url,'http://localhost').pathname;
              const url=name==='/'?'/index.html':name;
@@ -85,29 +85,29 @@ jobs:
                const title=document.querySelector('.hero h1').getBoundingClientRect();
                const boxes=['.logo','.cta-ai','.mobile-menu-toggle'].map(s=>document.querySelector(s).getBoundingClientRect());
                const overlaps=boxes.flatMap((a,i)=>boxes.slice(i+1).filter(b=>Math.min(a.right,b.right)>Math.max(a.left,b.left)&&Math.min(a.bottom,b.bottom)>Math.max(a.top,b.top)));
-               return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,mascotWidth:ir.width,mascotSrc:img.getAttribute('src'),visibleMascots:[...document.querySelectorAll('.hero-mascot')].filter(e=>getComputedStyle(e).display!=='none').length,collisions:collisions.join(''),outside:outside.join(''),badges:badges.length,contained:badges.every(r=>r.top>=hero.top&&r.bottom<=hero.bottom)&&actions.bottom<=hero.bottom,whatsappBelowHero:whatsapp.top>=hero.bottom-.5,titleHeight:title.height,headerOverlaps:overlaps.length,heroHeight:hero.height};
+               return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,mascotWidth:ir.width,mascotSrc:img.getAttribute('src'),visibleMascots:[...document.querySelectorAll('.hero-mascot')].filter(e=>getComputedStyle(e).display!=='none').length,collisions:collisions.join(''),outside:outside.join(''),badges:badges.length,contained:badges.every(r=>r.top>=hero.top&&r.bottom<=hero.bottom)&&actions.bottom<=hero.bottom,whatsappOnFoot:Math.abs(whatsapp.top-(ir.bottom-82))<1&&Math.abs(whatsapp.right-(innerWidth-16))<1,whatsappReady:document.querySelector('.whats-widget').classList.contains('whats-ready'),titleHeight:title.height,headerOverlaps:overlaps.length,heroHeight:hero.height};
              });
              assert.equal(result.scrollWidth,width);assert.equal(result.mascotWidth,405);assert.equal(result.mascotSrc,'assets/mascote-idy.png');assert.equal(result.visibleMascots,1);
-             assert.equal(result.collisions,'','Colisão com mascote em '+width);assert.equal(result.outside,'','Texto fora da tela em '+width);assert.equal(result.badges,4);assert(result.contained);assert(result.whatsappBelowHero);assert.equal(result.headerOverlaps,0);assert(result.titleHeight<200,'Quebra do título em '+width);
+             assert.equal(result.collisions,'','Colisão com mascote em '+width);assert.equal(result.outside,'','Texto fora da tela em '+width);assert.equal(result.badges,4);assert(result.contained);assert(result.whatsappOnFoot);assert(result.whatsappReady);assert.equal(result.headerOverlaps,0);assert(result.titleHeight<200,'Quebra do título em '+width);
              await page.locator('.mobile-menu-toggle').click();assert.equal(await page.locator('.mobile-menu-toggle').getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());await page.locator('.mobile-menu-toggle').click();
-             const sticky=await page.evaluate(()=>{
+             const sticky=await page.evaluate(async()=>{
            const el=document.querySelector('.whats-widget'),height=innerHeight,start=el.getBoundingClientRect().top;
-           const target=Math.max(0,start-(height-84)+180);
-           window.scrollTo({top:target,behavior:'instant'});const first=el.getBoundingClientRect();
-           window.scrollTo({top:target+400,behavior:'instant'});const second=el.getBoundingClientRect();
-           window.scrollTo({top:0,behavior:'instant'});
+           const target=Math.max(100,start-(height-84)+180);
+           window.scrollTo({top:target,behavior:'instant'});await new Promise(requestAnimationFrame);const first=el.getBoundingClientRect();
+           window.scrollTo({top:target+400,behavior:'instant'});await new Promise(requestAnimationFrame);const second=el.getBoundingClientRect();
+           window.scrollTo({top:0,behavior:'instant'});await new Promise(requestAnimationFrame);
            return {position:getComputedStyle(el).position,firstY:first.top,secondY:second.top,expectedY:height-84};
           });
-          const buttonStyle=await page.locator('.whats-widget .whats').evaluate(e=>({background:getComputedStyle(e).backgroundColor,color:getComputedStyle(e.querySelector('svg')).color,width:e.getBoundingClientRect().width}));assert.equal(buttonStyle.background,'rgb(37, 211, 102)');assert.equal(buttonStyle.color,'rgb(255, 255, 255)');assert.equal(buttonStyle.width,64);assert.equal(sticky.position,'sticky');assert(Math.abs(sticky.firstY-sticky.expectedY)<1);assert(Math.abs(sticky.secondY-sticky.expectedY)<1);
+          const buttonStyle=await page.locator('.whats-widget .whats').evaluate(e=>({background:getComputedStyle(e).backgroundColor,color:getComputedStyle(e.querySelector('svg')).color,width:e.getBoundingClientRect().width}));assert.equal(buttonStyle.background,'rgb(37, 211, 102)');assert.equal(buttonStyle.color,'rgb(255, 255, 255)');assert.equal(buttonStyle.width,64);assert.equal(sticky.position,'fixed');assert(Math.abs(sticky.firstY-sticky.expectedY)<1);assert(Math.abs(sticky.secondY-sticky.expectedY)<1);
           console.log('MOBILE '+JSON.stringify({...result,sticky}));
              if(width===390||width===320){
                const height=await page.evaluate(()=>Math.ceil(document.querySelector('.whats-widget').getBoundingClientRect().bottom));
                await page.setViewportSize({width,height});const jpg=await page.screenshot({type:'jpeg',quality:70,clip:{x:0,y:0,width,height},animations:'disabled'});
-               console.log('PREVIEW_'+width+' '+jpg.toString('base64'));if(width===390){await page.setViewportSize({width,height:900});await page.evaluate(()=>window.scrollTo({top:500,behavior:'instant'}));console.log('SCROLL_PREVIEW_390 '+(await page.screenshot({type:'jpeg',quality:75})).toString('base64'));await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));}
+               console.log('PREVIEW_'+width+' '+jpg.toString('base64'));if(width===390){await page.setViewportSize({width,height:900});await page.evaluate(async()=>{window.scrollTo({top:500,behavior:'instant'});await new Promise(requestAnimationFrame)});console.log('SCROLL_PREVIEW_390 '+(await page.screenshot({type:'jpeg',quality:75})).toString('base64'));await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));}
              }
            }
            const liveHTML=await(await page.request.get('https://idygrafica.netlify.app/?check='+Date.now())).text(),liveCSS=await(await page.request.get('https://idygrafica.netlify.app/assets/mobile-phone-reference.css?check='+Date.now())).text();
-           console.log('CURRENT_LIVE '+JSON.stringify({htmlLength:liveHTML.length,cssLength:liveCSS.length,mascotCopies:(liveHTML.match(/class="hero-mascot"/g)||[]).length,integrated:liveHTML.includes('<img class="hero-mascot" src="assets/mascote-idy.png" alt="Mascote IDY Gráfica"><h1>'),green:liveCSS.includes('#35ee48'),sticky:liveCSS.includes('position:sticky!important'),cssMatchesPublished:liveCSS.trim()===(await(await page.request.get('https://raw.githubusercontent.com/idygrafica/Idy-gr-fica-/bf73be43d1fd64926234535938482c611150a90e/assets/mobile-phone-reference.css')).text()).trim()}));
+           console.log('CURRENT_LIVE '+JSON.stringify({htmlLength:liveHTML.length,cssLength:liveCSS.length,mascotCopies:(liveHTML.match(/class="hero-mascot"/g)||[]).length,integrated:liveHTML.includes('<img class="hero-mascot" src="assets/mascote-idy.png" alt="Mascote IDY Gráfica"><h1>'),green:liveCSS.includes('#35ee48'),fixed:liveCSS.includes('position:fixed!important;inset:auto!important;'),cssMatchesPublished:liveCSS.trim()===(await(await page.request.get('https://raw.githubusercontent.com/idygrafica/Idy-gr-fica-/bf73be43d1fd64926234535938482c611150a90e/assets/mobile-phone-reference.css')).text()).trim()}));
            await requestBrowser.close();server.close();assert.deepEqual(desktopMismatches,[],'Desktop pixel differences');console.log('VALIDATION_PASSED');
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
