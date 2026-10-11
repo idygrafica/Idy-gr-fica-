@@ -395,6 +395,7 @@
     flex-direction:row!important;justify-content:flex-end!important;gap:0!important
   }
   .section{height:auto!important}
+  .whats-widget .whats.whats-pro.whats-new{position:relative!important}
   .section-head{flex-direction:column;align-items:stretch;gap:16px}
   .section-head>div,.section-head>p,.copy{min-width:0}
   .section-head p{margin:0;max-width:none}
