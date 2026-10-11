@@ -41,23 +41,6 @@ jobs:
              await page.setViewportSize({width,height:1000});
              await page.goto(origin);
              await page.evaluate(()=>Promise.all([...document.images].map(e=>e.decode().catch(()=>{}))));
-             const polygon=await page.evaluate(()=>{
-               const img=document.querySelector('.hero-mascot'),r=img.getBoundingClientRect();
-               const c=document.createElement('canvas');c.width=Math.round(r.width);c.height=Math.ceil(r.height);
-               const cx=c.getContext('2d');cx.drawImage(img,0,0,c.width,c.height);
-               const d=cx.getImageData(0,0,c.width,c.height).data,points=[];
-               for(let y=0;y<c.height;y+=12){
-                 let left=c.width;
-                 for(let yy=y;yy<Math.min(y+12,c.height);yy++)for(let x=0;x<left;x++)if(d[(yy*c.width+x)*4+3]>26){left=x;break}
-                 const px=Math.max(0,left-2)/c.width*100;
-                 points.push(px.toFixed(2)+'% '+(y/c.height*100).toFixed(2)+'%',px.toFixed(2)+'% '+(Math.min(y+12,c.height)/c.height*100).toFixed(2)+'%');
-               }
-               points.push('100% 100%','100% 0%');
-               const shape='polygon('+points.join(',')+') border-box';
-               img.style.setProperty('shape-outside',shape,'important');
-               return shape;
-             });
-             if(width===390)console.log('POLYGON '+polygon);
              const result=await page.evaluate(()=>{
                const img=document.querySelector('.hero-mascot'),ir=img.getBoundingClientRect();
                const c=document.createElement('canvas');c.width=Math.round(ir.width);c.height=Math.round(ir.height);
