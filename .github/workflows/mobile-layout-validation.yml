@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: '0267c56edf077977e3d240fd9cb7ec8948eb3631'
+          ref: '2e7212f674c0235b62c1d95c405e9547ec408d5a'
           fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
@@ -28,7 +28,7 @@ jobs:
             const path='assets/mobile-phone-reference.css', expected=fs.readFileSync(path,'utf8'), original=execFileSync('git',['show','HEAD^:'+path],{encoding:'utf8'});
             const files=execFileSync('git',['diff','--name-only','HEAD^','HEAD'],{encoding:'utf8'}).trim();
             assert.equal(files,path);
-            assert.equal(expected,original.trimEnd()+'\n\n/* Cor do fundo do botão Orçamento com IA. */\n.nav .cta.cta-ai{background:#E53935!important}\n');
+            assert.equal(expected,original.replace('.nav .cta.cta-ai{background:#E53935!important}', '.nav .cta.cta-ai{background:#1559C9!important}'));
             const browser=await chromium.launch(),request=await browser.newPage(),base='https://idygrafica.netlify.app/';
             let live=false;
             for(let attempt=1;attempt<=36;attempt++){
@@ -61,15 +61,16 @@ jobs:
               }
               assert.deepEqual(await snapshot(published),await snapshot(baseline),'Other button characteristics changed at '+width);
               const color=await published.locator('.nav .cta.cta-ai').evaluate(el=>({background:getComputedStyle(el).backgroundColor,image:getComputedStyle(el).backgroundImage,text:getComputedStyle(el.querySelector('strong')).color}));
-              assert.equal(color.background,'rgb(229, 57, 53)');assert.equal(color.image,'none');assert.equal(color.text,'rgb(255, 255, 255)');
+              assert.equal(color.background,'rgb(21, 89, 201)');assert.equal(color.image,'none');assert.equal(color.text,'rgb(255, 255, 255)');
               if(width===1280){
+                assert.equal(await published.locator('.hero h1 span').evaluate(el=>getComputedStyle(el).color),'rgb(21, 89, 201)');
                 for(const page of [baseline,published]){await page.locator('.nav .cta.cta-ai').hover();await page.waitForTimeout(300)}
                 assert.deepEqual(await snapshot(published),await snapshot(baseline),'Other hover characteristics changed');
-                assert.equal(await published.locator('.nav .cta.cta-ai').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(229, 57, 53)');
+                assert.equal(await published.locator('.nav .cta.cta-ai').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(21, 89, 201)');
               }
               console.log('BUTTON_VERIFIED '+JSON.stringify({width,...color,otherStylesAndGeometryUnchanged:true}));
               await baseline.close();await published.close();
             }
-            await browser.close();console.log('PUBLICATION_CONFIRMED commit=0267c56edf077977e3d240fd9cb7ec8948eb3631');
+            await browser.close();console.log('PUBLICATION_CONFIRMED commit=2e7212f674c0235b62c1d95c405e9547ec408d5a');
           })().catch(error=>{console.error(error);process.exit(1)});
           JS
