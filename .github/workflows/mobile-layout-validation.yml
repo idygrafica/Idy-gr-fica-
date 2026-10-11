@@ -43,13 +43,14 @@ jobs:
            await new Promise(r=>server.listen(0,'127.0.0.1',r));
            const origin='http://127.0.0.1:'+server.address().port;
            const page=await requestBrowser.newPage();
-           const ready=async()=>{await page.goto(origin);await page.evaluate(()=>Promise.all([...document.images].map(e=>e.decode().catch(()=>{}))));};
+           const ready=async()=>{await page.goto(origin);await page.evaluate(()=>Promise.all([...document.images].map(e=>e.decode().catch(()=>{}))));await page.evaluate(()=>document.fonts.ready);await page.addStyleTag({content:'*,*::before,*::after{animation:none!important;transition:none!important}'});await page.waitForTimeout(250);};
+           const desktopMismatches=[];const geometry=()=>[...document.querySelectorAll('body *')].filter(e=>getComputedStyle(e).display!=='none').map(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return [e.tagName,e.className,r.x,r.y,r.width,r.height,s.color,s.fontSize,s.transform,s.position]});
            for(const width of [621,768,1024,1280,1440]){
              await page.setViewportSize({width,height:900});
-             baseline=true;await ready();const before=await page.screenshot({fullPage:true,animations:'disabled'});
-             baseline=false;await ready();const after=await page.screenshot({fullPage:true,animations:'disabled'});
-             assert.equal(crypto.createHash('sha256').update(after).digest('hex'),crypto.createHash('sha256').update(before).digest('hex'),'Desktop alterado em '+width);
-             console.log('DESKTOP '+JSON.stringify({width,pixelIdentical:true}));
+             baseline=true;await ready();const beforeGeometry=await page.evaluate(geometry);const before=await page.screenshot({fullPage:true,animations:'disabled'});
+             baseline=false;await ready();const afterGeometry=await page.evaluate(geometry);const after=await page.screenshot({fullPage:true,animations:'disabled'});
+             const identical=before.equals(after);const geometryEqual=JSON.stringify(beforeGeometry)===JSON.stringify(afterGeometry);if(!identical){desktopMismatches.push(width);console.log('DESKTOP_DIAGNOSTIC '+JSON.stringify({width,geometryEqual,before:beforeGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(afterGeometry[i])).slice(0,10),after:afterGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(beforeGeometry[i])).slice(0,10)}));}
+             console.log('DESKTOP '+JSON.stringify({width,pixelIdentical:identical,geometryEqual}));
            }
            for(const width of [320,350,351,360,375,390,414,430,480,620]){
              await page.setViewportSize({width,height:1000});await ready();
@@ -96,6 +97,6 @@ jobs:
                console.log('PREVIEW_'+width+' '+jpg.toString('base64'));
              }
            }
-           await requestBrowser.close();server.close();console.log('VALIDATION_PASSED');
+           await requestBrowser.close();server.close();assert.deepEqual(desktopMismatches,[],'Desktop pixel differences');console.log('VALIDATION_PASSED');
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
