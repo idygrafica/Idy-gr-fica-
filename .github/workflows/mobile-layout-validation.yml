@@ -18,12 +18,12 @@ jobs:
           node-version: '22'
       - name: Install browser
         run: |
-          npm install --no-save --package-lock=false playwright
+          npm install --no-save --package-lock=false playwright pngjs
           npx playwright install --with-deps chromium
       - name: Inspect original asset and published institutional version
         run: |
           node <<'JS'
-          const {chromium}=require('playwright');
+          const {chromium}=require('playwright');const {PNG}=require('pngjs');
           const fs=require('fs'),http=require('http'),path=require('path'),crypto=require('crypto'),assert=require('assert/strict');
           (async()=>{
            let baseline=false;
@@ -49,7 +49,7 @@ jobs:
              await page.setViewportSize({width,height:900});
              baseline=true;await ready();const beforeGeometry=await page.evaluate(geometry);const before=await page.screenshot({fullPage:true,animations:'disabled'});
              baseline=false;await ready();const afterGeometry=await page.evaluate(geometry);const after=await page.screenshot({fullPage:true,animations:'disabled'});
-             const identical=before.equals(after);const geometryEqual=JSON.stringify(beforeGeometry)===JSON.stringify(afterGeometry);if(!identical){desktopMismatches.push(width);console.log('DESKTOP_DIAGNOSTIC '+JSON.stringify({width,geometryEqual,before:beforeGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(afterGeometry[i])).slice(0,10),after:afterGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(beforeGeometry[i])).slice(0,10)}));}
+             const identical=before.equals(after);const geometryEqual=JSON.stringify(beforeGeometry)===JSON.stringify(afterGeometry);if(!identical){desktopMismatches.push(width);const a=PNG.sync.read(before),b=PNG.sync.read(after);let count=0,maxDelta=0,minX=a.width,minY=a.height,maxX=0,maxY=0;const samples=[];for(let y=0;y<a.height;y++)for(let x=0;x<a.width;x++){const i=(y*a.width+x)*4;const delta=Math.max(...[0,1,2,3].map(k=>Math.abs(a.data[i+k]-b.data[i+k])));if(delta){count++;maxDelta=Math.max(maxDelta,delta);minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);if(samples.length<8)samples.push([x,y,[...a.data.slice(i,i+4)],[...b.data.slice(i,i+4)]]);}}console.log('PIXEL_DIFF '+JSON.stringify({width,count,maxDelta,minX,maxX,minY,maxY,samples}));console.log('DESKTOP_DIAGNOSTIC '+JSON.stringify({width,geometryEqual,before:beforeGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(afterGeometry[i])).slice(0,10),after:afterGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(beforeGeometry[i])).slice(0,10)}));}
              console.log('DESKTOP '+JSON.stringify({width,pixelIdentical:identical,geometryEqual}));
            }
            for(const width of [320,350,351,360,375,390,414,430,480,620]){
@@ -93,7 +93,7 @@ jobs:
              console.log('MOBILE '+JSON.stringify(result));
              if(width===390||width===320){
                const height=await page.evaluate(()=>Math.ceil(document.querySelector('.whats-widget').getBoundingClientRect().bottom));
-               const jpg=await page.screenshot({type:'jpeg',quality:70,clip:{x:0,y:0,width,height},animations:'disabled'});
+               await page.setViewportSize({width,height});const jpg=await page.screenshot({type:'jpeg',quality:70,clip:{x:0,y:0,width,height},animations:'disabled'});
                console.log('PREVIEW_'+width+' '+jpg.toString('base64'));
              }
            }
