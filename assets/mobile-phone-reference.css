@@ -512,3 +512,6 @@
 @media (max-width:620px) and (prefers-reduced-motion:reduce){
   .whats-widget .whats.whats-pro.whats-new{transition:none!important}
 }
+
+/* Cor do fundo do botão Orçamento com IA. */
+.nav .cta.cta-ai{background:#E53935!important}
