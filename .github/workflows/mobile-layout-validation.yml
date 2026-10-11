@@ -92,22 +92,22 @@ jobs:
              await page.locator('.mobile-menu-toggle').click();assert.equal(await page.locator('.mobile-menu-toggle').getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());await page.locator('.mobile-menu-toggle').click();
              const sticky=await page.evaluate(()=>{
            const el=document.querySelector('.whats-widget'),height=innerHeight,start=el.getBoundingClientRect().top;
-           const target=Math.max(0,start-(height-96)+180);
+           const target=Math.max(0,start-(height-84)+180);
            window.scrollTo({top:target,behavior:'instant'});const first=el.getBoundingClientRect();
            window.scrollTo({top:target+400,behavior:'instant'});const second=el.getBoundingClientRect();
            window.scrollTo({top:0,behavior:'instant'});
-           return {position:getComputedStyle(el).position,firstY:first.top,secondY:second.top,expectedY:height-96};
+           return {position:getComputedStyle(el).position,firstY:first.top,secondY:second.top,expectedY:height-84};
           });
-          assert.equal(sticky.position,'sticky');assert(Math.abs(sticky.firstY-sticky.expectedY)<1);assert(Math.abs(sticky.secondY-sticky.expectedY)<1);
+          const buttonStyle=await page.locator('.whats-widget .whats').evaluate(e=>({background:getComputedStyle(e).backgroundColor,color:getComputedStyle(e.querySelector('svg')).color,width:e.getBoundingClientRect().width}));assert.equal(buttonStyle.background,'rgb(37, 211, 102)');assert.equal(buttonStyle.color,'rgb(255, 255, 255)');assert.equal(buttonStyle.width,64);assert.equal(sticky.position,'sticky');assert(Math.abs(sticky.firstY-sticky.expectedY)<1);assert(Math.abs(sticky.secondY-sticky.expectedY)<1);
           console.log('MOBILE '+JSON.stringify({...result,sticky}));
              if(width===390||width===320){
                const height=await page.evaluate(()=>Math.ceil(document.querySelector('.whats-widget').getBoundingClientRect().bottom));
                await page.setViewportSize({width,height});const jpg=await page.screenshot({type:'jpeg',quality:70,clip:{x:0,y:0,width,height},animations:'disabled'});
-               console.log('PREVIEW_'+width+' '+jpg.toString('base64'));
+               console.log('PREVIEW_'+width+' '+jpg.toString('base64'));if(width===390){await page.setViewportSize({width,height:900});await page.evaluate(()=>window.scrollTo({top:500,behavior:'instant'}));console.log('SCROLL_PREVIEW_390 '+(await page.screenshot({type:'jpeg',quality:75})).toString('base64'));await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));}
              }
            }
            const liveHTML=await(await page.request.get('https://idygrafica.netlify.app/?check='+Date.now())).text(),liveCSS=await(await page.request.get('https://idygrafica.netlify.app/assets/mobile-phone-reference.css?check='+Date.now())).text();
-           console.log('CURRENT_LIVE '+JSON.stringify({htmlLength:liveHTML.length,cssLength:liveCSS.length,mascotCopies:(liveHTML.match(/class="hero-mascot"/g)||[]).length,integrated:liveHTML.includes('<img class="hero-mascot" src="assets/mascote-idy.png" alt="Mascote IDY Gráfica"><h1>'),green:liveCSS.includes('#35ee48'),sticky:liveCSS.includes('position:sticky!important'),cssTail:liveCSS.slice(-300),htmlTail:liveHTML.slice(-200)}));
+           console.log('CURRENT_LIVE '+JSON.stringify({htmlLength:liveHTML.length,cssLength:liveCSS.length,mascotCopies:(liveHTML.match(/class="hero-mascot"/g)||[]).length,integrated:liveHTML.includes('<img class="hero-mascot" src="assets/mascote-idy.png" alt="Mascote IDY Gráfica"><h1>'),green:liveCSS.includes('#35ee48'),sticky:liveCSS.includes('position:sticky!important'),cssMatchesPublished:liveCSS.trim()===(await(await page.request.get('https://raw.githubusercontent.com/idygrafica/Idy-gr-fica-/bf73be43d1fd64926234535938482c611150a90e/assets/mobile-phone-reference.css')).text()).trim()}));
            await requestBrowser.close();server.close();assert.deepEqual(desktopMismatches,[],'Desktop pixel differences');console.log('VALIDATION_PASSED');
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
