@@ -24,61 +24,78 @@ jobs:
         run: |
           node <<'JS'
           const {chromium}=require('playwright');
-          const fs=require('fs'),http=require('http'),path=require('path');
+          const fs=require('fs'),http=require('http'),path=require('path'),crypto=require('crypto'),assert=require('assert/strict');
           (async()=>{
+           let baseline=false;
+           const requestBrowser=await chromium.launch(),requestPage=await requestBrowser.newPage();
+           const repo='https://raw.githubusercontent.com/idygrafica/Idy-gr-fica-/372bc98bb538696569436e34274d6a7f044bd4e7/';
+           const originalHTML=await (await requestPage.request.get(repo+'index.html')).text();
+           const originalCSS=await (await requestPage.request.get(repo+'assets/mobile-phone-reference.css')).text();
+           const overrides={'/index.html':originalHTML,'/assets/mobile-phone-reference.css':originalCSS};
            const server=http.createServer((req,res)=>{
-             const url=new URL(req.url,'http://localhost');
-             const file=path.join(process.cwd(),decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname));
+             const name=new URL(req.url,'http://localhost').pathname;
+             const url=name==='/'?'/index.html':name;
+             const file=path.join(process.cwd(),decodeURIComponent(url));
              if(!file.startsWith(process.cwd())||!fs.existsSync(file)){res.writeHead(404);return res.end();}
              res.setHeader('Content-Type',file.endsWith('.css')?'text/css':file.endsWith('.png')?'image/png':file.endsWith('.js')?'application/javascript':'text/html');
-             res.end(fs.readFileSync(file));
+             res.end(baseline&&overrides[url]?overrides[url]:fs.readFileSync(file));
            });
            await new Promise(r=>server.listen(0,'127.0.0.1',r));
            const origin='http://127.0.0.1:'+server.address().port;
-           const browser=await chromium.launch();
-           const page=await browser.newPage();
-           for(const width of [320,360,390,430,620]){
-             await page.setViewportSize({width,height:1000});
-             await page.goto(origin);
-             await page.evaluate(()=>Promise.all([...document.images].map(e=>e.decode().catch(()=>{}))));
+           const page=await requestBrowser.newPage();
+           const ready=async()=>{await page.goto(origin);await page.evaluate(()=>Promise.all([...document.images].map(e=>e.decode().catch(()=>{}))));};
+           for(const width of [621,768,1024,1280,1440]){
+             await page.setViewportSize({width,height:900});
+             baseline=true;await ready();const before=await page.screenshot({fullPage:true,animations:'disabled'});
+             baseline=false;await ready();const after=await page.screenshot({fullPage:true,animations:'disabled'});
+             assert.equal(crypto.createHash('sha256').update(after).digest('hex'),crypto.createHash('sha256').update(before).digest('hex'),'Desktop alterado em '+width);
+             console.log('DESKTOP '+JSON.stringify({width,pixelIdentical:true}));
+           }
+           for(const width of [320,350,351,360,375,390,414,430,480,620]){
+             await page.setViewportSize({width,height:1000});await ready();
              const result=await page.evaluate(()=>{
-               const img=document.querySelector('.hero-mascot'),ir=img.getBoundingClientRect();
+               const img=[...document.querySelectorAll('.hero-mascot')].find(e=>getComputedStyle(e).display!=='none'),ir=img.getBoundingClientRect();
                const c=document.createElement('canvas');c.width=Math.round(ir.width);c.height=Math.round(ir.height);
                const cx=c.getContext('2d');cx.drawImage(img,0,0,c.width,c.height);
                const pixels=cx.getImageData(0,0,c.width,c.height).data;
                const collisions=[],outside=[];
-               for(const el of document.querySelectorAll('.hero .eyebrow,.hero h1,.hero p')){
-                 const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
-                 let n;
+               for(const el of document.querySelectorAll('.hero .eyebrow,.hero h1,.hero p,.hero .badge,.hero-actions .primary,.cta-ai-copy')){
+                 if(getComputedStyle(el).display==='none')continue;
+                 const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let n;
                  while(n=walker.nextNode()){
                    for(let i=0;i<n.length;i++){
                      if(!n.textContent[i].trim())continue;
                      const range=document.createRange();range.setStart(n,i);range.setEnd(n,i+1);
-                     const r=range.getBoundingClientRect();
-                     if(r.left<0||r.right>innerWidth+.5)outside.push(n.textContent[i]);
+                     const r=range.getBoundingClientRect();if(!r.width&&!r.height)continue;
+                     if(r.left<-.5||r.right>innerWidth+.5)outside.push(n.textContent[i]);
                      let hit=false;
                      for(let y=Math.max(0,Math.ceil(r.top-ir.top));y<Math.min(c.height,Math.floor(r.bottom-ir.top));y+=2){
                        for(let x=Math.max(0,Math.ceil(r.left-ir.left));x<Math.min(c.width,Math.floor(r.right-ir.left));x+=2){
                          if(pixels[(y*c.width+x)*4+3]>80){hit=true;break}
-                       }
-                       if(hit)break;
-                     }
-                     if(hit)collisions.push(n.textContent[i]);
+                       }if(hit)break;
+                     }if(hit)collisions.push(n.textContent[i]);
                    }
                  }
                }
-               const box=s=>{const r=document.querySelector(s).getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}};
-               const alphaRows=[0,80,160,240,320,400,480,560].map(y=>{let first=-1;for(let x=0;x<c.width;x++)if(pixels[(y*c.width+x)*4+3]>80){first=x;break}return {y,left:first}});
-               return {viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,mascot:box('.hero-mascot'),title:box('.hero h1'),paragraph:box('.hero p'),badges:box('.hero .badges'),hero:box('.hero'),collisions:collisions.join(''),outside:outside.join(''),alphaRows};
+               const hero=document.querySelector('.hero').getBoundingClientRect();
+               const badges=[...document.querySelectorAll('.hero .badge')].map(e=>e.getBoundingClientRect());
+               const actions=document.querySelector('.hero-actions').getBoundingClientRect();
+               const whatsapp=document.querySelector('.whats-widget').getBoundingClientRect();
+               const title=document.querySelector('.hero h1').getBoundingClientRect();
+               const boxes=['.logo','.cta-ai','.mobile-menu-toggle'].map(s=>document.querySelector(s).getBoundingClientRect());
+               const overlaps=boxes.flatMap((a,i)=>boxes.slice(i+1).filter(b=>Math.min(a.right,b.right)>Math.max(a.left,b.left)&&Math.min(a.bottom,b.bottom)>Math.max(a.top,b.top)));
+               return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,mascotWidth:ir.width,mascotSrc:img.getAttribute('src'),visibleMascots:[...document.querySelectorAll('.hero-mascot')].filter(e=>getComputedStyle(e).display!=='none').length,collisions:collisions.join(''),outside:outside.join(''),badges:badges.length,contained:badges.every(r=>r.top>=hero.top&&r.bottom<=hero.bottom)&&actions.bottom<=hero.bottom,whatsappBelowHero:whatsapp.top>=hero.bottom-.5,titleHeight:title.height,headerOverlaps:overlaps.length,heroHeight:hero.height};
              });
-             console.log('LAYOUT '+JSON.stringify(result));
+             assert.equal(result.scrollWidth,width);assert.equal(result.mascotWidth,405);assert.equal(result.mascotSrc,'assets/mascote-idy.png');assert.equal(result.visibleMascots,1);
+             assert.equal(result.collisions,'','Colisão com mascote em '+width);assert.equal(result.outside,'','Texto fora da tela em '+width);assert.equal(result.badges,4);assert(result.contained);assert(result.whatsappBelowHero);assert.equal(result.headerOverlaps,0);assert(result.titleHeight<200,'Quebra do título em '+width);
+             await page.locator('.mobile-menu-toggle').click();assert.equal(await page.locator('.mobile-menu-toggle').getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());await page.locator('.mobile-menu-toggle').click();
+             console.log('MOBILE '+JSON.stringify(result));
              if(width===390||width===320){
-               const jpg=await page.locator('.hero').screenshot({type:'jpeg',quality:55});
-               console.log('SCREENSHOT_'+width+' '+jpg.toString('base64'));
+               const height=await page.evaluate(()=>Math.ceil(document.querySelector('.whats-widget').getBoundingClientRect().bottom));
+               const jpg=await page.screenshot({type:'jpeg',quality:70,clip:{x:0,y:0,width,height},animations:'disabled'});
+               console.log('PREVIEW_'+width+' '+jpg.toString('base64'));
              }
            }
-           const response=await page.request.get('https://idygrafica.netlify.app/assets/mobile-phone-reference.css');
-           console.log('LIVE '+JSON.stringify({status:response.status(),existingFix:(await response.text()).includes('Responsividade da página inicial:')}));
-           await browser.close();server.close();
+           await requestBrowser.close();server.close();console.log('VALIDATION_PASSED');
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
