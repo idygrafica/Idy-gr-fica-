@@ -1,0 +1,44 @@
+name: Validate institutional mobile composition
+on:
+  push:
+    branches: [codex/mobile-composition-validation]
+permissions:
+  contents: read
+jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Inspect original asset and published institutional version
+        run: |
+          node <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch();
+            const page=await browser.newPage({viewport:{width:390,height:844}});
+            await page.goto('file://'+process.cwd()+'/index.html');
+            console.log('BASELINE '+JSON.stringify(await page.evaluate(()=>({
+              images:[...document.images].map(e=>({src:e.getAttribute('src'),naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight})),
+              mascot:getComputedStyle(document.querySelector('.hero-mascot')).width
+            }))));
+            try {
+              const response=await page.request.get('https://idygrafica.netlify.app/assets/mobile-phone-reference.css');
+              const body=await response.text();
+              console.log('LIVE '+JSON.stringify({status:response.status(),existingFix:body.includes('Responsividade da página inicial:')}));
+            } catch(e) { console.log('LIVE_ERROR '+e.message); }
+            await page.screenshot({path:'mobile-baseline.png',fullPage:true});
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobile-baseline
+          path: mobile-baseline.png
