@@ -422,12 +422,16 @@
 }
 
 
+/* A mesma imagem é reutilizada no mobile; a composição desktop original permanece. */
+.hero .hero-copy > .hero-mascot{display:none}
 /* Mascote original integrado ao texto, sem reduzir os 405 px do mobile. */
 @media (max-width:620px){
   .hero{
     display:flow-root!important;padding:28px 24px 24px!important;
   }
   .hero .container,.hero .hero-copy{display:contents!important}
+  .hero > .hero-mascot{display:none!important}
+  .hero .hero-copy > .hero-mascot{display:block!important}
   .hero .hero-mascot{
     float:right!important;margin:0 calc(62vw - 405px) 16px 12px!important;
     shape-outside:url("mascote-idy.png");shape-image-threshold:.1;shape-margin:12px;
@@ -437,7 +441,7 @@
   }
   .hero .eyebrow{font-size:11px!important;line-height:1.5!important;margin-bottom:16px!important}
   .hero h1{
-    font-size:clamp(24px,6.8vw,36px)!important;line-height:1.1!important;
+    font-size:clamp(24px,6.8vw,30px)!important;line-height:1.1!important;
     overflow-wrap:normal
   }
   .hero p{font-size:15px!important;line-height:1.6!important}
@@ -450,5 +454,15 @@
 }
 @media (max-width:350px){
   .hero{padding-left:20px!important;padding-right:20px!important}
-  .hero h1{font-size:24px!important}
+  .hero{display:flex!important;flex-direction:column!important}
+  .hero .hero-mascot{
+    float:none!important;order:3;align-self:center!important;
+    margin:12px 0 24px!important
+  }
+  .hero .eyebrow{order:1}
+  .hero h1{order:2;font-size:24px!important}
+  .hero p{order:4}
+  .hero .badges{order:5}
+  .hero .hero-actions{order:6}
+  .hero .hero-mascot-glow{display:none!important}
 }
