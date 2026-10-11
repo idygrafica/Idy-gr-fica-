@@ -1,67 +1,75 @@
-name: Confirm institutional WhatsApp publication
+name: Confirm AI button background
 on:
   push:
     branches: [codex/mobile-composition-validation]
-concurrency:
-  group: institutional-mobile-validation
-  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
-  mobile:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: '0267c56edf077977e3d240fd9cb7ec8948eb3631'
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Install browser
         run: |
-          npm install --no-save --package-lock=false playwright pngjs
+          npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
-      - name: Inspect original asset and published institutional version
+      - name: Verify only the requested background changed and is live
         run: |
           node <<'JS'
-          const {chromium}=require('playwright'),fs=require('fs'),assert=require('assert/strict');
+          const {chromium}=require('playwright'),fs=require('fs'),assert=require('assert/strict'),{execFileSync}=require('child_process');
           (async()=>{
-           const browser=await chromium.launch(),page=await browser.newPage();
-           const base='https://idygrafica.netlify.app/';let published=false;
-           for(let attempt=1;attempt<=30;attempt++){
-            const token='?verify='+Date.now(),html=await page.request.get(base+token);
-            const css=await page.request.get(base+'assets/mobile-phone-reference.css'+token),js=await page.request.get(base+'assets/app.js'+token);
-            const htmlText=await html.text();
-            const cssMatch=(await css.text()).trim()===fs.readFileSync('assets/mobile-phone-reference.css','utf8').trim();
-            const jsMatch=(await js.text()).trim()===fs.readFileSync('assets/app.js','utf8').trim();
-            const ok=html.status()===200&&css.status()===200&&js.status()===200&&cssMatch&&jsMatch&&htmlText.includes('<img class="hero-mascot" src="assets/mascote-idy.png" alt="Mascote IDY Gráfica"><h1>');
-            console.log('PUBLICATION_CHECK '+JSON.stringify({attempt,htmlStatus:html.status(),cssStatus:css.status(),jsStatus:js.status(),cssMatch,jsMatch,published:ok}));
-            if(ok){published=true;break}await page.waitForTimeout(5000);
-           }
-           assert(published,'New files not yet published by Netlify');
-           for(const width of [320,390,430,620,1280]){
-            await page.setViewportSize({width,height:1000});await page.goto(base+'?layout='+Date.now());
-            await page.evaluate(()=>Promise.all([...document.images].map(e=>e.decode().catch(()=>{}))));await page.waitForTimeout(100);
-            const result=await page.evaluate(()=>{
-             const img=[...document.querySelectorAll('.hero-mascot')].find(e=>getComputedStyle(e).display!=='none'),r=img.getBoundingClientRect(),w=document.querySelector('.whats-widget'),wr=w.getBoundingClientRect();
-             return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,mascotWidth:r.width,mascotSrc:img.getAttribute('src'),whatsReady:w.classList.contains('whats-ready'),onFoot:Math.abs(wr.top-(r.bottom-82))<1,titleColor:getComputedStyle(document.querySelector('.hero h1 span')).color,whatsColor:getComputedStyle(w.querySelector('.whats')).backgroundColor,ai:document.querySelector('.cta-ai-copy strong').innerText,badges:document.querySelectorAll('.hero .badge').length};
-            });
-            assert.equal(result.scrollWidth,width);assert.equal(result.badges,4);assert.equal(result.ai,'Orçamento com IA');
-            if(width<=620){
-             assert.equal(result.mascotWidth,405);assert.equal(result.mascotSrc,'assets/mascote-idy.png');assert.equal(result.titleColor,'rgb(53, 238, 72)');assert.equal(result.whatsColor,'rgb(37, 211, 102)');assert(result.whatsReady);assert(result.onFoot);
-             const fixed=await page.evaluate(async()=>{
-              window.scrollTo({top:300,behavior:'instant'});await new Promise(requestAnimationFrame);const a=document.querySelector('.whats-widget').getBoundingClientRect();
-              window.scrollTo({top:600,behavior:'instant'});await new Promise(requestAnimationFrame);const b=document.querySelector('.whats-widget').getBoundingClientRect();
-              window.scrollTo({top:0,behavior:'instant'});await new Promise(requestAnimationFrame);return {first:a.top,second:b.top,expected:innerHeight-84};
-             });
-             assert(Math.abs(fixed.first-fixed.expected)<1);assert(Math.abs(fixed.second-fixed.expected)<1);
-             result.fixed=fixed;
+            const path='assets/mobile-phone-reference.css', expected=fs.readFileSync(path,'utf8'), original=execFileSync('git',['show','HEAD^:'+path],{encoding:'utf8'});
+            const files=execFileSync('git',['diff','--name-only','HEAD^','HEAD'],{encoding:'utf8'}).trim();
+            assert.equal(files,path);
+            assert.equal(expected,original.trimEnd()+'\n\n/* Cor do fundo do botão Orçamento com IA. */\n.nav .cta.cta-ai{background:#E53935!important}\n');
+            const browser=await chromium.launch(),request=await browser.newPage(),base='https://idygrafica.netlify.app/';
+            let live=false;
+            for(let attempt=1;attempt<=36;attempt++){
+              const response=await request.request.get(base+path+'?verify='+Date.now()),matches=response.ok()&&(await response.text()).trim()===expected.trim();
+              console.log('PUBLICATION_CHECK '+JSON.stringify({attempt,status:response.status(),matches}));
+              if(matches){live=true;break}await request.waitForTimeout(5000);
             }
-            console.log('LIVE_LAYOUT '+JSON.stringify(result));
-            if(width===390){
-             const height=await page.evaluate(()=>Math.ceil(document.querySelector('.hero').getBoundingClientRect().bottom)+24);await page.setViewportSize({width,height});await page.waitForTimeout(100);
-             console.log('LIVE_PREVIEW_390 '+(await page.screenshot({type:'jpeg',quality:75,clip:{x:0,y:0,width,height}})).toString('base64'));
+            assert(live,'Netlify has not published the updated stylesheet');
+            async function snapshot(page){
+              return page.evaluate(()=>{
+                const button=document.querySelector('.nav .cta.cta-ai');
+                const nodes=[button,...button.querySelectorAll('*')];
+                return nodes.map((el,index)=>{
+                  const c=getComputedStyle(el),styles={};
+                  for(const property of c){
+                    if(index===0&&['background','background-color','background-image'].includes(property))continue;
+                    styles[property]=c.getPropertyValue(property);
+                  }
+                  const r=el.getBoundingClientRect();
+                  return {styles,rect:{x:r.x,y:r.y,width:r.width,height:r.height},text:el.textContent,href:el.getAttribute('href')};
+                });
+              });
             }
-           }
-           await browser.close();console.log('PUBLICATION_CONFIRMED commit=49e527f31e2afc54411d26779c1a661f3a3397ab');
-          })().catch(e=>{console.error(e);process.exit(1)});
+            for(const width of [320,390,1280]){
+              const baseline=await browser.newPage({viewport:{width,height:900}}),published=await browser.newPage({viewport:{width,height:900}});
+              await baseline.route('**/assets/mobile-phone-reference.css*',route=>route.fulfill({status:200,contentType:'text/css',body:original}));
+              for(const page of [baseline,published]){
+                await page.goto(base+'?button='+Date.now(),{waitUntil:'networkidle'});
+                await page.evaluate(()=>document.fonts.ready);
+              }
+              assert.deepEqual(await snapshot(published),await snapshot(baseline),'Other button characteristics changed at '+width);
+              const color=await published.locator('.nav .cta.cta-ai').evaluate(el=>({background:getComputedStyle(el).backgroundColor,image:getComputedStyle(el).backgroundImage,text:getComputedStyle(el.querySelector('strong')).color}));
+              assert.equal(color.background,'rgb(229, 57, 53)');assert.equal(color.image,'none');assert.equal(color.text,'rgb(255, 255, 255)');
+              if(width===1280){
+                for(const page of [baseline,published]){await page.locator('.nav .cta.cta-ai').hover();await page.waitForTimeout(300)}
+                assert.deepEqual(await snapshot(published),await snapshot(baseline),'Other hover characteristics changed');
+                assert.equal(await published.locator('.nav .cta.cta-ai').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(229, 57, 53)');
+              }
+              console.log('BUTTON_VERIFIED '+JSON.stringify({width,...color,otherStylesAndGeometryUnchanged:true}));
+              await baseline.close();await published.close();
+            }
+            await browser.close();console.log('PUBLICATION_CONFIRMED commit=0267c56edf077977e3d240fd9cb7ec8948eb3631');
+          })().catch(error=>{console.error(error);process.exit(1)});
           JS
