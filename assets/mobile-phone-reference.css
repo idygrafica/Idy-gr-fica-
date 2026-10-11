@@ -473,10 +473,36 @@
   html,body{overflow-x:clip!important}
   .whats-widget{
     position:sticky!important;inset:auto!important;
-    top:calc(100vh - 96px - env(safe-area-inset-bottom,0px))!important;
-    top:calc(100dvh - 96px - env(safe-area-inset-bottom,0px))!important;
-    align-self:flex-end!important;width:76px!important;height:76px!important;
+    top:calc(100vh - 84px - env(safe-area-inset-bottom,0px))!important;
+    top:calc(100dvh - 84px - env(safe-area-inset-bottom,0px))!important;
+    align-self:flex-end!important;width:64px!important;height:64px!important;
     padding:0!important;margin:12px 16px calc(24px + env(safe-area-inset-bottom,0px))!important;
     background:transparent!important;z-index:90!important
   }
+}
+
+/* Acabamento do atalho mobile: símbolo branco, verde IDY e foco visível. */
+@media (max-width:620px){
+  .whats-widget .whats.whats-pro.whats-new{
+    width:64px!important;height:64px!important;min-width:64px!important;
+    border-radius:20px!important;border:1px solid rgba(210,255,224,.65)!important;
+    background:#25d366!important;
+    box-shadow:0 10px 24px rgba(0,0,0,.3),0 3px 10px rgba(18,190,90,.22),inset 0 1px 0 rgba(255,255,255,.25)!important;
+    transition:transform .18s ease,box-shadow .18s ease!important
+  }
+  .whats-widget .whats.whats-pro.whats-new:after{content:none!important}
+  .whats-widget .whats-icon-clean{
+    width:38px!important;height:38px!important;flex:0 0 38px!important;
+    background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important
+  }
+  .whats-widget .whats-icon-clean svg{width:38px!important;height:38px!important;color:#fff!important}
+  .whats-widget .whats.whats-pro.whats-new:focus-visible{outline:3px solid #fff!important;outline-offset:4px}
+  .whats-widget .whats.whats-pro.whats-new:hover{
+    background:#25d366!important;filter:brightness(1.05)!important;
+    box-shadow:0 12px 26px rgba(0,0,0,.32),0 4px 12px rgba(18,190,90,.28)!important
+  }
+  .whats-widget .whats.whats-pro.whats-new:active{transform:scale(.96)!important}
+}
+@media (max-width:620px) and (prefers-reduced-motion:reduce){
+  .whats-widget .whats.whats-pro.whats-new{transition:none!important}
 }
