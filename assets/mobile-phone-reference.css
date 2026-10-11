@@ -320,3 +320,103 @@
     right:12px!important;
   }
 }
+
+
+/* Responsividade da página inicial: o conteúdo determina a altura dos blocos. */
+@media (max-width:620px){
+  body{display:flex;flex-direction:column}
+  .nav{order:-3}
+  .hero{
+    order:-2;display:flex!important;flex-direction:column!important;
+    height:auto!important;min-height:0!important;padding-bottom:24px!important;
+    overflow:hidden!important
+  }
+  .hero .container{
+    position:relative!important;inset:auto!important;
+    width:100%!important;padding:36px 24px 0!important;
+    display:block!important
+  }
+  .hero .hero-copy{
+    position:relative!important;inset:auto!important;
+    width:100%!important;max-width:none!important;padding:0!important
+  }
+  .eyebrow{
+    position:static!important;width:auto!important;
+    margin:0 0 16px!important;white-space:normal!important;
+    font-size:12px!important;line-height:1.5!important
+  }
+  .hero h1{
+    position:static!important;width:100%!important;max-width:none!important;
+    margin:0 0 24px!important;font-size:clamp(36px,9.5vw,48px)!important;
+    line-height:1.08!important;overflow-wrap:break-word
+  }
+  .hero p{
+    position:static!important;width:100%!important;max-width:none!important;
+    margin:0 0 24px!important;font-size:16px!important;line-height:1.6!important
+  }
+  .hero .badges{
+    position:static!important;width:100%!important;max-width:none!important;
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;margin:0 0 24px!important
+  }
+  .hero .badge{
+    height:auto!important;min-height:54px!important;
+    padding:12px 12px 12px 38px!important;font-size:12px!important;line-height:1.4!important
+  }
+  .hero .badge:before{left:12px!important;font-size:18px!important}
+  .hero .hero-actions{
+    position:static!important;width:100%!important;max-width:none!important;
+    margin:0!important
+  }
+  .hero .hero-actions .primary{
+    height:auto!important;min-height:58px!important;padding:16px!important;
+    font-size:15px!important;line-height:1.4!important
+  }
+  .hero .hero-actions .primary:before{margin-right:10px!important}
+  .hero .hero-actions .primary:after{content:none!important}
+  /* 405 px é o tamanho mobile existente: apenas o posicionamento muda. */
+  .hero .hero-mascot{
+    position:relative!important;inset:auto!important;
+    width:405px!important;max-width:none!important;height:auto!important;
+    flex:0 0 auto!important;align-self:center!important;
+    margin:32px 0 0!important;transform:none!important
+  }
+  .hero .hero-mascot-glow{
+    z-index:1!important;
+    top:auto!important;bottom:24px!important;left:50%!important;right:auto!important;
+    width:370px!important;height:650px!important;transform:translateX(-50%)!important;
+    pointer-events:none
+  }
+  /* Área própria entre a apresentação e os serviços, sem cobrir texto. */
+  .whats-widget{
+    order:-1;position:relative!important;inset:auto!important;
+    width:100%!important;padding:8px 18px 24px!important;margin:0!important;
+    background:#001c14;display:flex!important;align-items:center!important;
+    flex-direction:row!important;justify-content:flex-end!important;gap:0!important
+  }
+  .section{height:auto!important}
+  .section-head{flex-direction:column;align-items:stretch;gap:16px}
+  .section-head>div,.section-head>p,.copy{min-width:0}
+  .section-head p{margin:0;max-width:none}
+  .section h2{line-height:1.15;overflow-wrap:break-word}
+  .section .eyebrow{margin-bottom:12px!important}
+  .footer a,.footer span{overflow-wrap:anywhere}
+  .cta-ai-copy strong{font-size:12px!important;line-height:1.2!important}
+  .cta.cta-ai{width:190px!important;min-width:0!important;flex-shrink:0!important}
+  .cta-ai-copy small{font-size:9px!important;line-height:1.3!important}
+}
+@media (max-width:350px){
+  .nav .container{
+    display:grid!important;grid-template-columns:1fr 31px!important;
+    height:auto!important;min-height:86px!important;padding:12px!important;gap:12px!important
+  }
+  .mobile-menu-toggle{grid-column:2;grid-row:1}
+  .cta.cta-ai{
+    grid-column:1 / -1;grid-row:2;
+    width:100%!important;max-width:none!important;height:58px!important;margin:0!important
+  }
+  .navlinks.open{top:100%!important}
+  .hero .container{padding-left:20px!important;padding-right:20px!important}
+  .hero .badges{grid-template-columns:1fr!important}
+}
+
