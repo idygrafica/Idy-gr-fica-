@@ -42,13 +42,13 @@ jobs:
            });
            await new Promise(r=>server.listen(0,'127.0.0.1',r));
            const origin='http://127.0.0.1:'+server.address().port;
-           const page=await requestBrowser.newPage();
+           let page=await requestBrowser.newPage();
            const ready=async()=>{await page.goto(origin);await page.evaluate(()=>Promise.all([...document.images].map(e=>e.decode().catch(()=>{}))));await page.evaluate(()=>document.fonts.ready);await page.addStyleTag({content:'*,*::before,*::after{animation:none!important;transition:none!important}'});await page.waitForTimeout(250);};
            const desktopMismatches=[];const geometry=()=>[...document.querySelectorAll('body *')].filter(e=>getComputedStyle(e).display!=='none').map(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return [e.tagName,e.className,r.x,r.y,r.width,r.height,s.color,s.fontSize,s.transform,s.position]});
            for(const width of [621,768,1024,1280,1440]){
              await page.setViewportSize({width,height:900});
-             baseline=true;await ready();const beforeGeometry=await page.evaluate(geometry);const before=await page.screenshot({fullPage:true,animations:'disabled'});
-             baseline=false;await ready();const afterGeometry=await page.evaluate(geometry);const after=await page.screenshot({fullPage:true,animations:'disabled'});
+             await page.close();page=await requestBrowser.newPage({viewport:{width,height:900}});baseline=true;await ready();const beforeGeometry=await page.evaluate(geometry);const before=await page.screenshot({fullPage:true,animations:'disabled'});
+             await page.close();page=await requestBrowser.newPage({viewport:{width,height:900}});baseline=false;await ready();const afterGeometry=await page.evaluate(geometry);const after=await page.screenshot({fullPage:true,animations:'disabled'});
              const identical=before.equals(after);const geometryEqual=JSON.stringify(beforeGeometry)===JSON.stringify(afterGeometry);if(!identical){desktopMismatches.push(width);const a=PNG.sync.read(before),b=PNG.sync.read(after);let count=0,maxDelta=0,minX=a.width,minY=a.height,maxX=0,maxY=0;const samples=[];for(let y=0;y<a.height;y++)for(let x=0;x<a.width;x++){const i=(y*a.width+x)*4;const delta=Math.max(...[0,1,2,3].map(k=>Math.abs(a.data[i+k]-b.data[i+k])));if(delta){count++;maxDelta=Math.max(maxDelta,delta);minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);if(samples.length<8)samples.push([x,y,[...a.data.slice(i,i+4)],[...b.data.slice(i,i+4)]]);}}console.log('PIXEL_DIFF '+JSON.stringify({width,count,maxDelta,minX,maxX,minY,maxY,samples}));console.log('DESKTOP_DIAGNOSTIC '+JSON.stringify({width,geometryEqual,before:beforeGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(afterGeometry[i])).slice(0,10),after:afterGeometry.filter((e,i)=>JSON.stringify(e)!==JSON.stringify(beforeGeometry[i])).slice(0,10)}));}
              console.log('DESKTOP '+JSON.stringify({width,pixelIdentical:identical,geometryEqual}));
            }
