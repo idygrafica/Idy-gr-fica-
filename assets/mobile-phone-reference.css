@@ -429,7 +429,7 @@
   }
   .hero .container,.hero .hero-copy{display:contents!important}
   .hero .hero-mascot{
-    float:right!important;margin:0 -135px 16px 12px!important;
+    float:right!important;margin:0 calc(62vw - 405px) 16px 12px!important;
     shape-outside:url("mascote-idy.png");shape-image-threshold:.1;shape-margin:12px;
   }
   .hero .eyebrow,.hero h1,.hero p{
@@ -437,12 +437,12 @@
   }
   .hero .eyebrow{font-size:11px!important;line-height:1.5!important;margin-bottom:16px!important}
   .hero h1{
-    font-size:clamp(28px,7.6vw,38px)!important;line-height:1.1!important;
+    font-size:clamp(24px,6.8vw,36px)!important;line-height:1.1!important;
     overflow-wrap:normal
   }
   .hero p{font-size:15px!important;line-height:1.6!important}
-  .hero .badges{clear:both!important;position:relative!important;z-index:20!important}
-  .hero .hero-actions{position:relative!important;z-index:20!important}
+  .hero .badges{clear:both!important;position:relative!important;inset:auto!important;z-index:20!important}
+  .hero .hero-actions{position:relative!important;inset:auto!important;z-index:20!important}
   .hero .hero-mascot-glow{
     top:32px!important;bottom:auto!important;left:auto!important;right:-52px!important;
     transform:none!important
@@ -450,6 +450,5 @@
 }
 @media (max-width:350px){
   .hero{padding-left:20px!important;padding-right:20px!important}
-  .hero .hero-mascot{margin-right:-175px!important}
-  .hero h1{font-size:28px!important}
+  .hero h1{font-size:24px!important}
 }
