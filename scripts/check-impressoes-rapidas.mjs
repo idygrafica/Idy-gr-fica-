@@ -80,6 +80,13 @@ try{
    return [...document.querySelectorAll('.quick-visual img')].some(img=>{const b=img.getBoundingClientRect();return Math.min(copy.right,b.right)-Math.max(copy.left,b.left)>1&&Math.min(copy.bottom,b.bottom)-Math.max(copy.top,b.top)>1;});
   });
   assert(!heroOverlaps,'Imagem cobre o texto em '+width);
+  if(width<=620){
+   const badgeCovered=await page.evaluate(()=>{
+    const a=document.querySelector('.quick-printer-label').getBoundingClientRect(),b=document.querySelector('.whats-widget .whats').getBoundingClientRect();
+    return Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1;
+   });
+   assert(!badgeCovered,'WhatsApp encobre a identificação da Xerox em '+width);
+  }
   const wa=page.locator('.quick-actions a').first(),waUrl=new URL(await wa.getAttribute('href'));
   assert.equal(waUrl.hostname,'wa.me');assert.equal(waUrl.pathname,'/5551981687562');assert.match(waUrl.searchParams.get('text'),/Impressões Rápidas/);
   const popupPromise=context.waitForEvent('page');await wa.click();const popup=await popupPromise;await popup.waitForLoadState();

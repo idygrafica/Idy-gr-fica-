@@ -174,7 +174,7 @@
  .quick-page .quick-visual{min-height:clamp(350px,96vw,570px)}
  .quick-page .quick-mascot{max-width:56%;bottom:0}
  .quick-page .quick-printer-card{top:85px;width:90%}
- .quick-page .quick-printer-label{top:7px;right:3px;min-width:145px;padding:10px 15px;border-radius:20px 8px}
+ .quick-page .quick-printer-label{top:7px;right:69px;min-width:145px;padding:10px 15px;border-radius:20px 8px}
  .quick-page .quick-printer-label b,.quick-page .quick-printer-label strong{font-size:21px}
  .quick-page .quick-services{padding:30px 0}
  .quick-page .quick-section-heading{margin-bottom:22px}

@@ -32,7 +32,7 @@ Rota `/impressoes-rapidas`, acesso pelo catálogo de Serviços e sitemap. Title,
 
 ## Ajustes finais solicitados na revisão
 
-A composição aprovada foi mantida. No celular, os textos principais de leitura têm no mínimo 14px, a apresentação tem 16px e as notas de pedido têm 13px. Foram ampliados os espaçamentos entre diferenciais e etapas, a chamada principal tem altura mínima de 56px e os outros botões têm área de toque mínima de 44px.
+A composição aprovada foi mantida. A etiqueta da Xerox tem espaço lateral reservado no celular para não ficar atrás do WhatsApp na captura inicial. No celular, os textos principais de leitura têm no mínimo 14px, a apresentação tem 16px e as notas de pedido têm 13px. Foram ampliados os espaçamentos entre diferenciais e etapas, a chamada principal tem altura mínima de 56px e os outros botões têm área de toque mínima de 44px.
 
 A apresentação destaca pequenas tiragens, impressões coloridas e preto e branco, qualidade profissional com a Xerox Color 560 e atendimento personalizado. O rodapé exclusivo desta página inclui Instagram @idygrafica, com o endereço oficial https://www.instagram.com/idygrafica/ .
 
