@@ -11,15 +11,23 @@ fs.mkdirSync(out,{recursive:true});
 const expected=p=>execFileSync('git',['show',merged+':'+p],{maxBuffer:6000000});
 async function get(p){return fetch(origin+p,{headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(20000)});}
 let publication;
-for(let attempt=1;attempt<=6;attempt++){
+for(let attempt=1;attempt<=1;attempt++){
  try{
   const response=await get('/impressoes-rapidas');
   const body=Buffer.from(await response.arrayBuffer());
   publication={attempt,status:response.status,server:response.headers.get('server'),netlifyRequestId:response.headers.get('x-nf-request-id'),exactApprovedHtml:body.equals(expected('impressoes-rapidas.html')),url:response.url};
   console.log('IDY_PUBLICATION_PROBE '+JSON.stringify(publication));
+  if(!publication.exactApprovedHtml){
+   const actual=body.toString(),approved=expected('impressoes-rapidas.html').toString();
+   let first=0;while(first<actual.length&&first<approved.length&&actual[first]===approved[first])first++;
+   console.log('IDY_PUBLIC_HTML_DIAGNOSTIC '+JSON.stringify({title:actual.match(/<title>(.*?)<\/title>/s)?.[1],quickPage:actual.includes('quick-page'),actualLength:actual.length,expectedLength:approved.length,firstDifferentOffset:first,actualContext:actual.slice(Math.max(0,first-80),first+350),expectedContext:approved.slice(Math.max(0,first-80),first+350)}));
+   console.log('IDY_PUBLIC_HTML_BASE64 '+body.toString('base64'));
+   const probes=await Promise.all(['/','/servicos.html','/assets/impressoes-rapidas.css','/sitemap.xml','/robots.txt'].map(async url=>{const r=await get(url),text=await r.text();return{url,status:r.status,title:text.match(/<title>(.*?)<\/title>/s)?.[1],hasNewRoute:text.includes('/impressoes-rapidas'),sample:url.endsWith('robots.txt')?text:undefined};}));
+   console.log('IDY_PUBLIC_SITE_DIAGNOSTIC '+JSON.stringify(probes));
+  }
   if(response.ok&&publication.exactApprovedHtml)break;
  }catch(error){console.log('IDY_PUBLICATION_PROBE '+JSON.stringify({attempt,error:error.message}));}
- if(attempt<6)await new Promise(r=>setTimeout(r,10000));
+ if(attempt<1)await new Promise(r=>setTimeout(r,10000));
 }
 fs.writeFileSync(out+'/publication.json',JSON.stringify(publication||{},null,2));
 assert(publication?.status===200&&publication.exactApprovedHtml,'A versão aprovada ainda não está disponível no domínio público');
