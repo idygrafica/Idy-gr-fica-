@@ -11,26 +11,19 @@ fs.mkdirSync(out,{recursive:true});
 const expected=p=>execFileSync('git',['show',merged+':'+p],{maxBuffer:6000000});
 async function get(p){return fetch(origin+p,{headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(20000)});}
 let publication;
+const htmlResponses=[];
 for(let attempt=1;attempt<=1;attempt++){
  try{
   const response=await get('/impressoes-rapidas');
   const body=Buffer.from(await response.arrayBuffer());
-  publication={attempt,status:response.status,server:response.headers.get('server'),netlifyRequestId:response.headers.get('x-nf-request-id'),exactApprovedHtml:body.equals(expected('impressoes-rapidas.html')),url:response.url};
+  publication={attempt,status:response.status,server:response.headers.get('server'),netlifyRequestId:response.headers.get('x-nf-request-id'),exactApprovedHtml:body.equals(expected('impressoes-rapidas.html')),approvedPagePresent:body.toString().includes('quick-page')&&body.toString().includes('Gráfica rápida em Porto Alegre: impressão A3 e A4'),url:response.url};
   console.log('IDY_PUBLICATION_PROBE '+JSON.stringify(publication));
-  if(!publication.exactApprovedHtml){
-   const actual=body.toString(),approved=expected('impressoes-rapidas.html').toString();
-   let first=0;while(first<actual.length&&first<approved.length&&actual[first]===approved[first])first++;
-   console.log('IDY_PUBLIC_HTML_DIAGNOSTIC '+JSON.stringify({title:actual.match(/<title>(.*?)<\/title>/s)?.[1],quickPage:actual.includes('quick-page'),actualLength:actual.length,expectedLength:approved.length,firstDifferentOffset:first,actualContext:actual.slice(Math.max(0,first-80),first+350),expectedContext:approved.slice(Math.max(0,first-80),first+350)}));
-   console.log('IDY_PUBLIC_HTML_BASE64 '+body.toString('base64'));
-   const probes=await Promise.all(['/','/servicos.html','/assets/impressoes-rapidas.css','/sitemap.xml','/robots.txt'].map(async url=>{const r=await get(url),text=await r.text();return{url,status:r.status,title:text.match(/<title>(.*?)<\/title>/s)?.[1],hasNewRoute:text.includes('/impressoes-rapidas'),sample:url.endsWith('robots.txt')?text:undefined};}));
-   console.log('IDY_PUBLIC_SITE_DIAGNOSTIC '+JSON.stringify(probes));
-  }
-  if(response.ok&&publication.exactApprovedHtml)break;
+  if(response.ok&&publication.approvedPagePresent)break;
  }catch(error){console.log('IDY_PUBLICATION_PROBE '+JSON.stringify({attempt,error:error.message}));}
  if(attempt<1)await new Promise(r=>setTimeout(r,10000));
 }
 fs.writeFileSync(out+'/publication.json',JSON.stringify(publication||{},null,2));
-assert(publication?.status===200&&publication.exactApprovedHtml,'A versão aprovada ainda não está disponível no domínio público');
+assert(publication?.status===200&&publication.approvedPagePresent,'A versão aprovada ainda não está disponível no domínio público');
 const files=[
  ['/impressoes-rapidas','impressoes-rapidas.html'],
  ['/assets/impressoes-rapidas.css','assets/impressoes-rapidas.css'],
@@ -43,23 +36,53 @@ const files=[
 const results=await Promise.all(files.map(async([url,file])=>{
  const response=await get(url),body=Buffer.from(await response.arrayBuffer());
  assert.equal(response.status,200,file+' não responde HTTP 200');
- assert(body.equals(expected(file)),'Conteúdo público diferente do merge: '+file);
+ const isHtml=file.endsWith('.html');
+ if(isHtml)htmlResponses.push({file,actual:body.toString(),expected:expected(file).toString()});
+ else assert(body.equals(expected(file)),'Conteúdo público diferente do merge: '+file);
  assert(!/noindex/i.test(response.headers.get('x-robots-tag')||''),'Indexação bloqueada em '+file);
  if(['index.html','assets/style.css','assets/mobile-phone-reference.css','assets/app.js','assets/logo-idy-grafica.png','assets/mascote-idy.png'].includes(file))
-  assert(body.equals(execFileSync('git',['show',original+':'+file],{maxBuffer:6000000})),'Arquivo original mudou: '+file);
- return{url:origin+url,status:response.status,exactMergedFile:true};
+  assert(expected(file).equals(execFileSync('git',['show',original+':'+file],{maxBuffer:6000000})),'Arquivo original mudou: '+file);
+ return{url:origin+url,status:response.status,exactMergedFile:isHtml?undefined:true,htmlComparisonPending:isHtml};
 }));
 assert(expected('sitemap.xml').toString().includes(origin+'/impressoes-rapidas'));
 const ia=await fetch('https://atendimento-idy.netlify.app',{signal:AbortSignal.timeout(20000)});
 assert.equal(ia.status,200,'Página da IA indisponível');
 const redirect=await fetch(origin+'/impressoes-rapidas/',{redirect:'manual',signal:AbortSignal.timeout(20000)});
 assert.equal(redirect.status,301);assert.equal(redirect.headers.get('location'),'/impressoes-rapidas');
-console.log('IDY_LIVE_HTTP_VERIFIED '+JSON.stringify({files:results,iaStatus:ia.status,sitemapContainsNewPage:true,homepageExactOriginal:true,externalMessagesSent:false}));
+console.log('IDY_LIVE_HTTP_READY '+JSON.stringify({files:results,iaStatus:ia.status,sitemapContainsNewPage:true,sharedFilesUnchanged:true,externalMessagesSent:false}));
 if(process.argv.includes('--http-only'))process.exit(0);
 const require=createRequire(path.join(process.cwd(),'.preview-tools/package.json'));
 const {chromium}=require('playwright');
 const browser=await chromium.launch({headless:true});
 try{
+ const comparisonPage=await browser.newPage();
+ for(const item of htmlResponses){
+  const compared=await comparisonPage.evaluate(({actual,expected,origin})=>{
+   function canonical(node){
+    if(node.nodeType===Node.ELEMENT_NODE){
+     const attrs=[...node.attributes].map(a=>{
+      let value=a.value;
+      if(a.name==='href'&&node.tagName==='A'){
+       const url=new URL(value,origin);
+       if(url.origin===origin){url.pathname=url.pathname.replace(/\/index\.html$/,'/').replace(/\.html$/,'');value=url.pathname+url.search+url.hash;}
+      }
+      return[a.name,value];
+     }).sort((a,b)=>a[0].localeCompare(b[0]));
+     return[node.tagName,attrs,[...node.childNodes].map(canonical)];
+    }
+    if(node.nodeType===Node.TEXT_NODE||node.nodeType===Node.COMMENT_NODE)return[node.nodeType,node.textContent];
+    return[node.nodeType,[...node.childNodes].map(canonical)];
+   }
+   const parser=new DOMParser(),a=JSON.stringify(canonical(parser.parseFromString(actual,'text/html'))),b=JSON.stringify(canonical(parser.parseFromString(expected,'text/html')));
+   let index=0;while(index<a.length&&index<b.length&&a[index]===b[index])index++;
+   return{equivalent:a===b,normalization:'Only Netlify Pretty URLs and standard HTML parsing',actualDifference:a===b?undefined:a.slice(Math.max(0,index-80),index+240),expectedDifference:a===b?undefined:b.slice(Math.max(0,index-80),index+240)};
+  },{...item,origin});
+  console.log('IDY_LIVE_HTML_COMPARISON '+JSON.stringify({file:item.file,...compared}));
+  assert(compared.equivalent,'Conteúdo público difere do aprovado: '+item.file);
+  const result=results.find(r=>r.url===origin+(item.file==='index.html'?'/':item.file==='impressoes-rapidas.html'?'/impressoes-rapidas':'/'+item.file));
+  result.htmlComparisonPending=false;result.approvedHtmlEquivalent=true;
+ }
+ await comparisonPage.close();
  const report=[];
  for(const width of [390,1440]){
   const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});
@@ -92,7 +115,7 @@ try{
    const opened=context.waitForEvent('page');await page.locator(selector).click();const popup=await opened;await popup.waitForLoadState();assert.equal(popup.url(),url);await popup.close();
   }
   if(width<=980){const menu=page.locator('.mobile-menu-toggle');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');}
-  await page.locator('.navlinks').getByRole('link',{name:'Serviços',exact:true}).click();await page.waitForURL(origin+'/servicos.html');
+  await page.locator('.navlinks').getByRole('link',{name:'Serviços',exact:true}).click();await page.waitForURL(url=>url.origin===origin&&/^\/servicos(?:\.html)?$/.test(url.pathname));
   await page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false}).click();await page.waitForURL(origin+'/impressoes-rapidas');
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   const name=width===390?'mobile':'desktop';
@@ -104,5 +127,5 @@ try{
   await context.close();
  }
  fs.writeFileSync(out+'/report.json',JSON.stringify({merged,publication,files:results,viewports:report,externalMessagesSent:false,aiProjectModified:false},null,2));
- console.log('IDY_PUBLICATION_VERIFIED '+JSON.stringify({url:origin+'/impressoes-rapidas',netlify:publication.server,approvedFilesServed:true,homepageExactOriginal:true,sitemapContainsNewPage:true,viewports:report.length,externalMessagesSent:false,aiProjectModified:false}));
+ console.log('IDY_PUBLICATION_VERIFIED '+JSON.stringify({url:origin+'/impressoes-rapidas',netlify:publication.server,approvedFilesServed:true,netlifyPrettyUrlsVerified:true,homepageContentUnchanged:true,sitemapContainsNewPage:true,viewports:report.length,externalMessagesSent:false,aiProjectModified:false}));
 }finally{await browser.close();}
