@@ -13,6 +13,10 @@ const html=fs.readFileSync('impressoes-rapidas.html','utf8');
 assert(!/\bNOVA\b/i.test(html));
 assert.equal((html.match(/<h1\b/g)||[]).length,1);
 assert(html.includes('DA PRIMEIRA FOLHA À SUA PRÓXIMA'));
+const approvedLayout='5bdc1e5d34e8b4f0c266393d8362a9ce412b26b9';
+const approvedHtml=execFileSync('git',['show',approvedLayout+':impressoes-rapidas.html'],{encoding:'utf8'});
+assert.equal(html.split('</head>')[1],approvedHtml.split('</head>')[1],'O conteúdo visual aprovado foi alterado');
+assert(fs.readFileSync('assets/impressoes-rapidas.css').equals(execFileSync('git',['show',approvedLayout+':assets/impressoes-rapidas.css'])),'O CSS aprovado foi alterado');
 const printer=html.match(/class="quick-printer" src="([^"]+)"/)[1].replaceAll('&amp;','&');
 const photoResponse=await fetch(printer,{signal:AbortSignal.timeout(25000)});
 assert(photoResponse.ok,'Foto da Xerox indisponível: HTTP '+photoResponse.status);
@@ -37,6 +41,14 @@ const server=http.createServer((req,res)=>{
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const origin='http://127.0.0.1:'+server.address().port;
+const robotsResponse=await fetch(origin+'/robots.txt');assert.equal(robotsResponse.status,200);
+const robotsText=await robotsResponse.text();
+assert.match(robotsText,/User-agent: \*/);
+assert.match(robotsText,/Allow: \//);
+assert(!/^Disallow:\s*\/\s*$/im.test(robotsText),'robots.txt bloqueia o site');
+assert(robotsText.includes('Sitemap: https://idygrafica.netlify.app/sitemap.xml'));
+const trailingSlash=await fetch(origin+'/impressoes-rapidas/',{redirect:'manual'});
+assert.equal(trailingSlash.status,301);assert.equal(trailingSlash.headers.get('location'),'/impressoes-rapidas');
 const browser=await chromium.launch({headless:true});
 try{
  const report=[];
@@ -52,6 +64,12 @@ try{
   await page.evaluate(()=>document.fonts.ready);
   assert.equal(await page.title(),'Impressões Rápidas A3 e A4 em Porto Alegre | IDY Gráfica');
   assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://idygrafica.netlify.app/impressoes-rapidas');
+  const description=await page.locator('meta[name=description]').getAttribute('content');
+  for(const term of ['A3','A4','currículos','Gráfica rápida','Porto Alegre'])assert(description.includes(term),'Termo ausente no SEO: '+term);
+  const robotsMeta=await page.locator('meta[name=robots],meta[name=googlebot]').evaluateAll(tags=>tags.map(tag=>tag.content).join(','));
+  assert(!/noindex|none/i.test(robotsMeta),'Meta impede indexação');
+  const structured=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+  for(const type of ['WebPage','Service','BreadcrumbList'])assert(structured['@graph'].some(item=>item['@type']===type),'Dados estruturados ausentes: '+type);
   const main=page.locator('.quick-main');
   assert.match((await main.locator('h1').innerText()).replace(/\s+/g,' '),/Impressões Rápidas A3 e A4/i);
   assert.equal((await main.locator('.quick-slogan').innerText()).replace(/\s+/g,' ').trim(),'DA PRIMEIRA FOLHA À SUA PRÓXIMA GRANDE IDEIA!');
@@ -87,10 +105,20 @@ try{
    });
    assert(!badgeCovered,'WhatsApp encobre a identificação da Xerox em '+width);
   }
-  const wa=page.locator('.quick-actions a').first(),waUrl=new URL(await wa.getAttribute('href'));
-  assert.equal(waUrl.hostname,'wa.me');assert.equal(waUrl.pathname,'/5551981687562');assert.match(waUrl.searchParams.get('text'),/Impressões Rápidas/);
-  const popupPromise=context.waitForEvent('page');await wa.click();const popup=await popupPromise;await popup.waitForLoadState();
-  assert.equal(new URL(popup.url()).pathname,'/5551981687562');await popup.close();
+  const whatsapps=page.locator('a[href^="https://wa.me/"]'),whatsappCount=await whatsapps.count();
+  assert.equal(whatsappCount,4,'Devem ser verificados os quatro links de WhatsApp');
+  for(let i=0;i<whatsappCount;i++){
+   const wa=page.locator('a[href^="https://wa.me/"]').nth(i),waUrl=new URL(await wa.getAttribute('href'));
+   assert.equal(waUrl.hostname,'wa.me');assert.equal(waUrl.pathname,'/5551981687562');
+   if((await wa.getAttribute('class')||'').includes('quick-btn'))assert.match(waUrl.searchParams.get('text'),/Impressões Rápidas/);
+   if(await wa.getAttribute('target')==='_blank'){
+    const popupPromise=context.waitForEvent('page');await wa.click();const popup=await popupPromise;await popup.waitForLoadState();
+    assert.equal(new URL(popup.url()).pathname,'/5551981687562');await popup.close();
+   }else{
+    await wa.click();await page.waitForURL('https://wa.me/5551981687562');
+    await page.goto(origin+'/impressoes-rapidas',{waitUntil:'networkidle'});
+   }
+  }
   const mail=await page.locator('.quick-email').getAttribute('href');assert(mail.startsWith('mailto:idygrafica@gmail.com?'));
   const ia=page.locator('.nav .cta-ai');assert.equal(await ia.getAttribute('href'),'https://atendimento-idy.netlify.app');
   const iaPopupPromise=context.waitForEvent('page');await ia.click();const iaPopup=await iaPopupPromise;await iaPopup.waitForLoadState();
@@ -100,19 +128,22 @@ try{
   assert.match(await instagram.getAttribute('rel'),/noopener/);
   const instagramPopupPromise=context.waitForEvent('page');await instagram.click();const instagramPopup=await instagramPopupPromise;await instagramPopup.waitForLoadState();
   assert.equal(instagramPopup.url(),'https://www.instagram.com/idygrafica/');await instagramPopup.close();
-  if(width<=980){const toggle=page.locator('.mobile-menu-toggle');await toggle.scrollIntoViewIfNeeded();await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());await toggle.click();}
   for(const details of await page.locator('.quick-questions details').all()){await details.locator('summary').click();assert(await details.getAttribute('open')!==null);await details.locator('summary').click();}
   for(const action of await page.locator('.quick-final .quick-btn').all()){await action.scrollIntoViewIfNeeded();await action.click({trial:true});}
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   if(width===390||width===1440){const name=width===390?'mobile':'desktop';await page.screenshot({path:'.preview/impressoes-rapidas/'+name+'.jpg',fullPage:true,type:'jpeg',quality:65,animations:'disabled'});console.log('QUICK_PRINT_PREVIEW_'+name.toUpperCase()+'_BASE64 '+fs.readFileSync('.preview/impressoes-rapidas/'+name+'.jpg').toString('base64'));}
   assert.deepEqual(errors,[]);
-  await page.goto(origin+'/servicos.html',{waitUntil:'networkidle'});
-  const link=page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false});assert.equal(await link.count(),1);await link.click();assert.equal(new URL(page.url()).pathname,'/impressoes-rapidas');
+  // Exercise the actual final CTA and header menu, including the mobile menu.
+  await page.locator('.quick-final .quick-btn-outline').click();await page.waitForURL(origin+'/servicos.html');
+  const link=page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false});assert.equal(await link.count(),1);await link.click();await page.waitForURL(origin+'/impressoes-rapidas');
+  if(width<=980){const toggle=page.locator('.mobile-menu-toggle');await toggle.scrollIntoViewIfNeeded();await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());}
+  await page.locator('.navlinks').getByRole('link',{name:'Serviços',exact:true}).click();await page.waitForURL(origin+'/servicos.html');
+  await page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false}).click();await page.waitForURL(origin+'/impressoes-rapidas');
   // Compare home screenshots against the unchanged base with the same original assets.
   await page.goto(origin+'/',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));const home=await page.screenshot({animations:'disabled'});
   await page.goto(origin+'/__base',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));const baseline=await page.screenshot({animations:'disabled'});
   assert(home.equals(baseline),'A página inicial mudou visualmente em '+width);
-  report.push({...geometry,homeUnchanged:true,menuVerified:true,whatsappVerified:true,iaPreserved:true,iaPopupVerified:true,instagramVerified:true,mobileReadabilityVerified:width<=620,threeServiceCards:true,fiveOrderSteps:true});
+  report.push({...geometry,homeUnchanged:true,menuVerified:true,servicesNavigationVerified:true,whatsappVerified:true,whatsappLinksTested:whatsappCount,seoVerified:true,approvedLayoutUnchanged:true,iaPreserved:true,iaPopupVerified:true,instagramVerified:true,mobileReadabilityVerified:width<=620,threeServiceCards:true,fiveOrderSteps:true});
   console.log('QUICK_PRINT_WIDTH_VERIFIED '+JSON.stringify(report.at(-1)));
   await context.close();
  }

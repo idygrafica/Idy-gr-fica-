@@ -25,6 +25,9 @@ jobs:
           assert any(r['from']=='/impressoes-rapidas' and r['to']=='/impressoes-rapidas.html' and r['status']==200 for r in config['redirects'])
           locs=[e.text for e in ET.parse('sitemap.xml').findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
           assert locs.count('https://idygrafica.netlify.app/impressoes-rapidas')==1
+          for rule in config.get('headers',[]):
+              headers={k.lower():str(v).lower() for k,v in rule.get('values',{}).items()}
+              assert 'noindex' not in headers.get('x-robots-tag',''), 'Configuração Netlify bloqueia indexação'
           print('ROUTE_AND_SITEMAP_VERIFIED')
           PY
       - name: Install browser for isolated preview
