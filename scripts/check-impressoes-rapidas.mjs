@@ -70,14 +70,16 @@ try{
   const ia=page.locator('.nav .cta-ai');assert.equal(await ia.getAttribute('href'),'https://atendimento-idy.netlify.app');
   if(width<=980){const toggle=page.locator('.mobile-menu-toggle');await toggle.scrollIntoViewIfNeeded();await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());await toggle.click();}
   for(const details of await page.locator('.quick-questions details').all()){await details.locator('summary').click();assert(await details.getAttribute('open')!==null);await details.locator('summary').click();}
-  await page.evaluate(()=>window.scrollTo(0,0));
+  await page.locator('.quick-final .quick-btn').scrollIntoViewIfNeeded();
+  await page.locator('.quick-final .quick-btn').click({trial:true});
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   if(width===390||width===1440)await page.screenshot({path:'.preview/impressoes-rapidas/'+(width===390?'mobile':'desktop')+'.jpg',fullPage:true,type:'jpeg',quality:65,animations:'disabled'});
   assert.deepEqual(errors,[]);
   await page.goto(origin+'/servicos.html',{waitUntil:'networkidle'});
   const link=page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false});assert.equal(await link.count(),1);await link.click();assert.equal(new URL(page.url()).pathname,'/impressoes-rapidas');
   // Compare home screenshots against the unchanged base with the same original assets.
-  await page.goto(origin+'/',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo(0,0));const home=await page.screenshot({animations:'disabled'});
-  await page.goto(origin+'/__base',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo(0,0));const baseline=await page.screenshot({animations:'disabled'});
+  await page.goto(origin+'/',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));const home=await page.screenshot({animations:'disabled'});
+  await page.goto(origin+'/__base',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));const baseline=await page.screenshot({animations:'disabled'});
   assert(home.equals(baseline),'A página inicial mudou visualmente em '+width);
   report.push({...geometry,homeUnchanged:true,menuVerified:true,whatsappVerified:true,iaPreserved:true,faqVerified:true});
   console.log('QUICK_PRINT_WIDTH_VERIFIED '+JSON.stringify(report.at(-1)));
