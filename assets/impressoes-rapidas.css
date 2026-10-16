@@ -92,7 +92,7 @@
  .quick-page .quick-slogan{font-size:19px}
  .quick-page .quick-intro{font-size:16px;line-height:1.7}
  .quick-page .quick-actions,.quick-page .quick-actions .quick-btn{width:100%}
- .quick-page .quick-visual{min-height:390px}
+ .quick-page .quick-visual{min-height:clamp(390px,calc(90vw + 30px),490px)}
  .quick-page .quick-mascot{max-width:65%;bottom:24px}
  .quick-page .quick-printer-card{top:30px;padding:14px 10px}
  .quick-page .quick-visual figcaption{font-size:10px}
