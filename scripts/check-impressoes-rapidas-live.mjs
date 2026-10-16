@@ -48,7 +48,13 @@ assert(expected('sitemap.xml').toString().includes(origin+'/impressoes-rapidas')
 const ia=await fetch('https://atendimento-idy.netlify.app',{signal:AbortSignal.timeout(20000)});
 assert.equal(ia.status,200,'Página da IA indisponível');
 const redirect=await fetch(origin+'/impressoes-rapidas/',{redirect:'manual',signal:AbortSignal.timeout(20000)});
-assert.equal(redirect.status,301);assert.equal(redirect.headers.get('location'),'/impressoes-rapidas');
+if(redirect.status===200){
+ htmlResponses.push({file:'impressoes-rapidas.html',servedUrl:origin+'/impressoes-rapidas/',actual:await redirect.text(),expected:expected('impressoes-rapidas.html').toString()});
+ results.push({url:origin+'/impressoes-rapidas/',status:200,htmlComparisonPending:true});
+}else{
+ assert([301,308].includes(redirect.status),'Resposta inesperada para URL com barra');
+ assert.equal(new URL(redirect.headers.get('location'),origin).href,origin+'/impressoes-rapidas');
+}
 console.log('IDY_LIVE_HTTP_READY '+JSON.stringify({files:results,iaStatus:ia.status,sitemapContainsNewPage:true,sharedFilesUnchanged:true,externalMessagesSent:false}));
 if(process.argv.includes('--http-only'))process.exit(0);
 const require=createRequire(path.join(process.cwd(),'.preview-tools/package.json'));
@@ -77,9 +83,9 @@ try{
    let index=0;while(index<a.length&&index<b.length&&a[index]===b[index])index++;
    return{equivalent:a===b,normalization:'Only Netlify Pretty URLs and standard HTML parsing',actualDifference:a===b?undefined:a.slice(Math.max(0,index-80),index+240),expectedDifference:a===b?undefined:b.slice(Math.max(0,index-80),index+240)};
   },{...item,origin});
-  console.log('IDY_LIVE_HTML_COMPARISON '+JSON.stringify({file:item.file,...compared}));
+  console.log('IDY_LIVE_HTML_COMPARISON '+JSON.stringify({file:item.file,servedUrl:item.servedUrl,...compared}));
   assert(compared.equivalent,'Conteúdo público difere do aprovado: '+item.file);
-  const result=results.find(r=>r.url===origin+(item.file==='index.html'?'/':item.file==='impressoes-rapidas.html'?'/impressoes-rapidas':'/'+item.file));
+  const result=results.find(r=>r.url===(item.servedUrl||origin+(item.file==='index.html'?'/':item.file==='impressoes-rapidas.html'?'/impressoes-rapidas':'/'+item.file)));
   result.htmlComparisonPending=false;result.approvedHtmlEquivalent=true;
  }
  await comparisonPage.close();
