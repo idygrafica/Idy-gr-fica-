@@ -29,12 +29,12 @@
 .quick-page .quick-benefits li:last-child{border-right:0;padding-right:0}
 .quick-page .quick-benefits svg{width:35px;height:35px;flex:0 0 35px;padding:6px;border:1px solid #68d91d;border-radius:50%;color:var(--quick-lime)}
 .quick-page .quick-actions{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
-.quick-page .quick-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 20px;border-radius:14px;font-weight:850;font-size:13px;line-height:1.45;text-align:center;text-decoration:none;overflow-wrap:anywhere}
+.quick-page .quick-btn{max-width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 20px;border-radius:14px;font-weight:850;font-size:13px;line-height:1.45;text-align:center;text-decoration:none;overflow-wrap:anywhere}
 .quick-page .quick-btn svg{width:23px;height:23px;flex-shrink:0}
 .quick-page .quick-btn b{font-size:23px;font-weight:500;margin-left:8px}
 .quick-page .quick-btn-whatsapp{background:linear-gradient(100deg,#31f848,#74f322);color:#05220d;border:1px solid #41ee39;box-shadow:0 0 24px #38ee3520}
 .quick-page .quick-btn-whatsapp:hover{filter:brightness(1.07)}
-.quick-page .quick-email{font-size:12px;color:#d2e7d9;text-decoration:underline;text-underline-offset:4px;line-height:1.6;padding:4px 0}
+.quick-page .quick-email{display:inline-flex;align-items:center;min-height:44px;font-size:12px;color:#d2e7d9;text-decoration:underline;text-underline-offset:4px;line-height:1.6;padding:4px 0}
 .quick-page .quick-order-note{font-size:11px;line-height:1.65;color:#b7d0c0;margin:12px 0 0}
 .quick-page .quick-visual{position:relative;isolation:isolate;min-height:580px;margin:0;align-self:stretch}
 .quick-page .quick-visual:before{content:"";position:absolute;inset:15% 8% 5%;border-radius:50%;background:radial-gradient(ellipse,#72ee2e3d,transparent 68%)}
@@ -103,7 +103,7 @@
 .quick-page .quick-final p{color:#d9e6db;font-size:14px;line-height:1.65;margin:0 0 18px;max-width:450px}
 .quick-page .quick-final-actions{display:flex;align-items:flex-start;flex-direction:column;gap:12px}
 .quick-page .quick-btn-outline{border:1px solid #a8dc71;color:#eeffde;background:#00180e77;min-height:48px;font-size:11px;text-transform:uppercase;padding:12px 15px}
-.quick-page .quick-final .quick-btn-whatsapp{font-size:11px;padding:8px 13px;min-height:40px}
+.quick-page .quick-final .quick-btn-whatsapp{font-size:11px;padding:8px 13px;min-height:44px}
 .quick-page .quick-final-art{position:relative;min-height:300px;align-self:stretch;overflow:hidden}
 .quick-page .quick-final-art>.quick-paper-scene{position:absolute;inset:45px 15% 5px 0;min-height:0;background:none;transform:rotate(-2deg)}
 .quick-page .quick-final-art>img{position:absolute;width:215px;height:auto;max-width:53%;right:0;bottom:-60px;z-index:2;filter:drop-shadow(0 0 10px #80ff3844)}
