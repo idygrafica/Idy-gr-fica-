@@ -74,8 +74,7 @@ try{
   const ia=page.locator('.nav .cta-ai');assert.equal(await ia.getAttribute('href'),'https://atendimento-idy.netlify.app');
   if(width<=980){const toggle=page.locator('.mobile-menu-toggle');await toggle.scrollIntoViewIfNeeded();await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());await toggle.click();}
   for(const details of await page.locator('.quick-questions details').all()){await details.locator('summary').click();assert(await details.getAttribute('open')!==null);await details.locator('summary').click();}
-  await page.locator('.quick-final .quick-btn').scrollIntoViewIfNeeded();
-  await page.locator('.quick-final .quick-btn').click({trial:true});
+  for(const action of await page.locator('.quick-final .quick-btn').all()){await action.scrollIntoViewIfNeeded();await action.click({trial:true});}
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   if(width===390||width===1440)await page.screenshot({path:'.preview/impressoes-rapidas/'+(width===390?'mobile':'desktop')+'.jpg',fullPage:true,type:'jpeg',quality:65,animations:'disabled'});
   assert.deepEqual(errors,[]);

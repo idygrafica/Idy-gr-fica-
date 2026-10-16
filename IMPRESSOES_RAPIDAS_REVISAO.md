@@ -34,4 +34,4 @@ Rota `/impressoes-rapidas`, acesso pelo catálogo de Serviços e sitemap. Title,
 
 O workflow de prévia roda apenas na branch de trabalho e não usa credenciais nem comandos Netlify. Verifica dez larguras entre 320 e 1440 pixels, rota/TOML/sitemap, imagens, texto dentro da tela, ausência de imagem cobrindo o texto principal, WhatsApp, e-mail, CTA da IA, menu mobile/tablet, três cartões e cinco etapas. A home é comparada em bytes e capturas contra a base original.
 
-Capturas desktop/mobile e relatório ficam no artifact `impressoes-rapidas-preview`. As regras de rota são reproduzidas em servidor local de teste; nenhum deploy foi realizado. A primeira prévia sem referência já havia passado nas dez larguras; a composição recebida será verificada novamente antes da apresentação.
+Capturas desktop/mobile e relatório ficam no artifact `impressoes-rapidas-preview`. As regras de rota são reproduzidas em servidor local de teste; nenhum deploy foi realizado. Os resultados da composição adaptada à referência e o link da execução estão registrados na descrição da PR #2.
