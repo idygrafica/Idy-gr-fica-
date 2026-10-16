@@ -1,0 +1,44 @@
+name: Preview Impressões Rápidas without publishing
+on:
+  push:
+    branches: [codex/impressoes-rapidas]
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check route configuration and sitemap
+        run: |
+          python3 - <<'PY'
+          import tomllib, xml.etree.ElementTree as ET
+          from pathlib import Path
+          config=tomllib.loads(Path('netlify.toml').read_text())
+          assert config['build']['publish']=='.'
+          assert any(r['from']=='/impressoes-rapidas' and r['to']=='/impressoes-rapidas.html' and r['status']==200 for r in config['redirects'])
+          locs=[e.text for e in ET.parse('sitemap.xml').findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
+          assert locs.count('https://idygrafica.netlify.app/impressoes-rapidas')==1
+          for rule in config.get('headers',[]):
+              headers={k.lower():str(v).lower() for k,v in rule.get('values',{}).items()}
+              assert 'noindex' not in headers.get('x-robots-tag',''), 'Configuração Netlify bloqueia indexação'
+          print('ROUTE_AND_SITEMAP_VERIFIED')
+          PY
+      - name: Install browser for isolated preview
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check responsive page, links, menu and unchanged home
+        run: node scripts/check-impressoes-rapidas.mjs
+      - name: Save preview images and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: impressoes-rapidas-preview
+          path: .preview/impressoes-rapidas/

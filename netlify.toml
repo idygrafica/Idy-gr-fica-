@@ -5,3 +5,16 @@
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
+
+# Rota exclusiva da página de Impressões Rápidas.
+[[redirects]]
+  from = "/impressoes-rapidas"
+  to = "/impressoes-rapidas.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/impressoes-rapidas/"
+  to = "/impressoes-rapidas"
+  status = 301
+  force = true

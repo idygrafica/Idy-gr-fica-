@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://idygrafica.netlify.app/sitemap.xml
