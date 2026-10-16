@@ -1,0 +1,108 @@
+/* Estilos exclusivos de Impressões Rápidas. Os arquivos compartilhados permanecem intactos. */
+.quick-page{background:#fff}
+.quick-page .quick-main{display:block;min-width:0}
+.quick-page .quick-container{width:min(1220px,92vw);margin-inline:auto}
+.quick-page .quick-main *{min-width:0}
+.quick-page .quick-main a:focus-visible,.quick-page .quick-main summary:focus-visible{outline:3px solid #1559c9;outline-offset:5px}
+.quick-skip{position:absolute;top:0;left:16px;z-index:110;padding:12px 16px;background:#fff;color:#004d38;transform:translateY(-160%)}
+.quick-skip:focus{transform:translateY(0)}
+.quick-page .quick-hero{background:radial-gradient(ellipse at 85% 45%,#075139 0,transparent 55%),#002f24;color:#fff;padding:24px 0 60px}
+.quick-page .quick-breadcrumb{display:flex;flex-wrap:wrap;gap:10px;color:#cde3d6;font-size:13px;line-height:1.6}
+.quick-page .quick-breadcrumb a{text-decoration:underline;text-underline-offset:3px}
+.quick-page .quick-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:44px;align-items:center;padding-top:42px}
+.quick-page .quick-kicker{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:750;letter-spacing:.055em;text-transform:uppercase;color:#cfedcf;margin:0 0 20px}
+.quick-page .quick-kicker span{width:8px;height:8px;flex:0 0 8px;background:#7ed321;border-radius:50%}
+.quick-page .quick-hero h1{font-size:clamp(48px,5.9vw,80px);line-height:1.01;letter-spacing:-.045em;font-weight:850;margin:0 0 22px}
+.quick-page .quick-hero h1 span{display:block;color:#8de12f}
+.quick-page .quick-slogan{font-size:clamp(19px,2.1vw,27px);line-height:1.35;font-weight:850;letter-spacing:.012em;max-width:540px;color:#e7ffda;margin:0 0 22px}
+.quick-page .quick-intro{font-size:17px;line-height:1.75;max-width:550px;color:#dcebe2;margin:0 0 22px}
+.quick-page .quick-highlights{padding:0;margin:0 0 28px;display:flex;flex-wrap:wrap;gap:9px;list-style:none}
+.quick-page .quick-highlights li{font-size:12px;font-weight:650;border:1px solid #3d7751;border-radius:999px;padding:8px 12px;color:#e2f0e7}
+.quick-page .quick-actions{display:flex;flex-wrap:wrap;gap:12px}
+.quick-page .quick-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 18px;border-radius:12px;font-weight:800;font-size:14px;line-height:1.45;text-align:center;text-decoration:none;overflow-wrap:anywhere}
+.quick-page .quick-btn svg{width:22px;height:22px;flex-shrink:0}
+.quick-page .quick-btn-whatsapp{background:#7ed321;color:#052d20;border:1px solid #7ed321;box-shadow:0 7px 20px #001e1a20}
+.quick-page .quick-btn-whatsapp:hover{background:#9ae43d}
+.quick-page .quick-btn-outline{color:#fff;border:1px solid #83ab97}
+.quick-page .quick-btn-outline:hover{background:#ffffff10}
+.quick-page .quick-order-note{font-size:12px;line-height:1.8;color:#c8dfd0;margin:18px 0 0}
+.quick-page .quick-visual{position:relative;isolation:isolate;min-height:530px;margin:0;align-self:stretch}
+.quick-page .quick-visual-glow{position:absolute;inset:9% -3% 8%;border-radius:50%;background:radial-gradient(ellipse,#7ed32145,transparent 70%)}
+.quick-page .quick-printer-card{position:absolute;right:0;top:45px;width:76%;padding:24px 18px 22px;background:#fff;border-radius:24px;box-shadow:0 24px 44px #001b1860;transform:rotate(2deg)}
+.quick-page .quick-printer{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;display:block}
+.quick-page .quick-printer-card p{color:#143c2b;font-size:15px;font-weight:850;text-align:right;margin:8px 0 0;line-height:1.5}
+.quick-page .quick-printer-card p span{display:block;font-weight:500;font-size:11px;color:#586a60}
+.quick-page .quick-mascot{position:absolute;left:0;bottom:30px;width:310px;height:auto;max-width:66%;filter:drop-shadow(0 14px 14px #001e1a60);z-index:2}
+.quick-page .quick-visual figcaption{position:absolute;left:0;right:0;bottom:0;text-align:right;font-size:12px;color:#c8dfd0;line-height:1.6}
+.quick-page .quick-services,.quick-page .quick-process,.quick-page .quick-faq{padding:80px 0}
+.quick-page .quick-label{color:#276e3b;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;margin:0 0 14px;line-height:1.7}
+.quick-page .quick-main h2{font-size:clamp(28px,3vw,40px);line-height:1.18;letter-spacing:-.03em;margin:0 0 22px;color:#063728}
+.quick-page .quick-section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:36px;margin-bottom:30px}
+.quick-page .quick-section-heading>p{max-width:350px;line-height:1.75;color:#596b60;font-size:15px;margin:0}
+.quick-page .quick-service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.quick-page .quick-service-card{padding:26px;border:1px solid #dfe7e2;border-radius:16px;background:#fff}
+.quick-page .quick-service-symbol{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;color:#176237;background:#eff7e8;font-weight:850;font-size:16px;margin-bottom:20px}
+.quick-page .quick-service-card h3{font-size:18px;line-height:1.4;color:#113f2b;margin:0 0 10px}
+.quick-page .quick-service-card p{font-size:14px;line-height:1.75;color:#596b60;margin:0}
+.quick-page .quick-process{background:#f1f6f2}
+.quick-page .quick-steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding:14px 0 0;margin:0}
+.quick-page .quick-steps li>span{display:block;font-size:34px;color:#347a3f;font-weight:850;letter-spacing:-.04em;margin-bottom:20px}
+.quick-page .quick-steps h3{font-size:17px;line-height:1.5;color:#113f2b;margin:0 0 10px}
+.quick-page .quick-steps p{font-size:14px;line-height:1.75;color:#596b60;margin:0}
+.quick-page .quick-online-note{border-left:4px solid #7ed321;background:#fff;padding:22px 24px;margin-top:32px;border-radius:0 12px 12px 0}
+.quick-page .quick-online-note strong{font-size:17px;color:#134e32}
+.quick-page .quick-online-note p{margin:8px 0 0;line-height:1.75;font-size:14px;color:#4d6155;max-width:940px}
+.quick-page .quick-faq-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px}
+.quick-page .quick-faq-grid>div>p:not(.quick-label){font-size:15px;line-height:1.8;color:#596b60;max-width:360px}
+.quick-page .quick-text-link{display:inline-flex;gap:14px;align-items:center;font-size:15px;font-weight:800;color:#1559c9;margin-top:12px;padding:8px 0;text-decoration:underline;text-underline-offset:5px}
+.quick-page .quick-questions details{border-bottom:1px solid #dfe7e2;padding:20px 0}
+.quick-page .quick-questions summary{font-size:16px;font-weight:750;color:#163c2a;cursor:pointer;line-height:1.6}
+.quick-page .quick-questions details p{font-size:14px;line-height:1.8;color:#596b60;margin:12px 0 0}
+.quick-page .quick-final{background:#003d2d;padding:44px 0 60px}
+.quick-page .quick-final-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+.quick-page .quick-final .quick-label{color:#b2e97d}
+.quick-page .quick-final h2{color:#fff;margin-bottom:12px}
+.quick-page .quick-final p:not(.quick-label){color:#dcebe2;line-height:1.7;margin:0}
+.quick-page .footer{padding-bottom:110px}
+@media(min-width:981px) and (max-width:1150px){.quick-page .nav .container{gap:12px!important}.quick-page .navlinks{gap:14px;font-size:14px}}
+@media(max-width:980px){
+ .quick-page .quick-hero-grid{gap:24px;grid-template-columns:1.05fr 1fr}
+ .quick-page .quick-visual{min-height:500px}
+ .quick-page .quick-mascot{width:270px;max-width:78%;left:0;bottom:40px}
+ .quick-page .quick-printer-card{width:94%;top:70px;padding:18px 14px}
+ .quick-page .quick-service-grid{grid-template-columns:repeat(2,1fr)}
+ .quick-page .quick-steps{grid-template-columns:repeat(2,1fr);gap:28px 32px}
+ .quick-page .quick-faq-grid{gap:36px}
+}
+@media(max-width:740px){
+ .quick-page .quick-hero-grid{grid-template-columns:1fr;gap:20px;padding-top:30px}
+ .quick-page .quick-visual{min-height:510px;width:min(510px,100%);justify-self:center}
+ .quick-page .quick-mascot{width:310px;max-width:65%;left:0;bottom:30px}
+ .quick-page .quick-printer-card{width:72%;top:30px}
+ .quick-page .quick-section-heading{display:block}
+ .quick-page .quick-section-heading>p{max-width:550px}
+ .quick-page .quick-services,.quick-page .quick-process,.quick-page .quick-faq{padding:54px 0}
+ .quick-page .quick-faq-grid{grid-template-columns:1fr;gap:20px}
+ .quick-page .quick-final-inner{align-items:flex-start;flex-direction:column;gap:22px}
+}
+@media(max-width:480px){
+ .quick-page .quick-hero{padding-bottom:34px}
+ .quick-page .quick-kicker{font-size:10px;letter-spacing:.025em}
+ .quick-page .quick-hero h1{font-size:clamp(43px,12vw,58px)}
+ .quick-page .quick-slogan{font-size:19px}
+ .quick-page .quick-intro{font-size:16px;line-height:1.7}
+ .quick-page .quick-actions,.quick-page .quick-actions .quick-btn{width:100%}
+ .quick-page .quick-visual{min-height:390px}
+ .quick-page .quick-mascot{max-width:65%;bottom:24px}
+ .quick-page .quick-printer-card{top:30px;padding:14px 10px}
+ .quick-page .quick-visual figcaption{font-size:10px}
+ .quick-page .quick-service-grid,.quick-page .quick-steps{grid-template-columns:1fr}
+ .quick-page .quick-service-card{padding:22px}
+ .quick-page .quick-steps{gap:24px}
+ .quick-page .quick-steps li{padding-left:50px;position:relative}
+ .quick-page .quick-steps li>span{position:absolute;left:0;top:0;font-size:28px}
+ .quick-page .quick-final .quick-btn{max-width:calc(100% - 74px);font-size:13px}
+ .quick-page .quick-online-note{padding:18px}
+ .quick-page .footer{padding-bottom:115px}
+}
+@media(prefers-reduced-motion:reduce){.quick-page{scroll-behavior:auto}}
