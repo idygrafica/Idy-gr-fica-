@@ -65,6 +65,10 @@
 .quick-page .quick-final p:not(.quick-label){color:#dcebe2;line-height:1.7;margin:0}
 .quick-page .footer{padding-bottom:110px}
 @media(min-width:981px) and (max-width:1150px){.quick-page .nav .container{gap:12px!important}.quick-page .navlinks{gap:14px;font-size:14px}}
+@media(min-width:621px) and (max-width:980px){
+ .quick-page .nav .container{position:relative}
+ .quick-page .navlinks.open{display:flex!important;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:14px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:0 0 14px 14px;box-shadow:0 14px 28px #001c1520}
+}
 @media(max-width:980px){
  .quick-page .quick-hero-grid{gap:24px;grid-template-columns:1.05fr 1fr}
  .quick-page .quick-visual{min-height:500px}
