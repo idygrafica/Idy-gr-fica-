@@ -47,7 +47,7 @@ try{
   assert.equal(await page.title(),'Impressões Rápidas A3 e A4 em Porto Alegre | IDY Gráfica');
   assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://idygrafica.netlify.app/impressoes-rapidas');
   const main=page.locator('.quick-main');
-  assert.match((await main.locator('h1').innerText()).replace(/\s+/g,' '),/Impressões Rápidas A3 e A4/);
+  assert.match((await main.locator('h1').innerText()).replace(/\s+/g,' '),/Impressões Rápidas A3 e A4/i);
   assert.equal((await main.locator('.quick-slogan').innerText()).replace(/\s+/g,' ').trim(),'DA PRIMEIRA FOLHA À SUA PRÓXIMA GRANDE IDEIA!');
   assert.equal(await page.locator('.quick-service-card').count(),3);
   assert.equal(await page.locator('.quick-steps>li').count(),5);

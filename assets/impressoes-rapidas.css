@@ -42,7 +42,7 @@
 .quick-page .quick-printer-label b{display:block;font-size:27px;font-weight:950}
 .quick-page .quick-printer-label strong{display:block;font-size:28px;color:var(--quick-lime);font-weight:950}
 .quick-page .quick-printer-card{position:absolute;right:0;top:110px;width:88%;z-index:1}
-.quick-page .quick-printer{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:16px}
+.quick-page .quick-printer{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;clip-path:polygon(9% 14%,33% 9%,36% 18%,42% 17%,69% 13%,80% 17%,83% 21%,83% 27%,90% 31%,93.5% 44%,90% 51%,86% 70%,85% 80%,54% 95%,49% 92%,40% 82%,37% 75%,18% 82%,8% 64%,13% 62%,15.5% 58%,21% 56%,22% 52%,23% 50%,22% 48%,19% 46%,14% 44%,10% 28%)}
 .quick-page .quick-mascot{position:absolute;left:0;bottom:-8px;width:clamp(280px,25vw,345px);height:auto;max-width:58%;filter:drop-shadow(0 0 16px #74ff392b) drop-shadow(0 14px 15px #0008);z-index:3}
 .quick-page .quick-services{padding:40px 0;background:#fff}
 .quick-page .quick-section-heading{text-align:center;margin-bottom:26px}
