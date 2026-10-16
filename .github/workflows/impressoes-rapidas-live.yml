@@ -1,0 +1,31 @@
+name: Verify Impressões Rápidas in production
+on:
+  push:
+    branches: [codex/verifica-publicacao-impressoes-rapidas]
+permissions:
+  contents: read
+jobs:
+  verify-public:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Confirm approved files on public Netlify domain
+        run: node scripts/check-impressoes-rapidas-live.mjs --http-only
+      - name: Install browser
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Test published page links and navigation on mobile and desktop
+        run: node scripts/check-impressoes-rapidas-live.mjs
+      - name: Save production verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: impressoes-rapidas-publicada
+          path: .preview/impressoes-rapidas-publicada/
