@@ -35,7 +35,7 @@ const origin='http://127.0.0.1:'+server.address().port;
 const browser=await chromium.launch({headless:true});
 try{
  const report=[];
- for(const width of [320,360,390,480,620,768,820,1024,1280,1440]){
+ for(const width of [390,1440,320,360,480,620,768,820,1024,1280]){
   const context=await browser.newContext({viewport:{width,height:900},deviceScaleFactor:1,reducedMotion:'reduce'});
   await context.route(printer,route=>route.fulfill({status:200,contentType:'image/jpeg',body:photo}));
   await context.route('https://wa.me/**',route=>route.fulfill({status:200,contentType:'text/html',body:'WhatsApp: destino verificado sem enviar mensagem.'}));
@@ -76,7 +76,7 @@ try{
   for(const details of await page.locator('.quick-questions details').all()){await details.locator('summary').click();assert(await details.getAttribute('open')!==null);await details.locator('summary').click();}
   for(const action of await page.locator('.quick-final .quick-btn').all()){await action.scrollIntoViewIfNeeded();await action.click({trial:true});}
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
-  if(width===390||width===1440)await page.screenshot({path:'.preview/impressoes-rapidas/'+(width===390?'mobile':'desktop')+'.jpg',fullPage:true,type:'jpeg',quality:65,animations:'disabled'});
+  if(width===390||width===1440){const name=width===390?'mobile':'desktop';await page.screenshot({path:'.preview/impressoes-rapidas/'+name+'.jpg',fullPage:true,type:'jpeg',quality:65,animations:'disabled'});console.log('QUICK_PRINT_PREVIEW_'+name.toUpperCase()+'_BASE64 '+fs.readFileSync('.preview/impressoes-rapidas/'+name+'.jpg').toString('base64'));}
   assert.deepEqual(errors,[]);
   await page.goto(origin+'/servicos.html',{waitUntil:'networkidle'});
   const link=page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false});assert.equal(await link.count(),1);await link.click();assert.equal(new URL(page.url()).pathname,'/impressoes-rapidas');
@@ -89,6 +89,5 @@ try{
   await context.close();
  }
  fs.writeFileSync('.preview/impressoes-rapidas/report.json',JSON.stringify({preserved,printerSource:printer,referenceAttachmentReceived:true,checks:report},null,2));
- for(const name of ['desktop','mobile'])console.log('QUICK_PRINT_PREVIEW_'+name.toUpperCase()+'_BASE64 '+fs.readFileSync('.preview/impressoes-rapidas/'+name+'.jpg').toString('base64'));
  console.log('QUICK_PRINT_PREVIEW_VERIFIED '+JSON.stringify({widths:report.length,homepageIdentical:true,externalMessagesSent:false,netlifyPublished:false,approvedReferenceComparison:'HTML/CSS adapted to received reference; original brand assets preserved'}));
 }finally{await browser.close();server.close();}
