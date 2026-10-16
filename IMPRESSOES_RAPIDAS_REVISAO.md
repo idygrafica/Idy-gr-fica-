@@ -1,36 +1,37 @@
-# Impressões Rápidas — prévia para revisão
+# Impressões Rápidas — revisão com referência recebida
 
-## Análise do projeto antes da implementação
+Base preservada: `idygrafica/Idy-gr-fica-`, main `2e7212f674c0235b62c1d95c405e9547ec408d5a`.
+Branch: `codex/impressoes-rapidas`. PR de rascunho #2. Sem merge e sem publicação.
 
-Base: `idygrafica/Idy-gr-fica-`, main `2e7212f674c0235b62c1d95c405e9547ec408d5a`.
-O site é estático, com páginas HTML na raiz, imagens em `assets/`, estilos compartilhados em `assets/style.css` e `assets/mobile-phone-reference.css` e menu/WhatsApp em `assets/app.js`. O Netlify publica a raiz. Não há framework nem instalação de dependências de produção.
+## Referência visual
 
-Logo oficial: `assets/logo-idy-grafica.png`. Mascote oficial: `assets/mascote-idy.png`. Ambos reutilizados, sem alteração. Mantidos cabeçalho, rodapé, fontes, cores e botão azul “Orçamento com IA”, que abre a integração existente. Não foram alterados `index.html`, estilos/JavaScript globais ou o projeto `atendimento-idy`.
+Referência recebida: `1000214611.jpg`. A composição utiliza HTML e CSS reais: destaque de A3 e A4; slogan; quatro diferenciais; mascote oficial e Xerox; três cartões de serviços; cinco etapas de pedido; faixa final com chamada para todos os serviços.
 
-## Implementação
+A referência não é usada como imagem da página nem foi recortada para construir o site. As ilustrações de papéis, currículo e canetas são elementos HTML/CSS independentes; nas canetas o logo utilizado é o arquivo original da IDY. O mascote permanece o original, na pose disponível no projeto. Nenhum logo ou mascote foi redesenhado.
 
-- Página HTML real em `/impressoes-rapidas`, com regra de rota específica no Netlify e URL canônica.
-- CSS exclusivo da página, sem alterar os arquivos globais.
-- Slogan solicitado, serviços A3/A4 coloridos e preto e branco, currículos/documentos, uma única folha, pequenas tiragens e canetas personalizadas.
-- Atendimento exclusivamente online: arquivo por WhatsApp/e-mail, orçamento, pagamento e retirada somente após aviso.
-- WhatsApp +55 51 98168-7562 e e-mail idygrafica@gmail.com, usando os contatos existentes. Não há disparo automático de mensagem.
-- Acesso pelo catálogo/menu de Serviços (`servicos.html`) e inclusão no sitemap, sem modificar a página inicial.
-- SEO com title, description, canonical, Open Graph e dados estruturados de Service, WebPage e BreadcrumbList.
+Foram corrigidos os erros escritos na referência: o equipamento é identificado como **Xerox Color 560**, e o slogan é **DA PRIMEIRA FOLHA À SUA PRÓXIMA GRANDE IDEIA!**. Não é usada a palavra “NOVA” nem foi incluída a alegação de seis cores sem confirmação técnica.
 
-## Referência e imagem da impressora: pendência de revisão visual
+Cabeçalho, rodapé, fontes e CTA azul “Orçamento com IA” seguem o site original. A referência apresenta um cabeçalho diferente; ele não foi aplicado porque a instrução pede preservar o cabeçalho atual. Os estilos da nova página são exclusivos e não modificam arquivos compartilhados.
 
-A imagem de layout aprovada mencionada pelo usuário não foi recebida nesta conversa nem está disponível no repositório. Esta composição é uma **prévia inicial**, montada com a identidade existente; não é possível afirmar correspondência ao gabarito aprovado.
+## Arquivos originais e atendimento
 
-Para demonstrar a composição com uma Xerox Color 560, a prévia utiliza uma imagem de catálogo da página de produto https://www.abdofficesolutions.com/products/xerox-color-560 . Ela é externa e ilustrativa do equipamento; não é uma foto da máquina da IDY. A imagem da referência/foto original deve ser recebida para validar ou substituir esse material antes da aprovação final.
+- Logo: `assets/logo-idy-grafica.png`, intacto.
+- Mascote: `assets/mascote-idy.png`, intacto.
+- Impressora: foto de catálogo da Xerox Color 560, fonte https://www.abdofficesolutions.com/products/xerox-color-560 . Não representa uma foto da máquina da IDY.
+- WhatsApp: +55 51 98168-7562, com mensagem preenchida e envio pelo aplicativo do cliente.
+- E-mail: idygrafica@gmail.com, com assunto e informações iniciais preenchidos.
+- Orçamento com IA: integração atual https://atendimento-idy.netlify.app . O projeto separado não foi alterado.
 
-A página usa elementos HTML/CSS e arquivos individuais do logo/mascote. Não foi transformada em uma imagem única e não foram criados substitutos da identidade visual.
+Atendimento exclusivamente online: envio do arquivo, orçamento, pagamento, produção e retirada somente após aviso de que está pronto. Não há promessa de prazo imediato nem valores inventados.
 
-## Verificação e prévia
+## Integração e preservação
 
-`.github/workflows/impressoes-rapidas-preview.yml` roda apenas nesta branch. Ele não utiliza credenciais nem comandos de publicação Netlify.
+Rota `/impressoes-rapidas`, acesso pelo catálogo de Serviços e sitemap. Title, description, canonical, Open Graph e dados estruturados de Service, WebPage e BreadcrumbList.
 
-As verificações cobrem 320, 360, 390, 480, 620, 768, 820, 1024, 1280 e 1440 pixels, imagens legíveis/carregadas, textos dentro da tela, ausência de sobreposição entre imagens e texto do hero, abertura do WhatsApp sem envio de mensagem, destino da IA, e-mail, navegação mobile, FAQ e acesso a partir de Serviços. A home é comparada em bytes e por captura contra a base original. O sitemap XML e a configuração TOML são validados.
+`index.html`, imagens originais, `assets/style.css`, `assets/mobile-phone-reference.css` e `assets/app.js` permanecem iguais à base. As regras específicas da rota não alteram o destino das outras páginas.
 
-As capturas desktop/mobile e o relatório ficam no artifact `impressoes-rapidas-preview`. As rotas são verificadas em servidor local de teste que reproduz as regras específicas; não foi realizado deploy de teste no Netlify. Resultados efetivos serão registrados após a execução.
+## Testes e capturas
 
-Sem merge e sem publicação. A aprovação visual depende do envio do gabarito.
+O workflow de prévia roda apenas na branch de trabalho e não usa credenciais nem comandos Netlify. Verifica dez larguras entre 320 e 1440 pixels, rota/TOML/sitemap, imagens, texto dentro da tela, ausência de imagem cobrindo o texto principal, WhatsApp, e-mail, CTA da IA, menu mobile/tablet, três cartões e cinco etapas. A home é comparada em bytes e capturas contra a base original.
+
+Capturas desktop/mobile e relatório ficam no artifact `impressoes-rapidas-preview`. As regras de rota são reproduzidas em servidor local de teste; nenhum deploy foi realizado. A primeira prévia sem referência já havia passado nas dez larguras; a composição recebida será verificada novamente antes da apresentação.
