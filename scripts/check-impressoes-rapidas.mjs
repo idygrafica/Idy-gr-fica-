@@ -17,6 +17,11 @@ const printer=html.match(/class="quick-printer" src="([^"]+)"/)[1].replaceAll('&
 const photoResponse=await fetch(printer,{signal:AbortSignal.timeout(25000)});
 assert(photoResponse.ok,'Foto da Xerox indisponível: HTTP '+photoResponse.status);
 const photo=Buffer.from(await photoResponse.arrayBuffer());assert(photo.length>5000);
+// Read-only availability check: no chat request, upload or customer data sent.
+const iaResponse=await fetch('https://atendimento-idy.netlify.app',{signal:AbortSignal.timeout(25000)});
+assert(iaResponse.ok,'Página pública da IA indisponível: HTTP '+iaResponse.status);
+assert((iaResponse.headers.get('content-type')||'').includes('text/html'));
+console.log('QUICK_IA_DESTINATION_AVAILABLE '+JSON.stringify({status:iaResponse.status,url:iaResponse.url,method:'GET',chatStarted:false}));
 console.log('QUICK_PRINTER_IMAGE_BASE64 '+photo.toString('base64'));
 fs.mkdirSync('.preview/impressoes-rapidas',{recursive:true});
 const baseHtml=execFileSync('git',['show',original+':index.html'],{encoding:'utf8'});
@@ -40,6 +45,7 @@ try{
   await context.route(printer,route=>route.fulfill({status:200,contentType:'image/jpeg',body:photo}));
   await context.route('https://wa.me/**',route=>route.fulfill({status:200,contentType:'text/html',body:'WhatsApp: destino verificado sem enviar mensagem.'}));
   await context.route('https://atendimento-idy.netlify.app/**',route=>route.fulfill({status:200,contentType:'text/html',body:'Destino IA verificado sem iniciar atendimento.'}));
+  await context.route('https://www.instagram.com/idygrafica/**',route=>route.fulfill({status:200,contentType:'text/html',body:'Perfil oficial: destino verificado sem interação com a conta.'}));
   const page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto(origin+'/impressoes-rapidas',{waitUntil:'networkidle'});
@@ -51,6 +57,14 @@ try{
   assert.equal((await main.locator('.quick-slogan').innerText()).replace(/\s+/g,' ').trim(),'DA PRIMEIRA FOLHA À SUA PRÓXIMA GRANDE IDEIA!');
   assert.equal(await page.locator('.quick-service-card').count(),3);
   assert.equal(await page.locator('.quick-steps>li').count(),5);
+  const intro=await page.locator('.quick-intro').innerText();
+  for(const text of ['coloridas e preto e branco','pequenas tiragens','Qualidade profissional','atendimento personalizado'])assert(intro.includes(text));
+  const tapTargets=await page.locator('.quick-btn,.quick-email,.nav .cta-ai,.quick-instagram').evaluateAll(links=>links.map(link=>({text:link.textContent.trim(),height:link.getBoundingClientRect().height})));
+  assert(tapTargets.every(link=>link.height>=44),'Área de toque abaixo de 44px: '+JSON.stringify(tapTargets));
+  if(width<=620){
+   const smallText=await page.locator('.quick-intro,.quick-service-card p,.quick-service-card li,.quick-steps p,.quick-section-heading>p,.quick-final p').evaluateAll(elements=>elements.filter(el=>parseFloat(getComputedStyle(el).fontSize)<14).map(el=>el.textContent));
+   assert.deepEqual(smallText,[],'Texto de leitura abaixo de 14px no celular');
+  }
   const geometry=await page.evaluate(()=>{
    const all=[...document.querySelectorAll('.quick-main h1,.quick-main h2,.quick-main h3,.quick-main p,.quick-main li,.quick-main summary')].filter(el=>el.getClientRects().length>0&&!el.closest('details:not([open]) p'));
    const outside=all.filter(el=>{const b=el.getBoundingClientRect();return b.left<-.5||b.right>innerWidth+.5||el.scrollWidth>el.clientWidth+2;}).map(el=>el.textContent.trim().slice(0,70));
@@ -72,6 +86,13 @@ try{
   assert.equal(new URL(popup.url()).pathname,'/5551981687562');await popup.close();
   const mail=await page.locator('.quick-email').getAttribute('href');assert(mail.startsWith('mailto:idygrafica@gmail.com?'));
   const ia=page.locator('.nav .cta-ai');assert.equal(await ia.getAttribute('href'),'https://atendimento-idy.netlify.app');
+  const iaPopupPromise=context.waitForEvent('page');await ia.click();const iaPopup=await iaPopupPromise;await iaPopup.waitForLoadState();
+  assert.equal(new URL(iaPopup.url()).origin,'https://atendimento-idy.netlify.app');await iaPopup.close();
+  const instagram=page.locator('.footer .quick-instagram');
+  assert.equal(await instagram.getAttribute('href'),'https://www.instagram.com/idygrafica/');
+  assert.match(await instagram.getAttribute('rel'),/noopener/);
+  const instagramPopupPromise=context.waitForEvent('page');await instagram.click();const instagramPopup=await instagramPopupPromise;await instagramPopup.waitForLoadState();
+  assert.equal(instagramPopup.url(),'https://www.instagram.com/idygrafica/');await instagramPopup.close();
   if(width<=980){const toggle=page.locator('.mobile-menu-toggle');await toggle.scrollIntoViewIfNeeded();await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');assert(await page.locator('.navlinks').isVisible());await toggle.click();}
   for(const details of await page.locator('.quick-questions details').all()){await details.locator('summary').click();assert(await details.getAttribute('open')!==null);await details.locator('summary').click();}
   for(const action of await page.locator('.quick-final .quick-btn').all()){await action.scrollIntoViewIfNeeded();await action.click({trial:true});}
@@ -84,7 +105,7 @@ try{
   await page.goto(origin+'/',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));const home=await page.screenshot({animations:'disabled'});
   await page.goto(origin+'/__base',{waitUntil:'networkidle'});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));const baseline=await page.screenshot({animations:'disabled'});
   assert(home.equals(baseline),'A página inicial mudou visualmente em '+width);
-  report.push({...geometry,homeUnchanged:true,menuVerified:true,whatsappVerified:true,iaPreserved:true,threeServiceCards:true,fiveOrderSteps:true});
+  report.push({...geometry,homeUnchanged:true,menuVerified:true,whatsappVerified:true,iaPreserved:true,iaPopupVerified:true,instagramVerified:true,mobileReadabilityVerified:width<=620,threeServiceCards:true,fiveOrderSteps:true});
   console.log('QUICK_PRINT_WIDTH_VERIFIED '+JSON.stringify(report.at(-1)));
   await context.close();
  }

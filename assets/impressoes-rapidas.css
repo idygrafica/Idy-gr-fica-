@@ -108,6 +108,10 @@
 .quick-page .quick-final-art>.quick-paper-scene{position:absolute;inset:45px 15% 5px 0;min-height:0;background:none;transform:rotate(-2deg)}
 .quick-page .quick-final-art>img{position:absolute;width:215px;height:auto;max-width:53%;right:0;bottom:-60px;z-index:2;filter:drop-shadow(0 0 10px #80ff3844)}
 .quick-page .footer{padding-bottom:110px}
+.quick-page .footer .quick-instagram{display:flex;align-items:center;gap:10px;min-height:44px;width:fit-content;max-width:100%;color:#d7e4dd;text-underline-offset:4px}
+.quick-page .quick-instagram svg{width:23px;height:23px;flex:0 0 23px}
+.quick-page .quick-instagram:hover{text-decoration:underline}
+.quick-page .footer a:focus-visible{outline:3px solid #99f143;outline-offset:4px;border-radius:4px}
 @media(min-width:981px) and (max-width:1150px){.quick-page .nav .container{gap:12px!important}.quick-page .navlinks{gap:14px;font-size:14px}}
 @media(min-width:621px) and (max-width:980px){
  .quick-page .nav .container{position:relative}
@@ -154,16 +158,19 @@
 }
 @media(max-width:620px){
  .quick-page .quick-hero{padding:12px 0 24px}
- .quick-page .quick-breadcrumb{font-size:10px}
+ .quick-page .quick-breadcrumb{font-size:12px;align-items:center}
+ .quick-page .quick-breadcrumb a{display:inline-flex;align-items:center;min-height:44px}
  .quick-page .quick-hero-grid{padding-top:24px}
  .quick-page .quick-formats{font-size:clamp(65px,20vw,106px)}
  .quick-page .quick-heading-label{font-size:16px}
  .quick-page .quick-slogan{font-size:clamp(23px,6vw,31px);max-width:510px}
- .quick-page .quick-intro{font-size:15px}
- .quick-page .quick-benefits{grid-template-columns:repeat(2,1fr);gap:13px}
- .quick-page .quick-benefits li{font-size:12px}
- .quick-page .quick-actions>.quick-btn{width:100%;font-size:12px;padding:14px 12px}
- .quick-page .quick-order-note{font-size:11px}
+ .quick-page .quick-intro{font-size:16px;line-height:1.7}
+ .quick-page .quick-benefits{grid-template-columns:repeat(2,1fr);gap:16px}
+ .quick-page .quick-benefits li{font-size:13px;line-height:1.5}
+ .quick-page .quick-actions{gap:16px}
+ .quick-page .quick-actions>.quick-btn{width:100%;min-height:56px;font-size:14px;padding:16px 12px}
+ .quick-page .quick-email{font-size:14px;gap:6px}
+ .quick-page .quick-order-note{font-size:13px;line-height:1.7;margin-top:16px}
  .quick-page .quick-visual{min-height:clamp(350px,96vw,570px)}
  .quick-page .quick-mascot{max-width:56%;bottom:0}
  .quick-page .quick-printer-card{top:85px;width:90%}
@@ -171,28 +178,35 @@
  .quick-page .quick-printer-label b,.quick-page .quick-printer-label strong{font-size:21px}
  .quick-page .quick-services{padding:30px 0}
  .quick-page .quick-section-heading{margin-bottom:22px}
- .quick-page .quick-section-heading>p{font-size:13px}
+ .quick-page .quick-section-heading>p{font-size:15px}
  .quick-page .quick-service-card{display:block}
  .quick-page .quick-card-visual{height:190px;min-height:190px}
  .quick-page .quick-card-body{padding:22px}
  .quick-page .quick-service-symbol{position:absolute;margin:0;top:-27px}
  .quick-page .quick-service-card h3{margin:8px 0 12px}
+ .quick-page .quick-service-card p{font-size:15px;line-height:1.7}
+ .quick-page .quick-service-card li{font-size:14px;line-height:1.6}
+ .quick-page .quick-service-card ul{gap:10px}
  .quick-page .quick-document{top:12px}
  .quick-page .quick-process{padding:30px 0}
- .quick-page .quick-steps{grid-template-columns:1fr;gap:25px}
+ .quick-page .quick-steps{grid-template-columns:1fr;gap:28px}
  .quick-page .quick-steps li{text-align:left;padding-left:74px;min-height:65px}
  .quick-page .quick-step-icon{position:absolute;top:0;left:0;width:57px;height:57px;margin:0}
  .quick-page .quick-step-icon svg{width:30px;height:30px}
  .quick-page .quick-steps h3{font-size:16px;margin-top:0}
- .quick-page .quick-steps p{font-size:13px}
+ .quick-page .quick-steps p{font-size:14px;line-height:1.7}
+ .quick-page .quick-online-note{font-size:14px;line-height:1.7}
  .quick-page .quick-final{padding-bottom:30px}
  .quick-page .quick-final-inner{display:flex;flex-direction:column;gap:0;padding:24px 20px 0}
  .quick-page .quick-final-copy{width:100%;padding-bottom:0}
  .quick-page .quick-final h2{font-size:25px}
+ .quick-page .quick-final p{font-size:15px}
+ .quick-page .quick-final .quick-btn{font-size:13px;min-height:48px;line-height:1.6}
  .quick-page .quick-final .quick-btn-whatsapp{max-width:calc(100% - 74px)}
  .quick-page .quick-final-art{min-height:230px;width:100%}
  .quick-page .quick-final-art>img{max-width:57%;width:190px;bottom:-50px}
  .quick-page .quick-final-art>.quick-paper-scene{inset:28px 20% 0 0}
  .quick-page .footer{padding-bottom:115px}
+ .quick-page .footer a{min-height:44px;display:flex;align-items:center;line-height:1.6;margin:8px 0}
 }
 @media(prefers-reduced-motion:reduce){.quick-page{scroll-behavior:auto}}

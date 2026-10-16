@@ -30,6 +30,16 @@ Rota `/impressoes-rapidas`, acesso pelo catálogo de Serviços e sitemap. Title,
 
 `index.html`, imagens originais, `assets/style.css`, `assets/mobile-phone-reference.css` e `assets/app.js` permanecem iguais à base. As regras específicas da rota não alteram o destino das outras páginas.
 
+## Ajustes finais solicitados na revisão
+
+A composição aprovada foi mantida. No celular, os textos principais de leitura têm no mínimo 14px, a apresentação tem 16px e as notas de pedido têm 13px. Foram ampliados os espaçamentos entre diferenciais e etapas, a chamada principal tem altura mínima de 56px e os outros botões têm área de toque mínima de 44px.
+
+A apresentação destaca pequenas tiragens, impressões coloridas e preto e branco, qualidade profissional com a Xerox Color 560 e atendimento personalizado. O rodapé exclusivo desta página inclui Instagram @idygrafica, com o endereço oficial https://www.instagram.com/idygrafica/ .
+
+O CTA da IA mantém o endereço existente. A validação faz apenas GET de disponibilidade da página pública e verifica o clique abrindo o destino correto. Não inicia conversa, não envia arquivos e não altera o projeto da IA. WhatsApp e Instagram têm os destinos de abertura verificados no navegador, sem envio de mensagens ou interação com contas.
+
+A navegação continua por Serviços, com página independente. Nenhuma alteração foi feita na página inicial ou nos arquivos compartilhados.
+
 ## Testes e capturas
 
 O workflow de prévia roda apenas na branch de trabalho e não usa credenciais nem comandos Netlify. Verifica dez larguras entre 320 e 1440 pixels, rota/TOML/sitemap, imagens, texto dentro da tela, ausência de imagem cobrindo o texto principal, WhatsApp, e-mail, CTA da IA, menu mobile/tablet, três cartões e cinco etapas. A home é comparada em bytes e capturas contra a base original.
