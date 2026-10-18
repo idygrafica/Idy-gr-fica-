@@ -13,7 +13,7 @@ const out='.preview/seo-etapa-1/'+width;fs.mkdirSync(out,{recursive:true});
 const originalCache=new Map();
 function original(file){if(!originalCache.has(file))originalCache.set(file,execFileSync('git',['show',base+':'+file],{maxBuffer:8000000}));return originalCache.get(file);}
 for(const f of ['assets/style.css','assets/mobile-phone-reference.css','assets/impressoes-rapidas.css','netlify.toml','robots.txt'])assert(fs.readFileSync(f).equals(original(f)),'Arquivo protegido alterado: '+f);
-const modifiedImages=execFileSync('git',['diff','--name-only',base,'--','assets/'],{encoding:'utf8'}).trim().split('\n').filter(Boolean).filter(f=>!['assets/app.js','assets/navegacao.css'].includes(f));
+const modifiedImages=execFileSync('git',['diff','--name-only',base,'--','assets/'],{encoding:'utf8'}).trim().split('\n').filter(Boolean).filter(f=>!['assets/app.js','assets/navegacao.css','assets/titulos-mobile.css'].includes(f));
 assert.deepEqual(modifiedImages,[],'Imagens ou estilos aprovados alterados');
 const app=fs.readFileSync('assets/app.js','utf8');
 assert.equal(app.split('// No mobile')[1],original('assets/app.js').toString().split('// No mobile')[1],'Funcionamento WhatsApp foi alterado');
@@ -73,10 +73,10 @@ try{
   assert(!metrics.overlapping,'Controles do cabeçalho se sobrepõem em '+name+' '+width);
   assert(metrics.rects.every(b=>b.left>=-.5&&b.right<=width+.5&&b.height>0),'Controle fora da tela em '+name+' '+width+': '+JSON.stringify(metrics.rects));
   const oldOutside=await before.evaluate(()=>[...document.querySelectorAll('h1,h2,h3,p,.btn,.quick-btn')].filter(e=>!e.closest('.nav,.footer,.whats-widget')&&e.getClientRects().length).filter(e=>{const b=e.getBoundingClientRect();return b.left<-.5||b.right>innerWidth+.5||e.scrollWidth>e.clientWidth+2;}).map(e=>e.textContent.trim()));
-  assert(metrics.textOutside.every(t=>oldOutside.includes(t)),'Novo conteúdo fora da tela em '+name);
+  assert.deepEqual(metrics.textOutside,[],'Conteúdo fora da área de leitura em '+name);
   const currentSign=await page.evaluate(signatures),baseSign=await before.evaluate(signatures);
   assert.equal(currentSign.length,baseSign.length);
-  for(let i=0;i<currentSign.length;i++){const c=currentSign[i],b=baseSign[i];assert.equal(c.text,b.text);assert.equal(c.font,b.font);assert.equal(c.color,b.color);for(const k of ['x','y','width','height'])assert(Math.abs(c[k]-b[k])<1,'Organização do conteúdo alterada: '+name+' '+k+' '+c.text);}
+  for(let i=0;i<currentSign.length;i++){const c=currentSign[i],b=baseSign[i];assert.equal(c.text,b.text);assert.equal(c.font,b.font);assert.equal(c.color,b.color);for(const k of ['x','y','width','height']){const titleWrapFix=width<=350&&['comunicacao-visual','cortes-especiais','criacao-sites'].includes(name)&&['y','height'].includes(k);if(!titleWrapFix)assert(Math.abs(c[k]-b[k])<1,'Organização do conteúdo alterada: '+name+' '+k+' '+c.text);}}
   let pixelIdentical=null;
   if(name==='impressoes-rapidas'||width===1440){const a=await page.screenshot({fullPage:true,animations:'disabled'}),b=await before.screenshot({fullPage:true,animations:'disabled'});pixelIdentical=a.equals(b);assert(pixelIdentical,'Captura fechada difere da versão aprovada: '+name+' '+width);}
   if([390,768,1440].includes(width)){const p=out+'/'+name+'.jpg';await page.screenshot({path:p,fullPage:true,type:'jpeg',quality:65,animations:'disabled'});console.log('SEO_CAPTURE '+JSON.stringify({name,width,data:fs.readFileSync(p).toString('base64')}));}
@@ -99,7 +99,7 @@ try{
   assert.equal(await toggle.getAttribute('aria-expanded'),'false');
   await page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false}).click();await page.waitForURL(origin+'/impressoes-rapidas');
   assert.deepEqual(errors,[],'Erro JS em '+name);
-  report.push({page:name,width,canonical:canonical(name),headerControlsInsideViewport:true,menuOpenClose:width<=980,escapeAndOutsideClose:width<=980,servicesAndQuickPrintNavigation:true,whatsappClick:true,iaClick:true,instagramClick:name==='impressoes-rapidas',preservation,pixelIdentical,legacyTextOverflow:metrics.textOutside});
+  report.push({page:name,width,canonical:canonical(name),headerControlsInsideViewport:true,menuOpenClose:width<=980,escapeAndOutsideClose:width<=980,servicesAndQuickPrintNavigation:true,whatsappClick:true,iaClick:true,instagramClick:name==='impressoes-rapidas',preservation,pixelIdentical,textOverflow:metrics.textOutside,previousTextOverflow:oldOutside});
   console.log('SEO_PAGE_VERIFIED '+JSON.stringify(report.at(-1)));
   await context.close();
  }

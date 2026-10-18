@@ -26,3 +26,7 @@ Canonical, sitemap e links consistentes auxiliam a compreensão das URLs prefere
 ## Verificação
 
 Workflow exclusivo da branch, com permissões somente de leitura e sem credenciais ou comandos Netlify. Verificações de navegação, links externos sem envio de mensagens, canonicals, sitemap/robots, comparação com a base e capturas mobile/tablet/desktop. Resultados e limitações serão registrados na PR de rascunho.
+
+### Ajuste técnico revelado pelo teste em 320px
+
+Comunicação Visual, Cortes Especiais e Criação de Sites já tinham títulos com palavras que extrapolavam a área disponível na base. Foi adicionado assets/titulos-mobile.css somente nessas três páginas, com overflow-wrap:anywhere até 350px. Não muda texto, tamanho, peso ou família da fonte, imagem ou ordem dos elementos; permite somente a quebra natural necessária. Impressões Rápidas não carrega esse arquivo. Os testes exigem zero títulos/textos fora da área e mantêm a comparação de textos, fontes e cores.
