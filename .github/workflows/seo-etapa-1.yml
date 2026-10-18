@@ -1,0 +1,36 @@
+name: SEO Etapa 1 - navegação e preservação sem publicação
+on:
+  push:
+    branches: [codex/seo-tecnico-etapa-1]
+permissions:
+  contents: read
+jobs:
+  responsividade:
+    name: Verificar ${{ matrix.width }}px
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        width: [320, 360, 375, 390, 430, 620, 621, 768, 980, 1024, 1440]
+    env:
+      SEO_WIDTH: ${{ matrix.width }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Instalar navegador isolado para verificação
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Testar as 11 páginas sem publicar ou enviar mensagens
+        run: node scripts/check-seo-etapa-1.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seo-etapa-1-${{ matrix.width }}
+          path: .preview/seo-etapa-1/

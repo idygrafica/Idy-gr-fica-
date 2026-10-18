@@ -3,11 +3,30 @@ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullY
 const menuBtn=document.querySelector('.mobile-menu-toggle');
 const navLinks=document.querySelector('.navlinks');
 if(menuBtn && navLinks){
+  const header=menuBtn.closest('.nav');
+  const menuQuery=window.matchMedia('(max-width:980px)');
+  const setMenuOpen=(open,restoreFocus=false)=>{
+    navLinks.classList.toggle('open',open);
+    header?.classList.toggle('site-menu-open',open);
+    menuBtn.classList.toggle('open',open);
+    menuBtn.setAttribute('aria-expanded',String(open));
+    menuBtn.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');
+    if(restoreFocus)menuBtn.focus();
+  };
   menuBtn.addEventListener('click',()=>{
-    const isOpen=navLinks.classList.toggle('open');
-    menuBtn.classList.toggle('open',isOpen);
-    menuBtn.setAttribute('aria-expanded',isOpen?'true':'false');
+    const open=menuBtn.getAttribute('aria-expanded')!=='true';
+    setMenuOpen(open);
   });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape' && menuBtn.getAttribute('aria-expanded')==='true')setMenuOpen(false,true);
+  });
+  document.addEventListener('click',event=>{
+    if(menuBtn.getAttribute('aria-expanded')==='true' && !header?.contains(event.target))setMenuOpen(false);
+  });
+  navLinks.addEventListener('click',event=>{
+    if(event.target.closest('a'))setMenuOpen(false);
+  });
+  menuQuery.addEventListener('change',()=>setMenuOpen(false));
 }
 
 // No mobile, o atalho começa sobre o tênis direito e fica fixo ao rolar.

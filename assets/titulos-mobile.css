@@ -1,0 +1,4 @@
+/* Somente quebra de palavras longas em telas estreitas; tipografia e conteúdo permanecem iguais. */
+@media(max-width:350px){
+ .service-hero h1{overflow-wrap:anywhere}
+}
