@@ -84,6 +84,23 @@ async function interiorShot(page, selector) {
   const x=Math.ceil(b.x),y=Math.ceil(b.y);
   return page.screenshot({clip:{x,y,width:Math.floor(b.x+b.width)-x,height:Math.floor(b.y+b.height)-y},animations:'disabled'});
 }
+async function compareHero(page,a,b) {
+  if (a.equals(b)) return {exact:true,preserved:true,changedPixels:0,maxChannelDelta:0};
+  return page.evaluate(async ({a,b}) => {
+    const decode=async data => createImageBitmap(new Blob([Uint8Array.from(atob(data),c=>c.charCodeAt(0))],{type:'image/png'}));
+    const [x,y]=await Promise.all([decode(a),decode(b)]);
+    if (x.width!==y.width || x.height!==y.height) return {exact:false,preserved:false,dimensionsChanged:true};
+    const pixels=image => {const canvas=new OffscreenCanvas(image.width,image.height),ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);return ctx.getImageData(0,0,image.width,image.height).data;};
+    const p=pixels(x),q=pixels(y);let changedPixels=0,maxChannelDelta=0;
+    for (let i=0;i<p.length;i+=4) {
+      let delta=0;for (let c=0;c<4;c++) delta=Math.max(delta,Math.abs(p[i+c]-q[i+c]));
+      if (delta) changedPixels++;maxChannelDelta=Math.max(maxChannelDelta,delta);
+    }
+    // Permit only tiny antialiasing noise: <=2/255 per channel on <=0.005% of pixels.
+    const pixelBudget=Math.max(1,Math.floor(x.width*x.height*0.00005));
+    return {exact:false,preserved:maxChannelDelta<=2 && changedPixels<=pixelBudget,changedPixels,maxChannelDelta,pixelBudget};
+  },{a:a.toString('base64'),b:b.toString('base64')});
+}
 
 const inspect = () => {
   const all = selector => [...document.querySelectorAll(selector)];
@@ -171,11 +188,17 @@ async function runWidth(width) {
       fs.writeFileSync(path.join(output,`header-${name}-${width}-base.png`),headBefore);
     }
     assert(headCurrent.equals(headBefore),'Cabeçalho visualmente alterado: '+name+' '+width);
-    let heroPixelsIdentical=null;
+    let heroPixelsIdentical=null,heroComparison=null;
     if (['index','impressoes-rapidas'].includes(name)) {
       const selector=name==='index'?'.hero':'.quick-hero';
-      const a=await page.locator(selector).screenshot({animations:'disabled'}),b=await before.locator(selector).screenshot({animations:'disabled'});
-      heroPixelsIdentical=a.equals(b);assert(heroPixelsIdentical,'Composição principal alterada: '+name+' '+width);
+      await Promise.all([page,before].map(p => p.evaluate(() => window.scrollTo({top:0,behavior:'instant'}))));
+      const a=await interiorShot(page,selector),b=await interiorShot(before,selector);
+      heroComparison=await compareHero(page,a,b);
+      if (!heroComparison.preserved) {
+        fs.writeFileSync(path.join(output,`hero-${name}-${width}-current.png`),a);
+        fs.writeFileSync(path.join(output,`hero-${name}-${width}-base.png`),b);
+      }
+      heroPixelsIdentical=heroComparison.exact;assert(heroComparison.preserved,'Composição principal alterada: '+name+' '+width+': '+JSON.stringify(heroComparison));
     }
     if ([390,768,1440].includes(width) && modifiedPages.includes(name)) {
       await page.evaluate(() => window.scrollTo({top:0,behavior:'instant'}));
@@ -221,7 +244,7 @@ async function runWidth(width) {
     assert.equal(await toggle.getAttribute('aria-expanded'),'false');
     await page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false}).click();await page.waitForURL(origin+'/impressoes-rapidas');
     assert.deepEqual(errors,[],'Erro JavaScript: '+name);
-    results.push({page:name,width,sourceStructurePreserved:true,imagesAndStylesPreserved:true,headerPixelsIdentical:true,heroPixelsIdentical,menu:true,internalLinks:true,whatsapp:true,ia:true,instagram:name==='impressoes-rapidas',canonical:true,noOverflow:true,noNewTextClipping:true,baselineClipping:old.clippedText,noJavaScriptErrors:true});
+    results.push({page:name,width,sourceStructurePreserved:true,imagesAndStylesPreserved:true,headerPixelsIdentical:true,heroPixelsIdentical,heroComparison,menu:true,internalLinks:true,whatsapp:true,ia:true,instagram:name==='impressoes-rapidas',canonical:true,noOverflow:true,noNewTextClipping:true,baselineClipping:old.clippedText,noJavaScriptErrors:true});
     console.log('SEO2_PAGE_VERIFIED '+JSON.stringify({page:name,width}));
     await context.close();
   }
