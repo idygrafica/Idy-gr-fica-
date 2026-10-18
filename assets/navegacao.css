@@ -1,0 +1,36 @@
+/* Etapa 1: somente navegação. As regras específicas de Impressões Rápidas são preservadas. */
+@media(max-width:980px){
+ body:not(.quick-page) .nav .mobile-menu-toggle{
+  display:flex;width:31px;height:36px;flex:0 0 31px;padding:0;border:0;
+  background:transparent;flex-direction:column;justify-content:center;gap:5px;cursor:pointer
+ }
+ body:not(.quick-page) .nav .mobile-menu-toggle span{width:27px;height:3px;background:#111;border-radius:9px}
+ body:not(.quick-page) .nav.site-menu-open{z-index:100}
+ body:not(.quick-page) .nav.site-menu-open .container{position:relative}
+ body:not(.quick-page) .nav .navlinks.open{
+  display:flex!important;position:absolute!important;top:100%!important;left:12px!important;right:12px!important;
+  flex-direction:column!important;align-items:stretch!important;gap:8px!important;margin:0!important;
+  padding:16px!important;border-radius:14px!important;background:#fff!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.18)!important;max-height:70dvh;overflow-y:auto;z-index:101
+ }
+ body:not(.quick-page) .nav .navlinks.open a{display:flex;align-items:center;min-height:44px}
+ body:not(.quick-page) .nav .mobile-menu-toggle:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+}
+@media(max-width:620px){
+ /* Cabeçalhos que não carregam o CSS específico da home: apenas encaixe dos controles existentes. */
+ .nav[data-nav-compact] .container{width:100%;padding:8px 13px;gap:8px;min-height:76px}
+ .nav[data-nav-compact] .logo{width:98px!important;flex:0 0 98px!important}
+ .nav[data-nav-compact] .cta.cta-ai{
+  min-width:0!important;max-width:218px;flex:1 1 auto;margin-left:auto;padding:8px 10px!important
+ }
+ .nav[data-nav-compact] .cta-ai-copy{min-width:0}
+}
+@media(max-width:350px){
+ .nav[data-nav-compact] .container{display:grid;grid-template-columns:1fr 31px;gap:12px}
+ .nav[data-nav-compact] .mobile-menu-toggle{grid-column:2;grid-row:1}
+ .nav[data-nav-compact] .cta.cta-ai{grid-column:1 / -1;grid-row:2;max-width:none;width:100%;margin:0}
+}
+@media(min-width:981px) and (max-width:1150px){
+ body:not(.quick-page) .nav .container{gap:12px!important}
+ body:not(.quick-page) .navlinks{gap:14px}
+}
