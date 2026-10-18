@@ -1,0 +1,22 @@
+name: SEO Etapa 1 - verificações sem publicação
+on:
+  push:
+    branches: [codex/seo-tecnico-etapa-1]
+permissions:
+  contents: read
+jobs:
+  urls-publicadas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verificar variantes públicas sem alterar o Netlify
+        run: node scripts/probe-seo-urls.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seo-etapa-1-urls-publicadas
+          path: .preview/seo-etapa-1/
