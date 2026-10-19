@@ -517,3 +517,18 @@
 
 /* Cor do fundo do botão Orçamento com IA. */
 .nav .cta.cta-ai{background:#1559C9!important}
+
+/* Revisão visual: foto da máquina sem interface gravada e contraste da fachada.
+   Somente os dois banners mobile; arquivos originais e desktop preservados. */
+@media (max-width:620px){
+  .service-hero-cortes{
+    background:#002a1f url("cortes-especiais-maquina-card.png") center/cover no-repeat;
+  }
+  .service-hero-cortes > img{display:none}
+  .service-hero-cortes:after{
+    background:linear-gradient(90deg,rgba(0,42,31,.94),rgba(0,42,31,.82));
+  }
+  .service-hero.facade:after{
+    background:linear-gradient(90deg,rgba(0,42,31,.96),rgba(0,42,31,.86));
+  }
+}

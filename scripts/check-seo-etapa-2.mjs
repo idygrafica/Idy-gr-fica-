@@ -7,15 +7,15 @@ import {createRequire} from 'node:module';
 
 // Read-only comparison with the approved stage-2 version before the banner fix.
 // Never deploys or sends messages.
-const BASE = '961bfa9d2298b24aa746f620f64967f309cea4ae';
-const bannerPages = ['impressos','cortes-especiais','sobre'];
+const BASE = '8fff965106752c5293038fb89745c6809a365c1e';
+const bannerPages = ['cortes-especiais','sobre'];
 const root = process.cwd();
 const pages = ['index','servicos','impressos','impressoes-rapidas','comunicacao-visual','cortes-especiais','criacao-sites','livros-digitais','portfolio','contato','sobre'];
 const selectedPages = process.env.SEO_PAGES ? pages.filter(n => process.env.SEO_PAGES.split(',').includes(n)) : pages;
 const widths = (process.env.SEO_WIDTHS || '320,360,375,390,430,620,621,768,980,1024,1440').split(',').map(Number);
 const route = name => name === 'index' ? '/' : '/' + name;
 const canonical = name => 'https://idygrafica.netlify.app' + route(name);
-const output = path.resolve(root, process.env.SEO_OUTPUT || '.preview/banners-mobile');
+const output = path.resolve(root, process.env.SEO_OUTPUT || '.preview/fundos-mobile');
 fs.mkdirSync(output, {recursive:true});
 const originalCache = new Map();
 function original(file) {
@@ -28,13 +28,12 @@ assert(changed.every(p => pages.some(n => p === n + '.html') || ['scripts/check-
 for (const file of execFileSync('git',['ls-tree','-r','--name-only',BASE,'assets/','.github/','netlify.toml','robots.txt','sitemap.xml','googlea370a5b2e9c8d30f.html'],{encoding:'utf8'}).trim().split('\n')) {
   if (file !== 'assets/mobile-phone-reference.css') assert(fs.readFileSync(file).equals(original(file)), 'Arquivo protegido alterado: ' + file);
 }
-const cssBefore=original('assets/mobile-phone-reference.css').toString();
-const oldRule='  .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}';
-const fixedRule='  .hero-copy{max-width:none!important}\n  /* Posicionamento e padding do banner inicial não devem cortar os banners internos. */\n  .hero .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}';
-assert.equal(fs.readFileSync('assets/mobile-phone-reference.css','utf8'),cssBefore.replace(oldRule,fixedRule),'Mudança de CSS além da correção autorizada');
+const visualRules="\n/* Revisão visual: foto da máquina sem interface gravada e contraste da fachada.\n   Somente os dois banners mobile; arquivos originais e desktop preservados. */\n@media (max-width:620px){\n  .service-hero-cortes{\n    background:#002a1f url(\"cortes-especiais-maquina-card.png\") center/cover no-repeat;\n  }\n  .service-hero-cortes > img{display:none}\n  .service-hero-cortes:after{\n    background:linear-gradient(90deg,rgba(0,42,31,.94),rgba(0,42,31,.82));\n  }\n  .service-hero.facade:after{\n    background:linear-gradient(90deg,rgba(0,42,31,.96),rgba(0,42,31,.86));\n  }\n}\n";
+assert.equal(fs.readFileSync('assets/mobile-phone-reference.css','utf8'),original('assets/mobile-phone-reference.css').toString()+visualRules,'Mudança de CSS além da revisão autorizada');
 for (const name of pages) {
   const current = fs.readFileSync(name + '.html','utf8'), before = original(name + '.html').toString();
-  assert.equal(current, before, 'Conteúdo/SEO da etapa 2 alterado: ' + name);
+  const authorized=name==='cortes-especiais' ? before.replace('<section class="service-hero">','<section class="service-hero service-hero-cortes">') : before;
+  assert.equal(current, authorized, 'Conteúdo/SEO da etapa 2 alterado: ' + name);
   for (const re of [/<header\b[\s\S]*?<\/header>/i, /<footer\b[\s\S]*?<\/footer>/i, /<div\b[^>]*class="whats-widget"[\s\S]*$/i, /<div\b[^>]*class="whats-widget"/i]) {
     const old = before.match(re)?.[0], now = current.match(re)?.[0];
     if (old) assert.equal(now, old, 'Cabeçalho, rodapé ou WhatsApp alterado: ' + name);
@@ -82,7 +81,7 @@ const require = createRequire(import.meta.url);
 let chromium;
 try {({chromium}=require('playwright'));}
 catch {({chromium}=createRequire(path.join(root,'.preview-tools/package.json'))('playwright'));}
-const browser = await chromium.launch({headless:true,...(fs.existsSync('/usr/bin/chromium') ? {executablePath:'/usr/bin/chromium'} : {})});
+const browser = await chromium.launch({headless:true,args:['--disable-gpu','--disable-lcd-text'],...(fs.existsSync('/usr/bin/chromium') ? {executablePath:'/usr/bin/chromium'} : {})});
 const prior=process.env.SEO_RESUME ? JSON.parse(fs.readFileSync(process.env.SEO_RESUME,'utf8')) : null;
 if (prior) assert.equal(prior.base,BASE,'Base de retomada divergente');
 const results = prior?.checks?.filter(r=>selectedPages.includes(r.page) && widths.includes(r.width)) || [];
@@ -101,11 +100,16 @@ async function settlePaint(page) {
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 }
+async function capture(page, options) {
+  await page.bringToFront();
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  return page.screenshot(options);
+}
 async function interiorShot(page, selector) {
   const b=await page.locator(selector).boundingBox();
   // Avoid the partial pixel outside a fractional element boundary picking up the following section.
   const x=Math.ceil(b.x),y=Math.ceil(b.y);
-  return page.screenshot({clip:{x,y,width:Math.floor(b.x+b.width)-x,height:Math.floor(b.y+b.height)-y},animations:'disabled'});
+  return capture(page,{clip:{x,y,width:Math.floor(b.x+b.width)-x,height:Math.floor(b.y+b.height)-y},animations:'disabled'});
 }
 async function compareHero(page,a,b) {
   if (a.equals(b)) return {exact:true,preserved:true,changedPixels:0,maxChannelDelta:0};
@@ -127,12 +131,12 @@ async function compareHero(page,a,b) {
 
 const inspect = () => {
   const all = selector => [...document.querySelectorAll(selector)];
-  const attrs = node => [...node.attributes].map(a => [a.name,a.value]).sort((a,b) => a[0].localeCompare(b[0]));
+  const attrs = node => [...node.attributes].map(a => [a.name,a.name==='class' ? a.value.replace(' service-hero-cortes','') : a.value]).sort((a,b) => a[0].localeCompare(b[0]));
   const bounds = node => {const r=node.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom};};
   const structure = all('body *').filter(n => !((n.tagName==='A' || n.tagName==='STRONG') && n.closest('p'))).map(n => [n.tagName,attrs(n)]);
   const media = all('img,video,source').map(n => [n.tagName,attrs(n)]);
   const css = all('body *').filter(n => !['SVG','PATH'].includes(n.tagName) && !((n.tagName==='A' || n.tagName==='STRONG') && n.closest('p'))).map(n => {
-    const s=getComputedStyle(n);return [n.tagName,n.className?.baseVal ?? n.className,s.font,s.color,s.backgroundColor,s.display,n.matches('.service-hero .hero-copy') && innerWidth<=620 ? 'MOBILE_BANNER_FLOW' : s.position,s.gridTemplateColumns.replace(/[0-9.]+px/g,'SIZE'),s.gap];
+    const s=getComputedStyle(n), mobileCut=innerWidth<=620 && location.pathname==='/cortes-especiais';return [n.tagName,String(n.className?.baseVal ?? n.className).replace(' service-hero-cortes',''),s.font,s.color,mobileCut && n.matches('.service-hero') ? 'BANNER_BACKGROUND' : s.backgroundColor,mobileCut && n.matches('.service-hero > img') ? 'BANNER_SOURCE' : s.display,n.matches('.service-hero .hero-copy') && innerWidth<=620 ? 'MOBILE_BANNER_FLOW' : s.position,s.gridTemplateColumns.replace(/[0-9.]+px/g,'SIZE'),s.gap];
   });
   const external = all('a[href]').filter(n => /^https?:|^mailto:/.test(n.getAttribute('href'))).map(n => [n.getAttribute('href'),n.textContent,n.getAttribute('target'),n.getAttribute('rel')]);
   const textOverflow = all('h1,h2,h3,p,li,.tick,.btn,.quick-btn').filter(n => !n.closest('.nav,.footer,.whats-widget') && n.getClientRects().length).filter(n => {
@@ -154,7 +158,8 @@ const inspect = () => {
   const banner=document.querySelector('.service-hero');
   const bannerItems=banner ? [...banner.querySelectorAll('.eyebrow,h1,p,.btn')].map(n=>({text:n.textContent.trim(),...bounds(n)})) : [];
   const bannerOverlap=bannerItems.some((a,i)=>bannerItems.some((b,j)=>i<j && Math.min(a.right,b.right)-Math.max(a.x,b.x)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.y,b.y)>1));
-  return {structure,media,css,external,textOverflow,clippedText,controls,headerOverlap,bannerItems,bannerOverlap,
+  const bannerVisual=banner ? {background:getComputedStyle(banner).backgroundImage,overlay:getComputedStyle(banner,':after').backgroundImage,image:banner.querySelector('img')?.getAttribute('src'),imageDisplay:banner.querySelector('img') ? getComputedStyle(banner.querySelector('img')).display : null} : null;
+  return {structure,media,css,bannerVisual,external,textOverflow,clippedText,controls,headerOverlap,bannerItems,bannerOverlap,
     scrollWidth:document.documentElement.scrollWidth,
     title:document.title,description:document.querySelector('meta[name=description]')?.content,
     canonical:all('link[rel=canonical]').map(n => n.href),h1:all('h1').length,
@@ -193,6 +198,14 @@ async function runWidth(width) {
     assert.deepEqual(now.structure,old.structure,'Estrutura ou atributos alterados: '+name);
     assert.deepEqual(now.media,old.media,'Imagens alteradas: '+name);
     assert.deepEqual(now.css,old.css,'Cores, fontes ou estrutura visual alteradas: '+name);
+    if (width<=620 && name==='cortes-especiais') {
+      assert(now.bannerVisual.background.includes('cortes-especiais-maquina-card.png'));assert.equal(now.bannerVisual.imageDisplay,'none');
+      assert.equal((await fetch(origin+'/assets/cortes-especiais-maquina-card.png')).status,200);
+    } else if (now.bannerVisual) {
+      assert.equal(now.bannerVisual.background,old.bannerVisual.background);assert.equal(now.bannerVisual.imageDisplay,old.bannerVisual.imageDisplay);
+    }
+    if (!(width<=620 && bannerPages.includes(name))) assert.equal(now.bannerVisual?.overlay,old.bannerVisual?.overlay);
+    if (name==='sobre') assert.equal(now.bannerVisual.image,'assets/fachada-idy-real.png');
     assert.deepEqual(now.external,old.external,'Botões ou destinos externos alterados: '+name);
     assert.deepEqual(now.sheets,old.sheets);assert.deepEqual(now.scripts,old.scripts);
     assert.deepEqual(now.textOverflow,[],'Texto fora da tela: '+name+' '+width);
@@ -236,13 +249,12 @@ async function runWidth(width) {
     }
     let pageComparison=null;
     if (width>=621 || !bannerPages.includes(name)) {
-      await Promise.all([page,before].map(settlePaint));
-      let a=await page.screenshot({fullPage:true,animations:'disabled'}), b=await before.screenshot({fullPage:true,animations:'disabled'});
+      let a=await capture(page,{fullPage:true,animations:'disabled'}), b=await capture(before,{fullPage:true,animations:'disabled'});
       pageComparison=await compareHero(page,a,b);
       if (!pageComparison.preserved) {
         // A second bounded capture distinguishes transient browser paint from a regression.
         await Promise.all([page,before].map(p=>p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))));
-        a=await page.screenshot({fullPage:true,animations:'disabled'});b=await before.screenshot({fullPage:true,animations:'disabled'});
+        a=await capture(page,{fullPage:true,animations:'disabled'});b=await capture(before,{fullPage:true,animations:'disabled'});
         pageComparison={...await compareHero(page,a,b),recaptured:true};
       }
       if (!pageComparison.preserved) {
@@ -255,14 +267,14 @@ async function runWidth(width) {
       for (const [version,p] of [['antes',before],['depois',page]]) {
         await p.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
         const heroBottom=await p.locator('.service-hero').evaluate(el=>el.getBoundingClientRect().bottom);
-        await p.screenshot({path:path.join(output,`banner-${name}-${width}-${version}.jpg`),type:'jpeg',quality:85,clip:{x:0,y:0,width,height:Math.ceil(heroBottom+90)},animations:'disabled'});
+        await capture(p,{path:path.join(output,`banner-${name}-${width}-${version}.jpg`),type:'jpeg',quality:85,clip:{x:0,y:0,width,height:Math.ceil(heroBottom+90)},animations:'disabled'});
       }
     }
     if ([390,768,1440].includes(width) && reviewedPages.includes(name)) {
       await page.evaluate(() => window.scrollTo({top:0,behavior:'instant'}));
-      await settlePaint(page);
+      await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
       const file=path.join(output,name+'-'+width+'.jpg');
-      await page.screenshot({path:file,type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
+      await capture(page,{path:file,type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
       captures.push({page:name,width,file});
     }
     for (const button of await page.locator('.service-hero .btn').all()) await button.click({trial:true});
@@ -286,6 +298,11 @@ async function runWidth(width) {
     // No messages, customer sessions or remote mutations are performed.
     const externalSelector='a[href^="https://wa.me/"],a[href^="https://www.instagram.com/idygrafica"],a[href^="https://atendimento-idy.netlify.app"]';
     const destinations=await page.locator(externalSelector).evaluateAll(as=>as.flatMap((a,index)=>a.getClientRects().length ? [{index,href:a.href,target:a.target}] : []));
+    // HTTP 204 records self-targeted navigation while keeping the local page intact.
+    // Popup destinations remain intercepted by the context with a local HTML response.
+    for (const pattern of ['https://wa.me/**','https://atendimento-idy.netlify.app/**','https://www.instagram.com/idygrafica/**']) {
+      await page.route(pattern,r=>r.request().isNavigationRequest() && r.request().frame()===page.mainFrame() ? r.fulfill({status:204}) : r.fallback());
+    }
     let externalButtonsTested=0;
     for (let i=0;i<destinations.length;i++) {
       if (process.env.SEO_DEBUG) console.log('SEO2_EXTERNAL_BEGIN '+JSON.stringify({page:name,width,index:i,href:destinations[i].href}));
@@ -298,8 +315,9 @@ async function runWidth(width) {
         const opened=context.waitForEvent('page');await button.click();const popup=await opened;await popup.waitForLoadState();
         assert.equal(new URL(popup.url()).href,new URL(destination.href).href);await popup.close();
       } else {
-        await button.click();await page.waitForURL(destination.href);
-        await page.goto(origin+route(name),{waitUntil:'load'});
+        const localURL=page.url(),sent=page.waitForResponse(r=>r.url()===destination.href);
+        await button.click({noWaitAfter:true});const response=await sent;
+        assert.equal(response.status(),204);assert.equal(page.url(),localURL);
       }
       if (destination.href.startsWith('https://wa.me/')) assert.equal(new URL(destination.href).pathname,'/5551981687562');
       externalButtonsTested++;
@@ -311,7 +329,7 @@ async function runWidth(width) {
     assert.equal(await toggle.getAttribute('aria-expanded'),'false');
     await page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false}).click();await page.waitForURL(origin+'/impressoes-rapidas');
     assert.deepEqual(errors,[],'Erro JavaScript: '+name);
-    results.push({page:name,width,sourceStructurePreserved:true,externalButtonsTested,fullPageComparison:pageComparison,noClippedTextOrButtons:true,noBannerOverlap:true,bannerItems:now.bannerItems,imagesAndStylesPreserved:true,headerPixelsIdentical:true,heroPixelsIdentical,heroComparison,menu:true,internalLinks:true,whatsapp:true,ia:true,instagram:name==='impressoes-rapidas',canonical:true,noOverflow:true,noNewTextClipping:true,baselineClipping:old.clippedText,noJavaScriptErrors:true});
+    results.push({page:name,width,sourceStructurePreserved:true,externalButtonsTested,bannerVisual:now.bannerVisual,fullPageComparison:pageComparison,noClippedTextOrButtons:true,noBannerOverlap:true,bannerItems:now.bannerItems,imagesAndStylesPreserved:true,headerPixelsIdentical:true,heroPixelsIdentical,heroComparison,menu:true,internalLinks:true,whatsapp:true,ia:true,instagram:name==='impressoes-rapidas',canonical:true,noOverflow:true,noNewTextClipping:true,baselineClipping:old.clippedText,noJavaScriptErrors:true});
     checkpoint();
     console.log('SEO2_PAGE_VERIFIED '+JSON.stringify({page:name,width}));
     } finally {await context.close();}

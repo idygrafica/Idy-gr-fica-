@@ -36,7 +36,8 @@ Não foram acrescentados preços, prazos fixos, materiais, acabamentos, garantia
 ## Preservação
 
 - Nenhuma alteração em JavaScript, imagens, vídeos, logo, mascote ou Xerox Color 560.
-- Única alteração de CSS: restringe posicionamento absoluto e padding zero à `.hero .hero-copy`, no breakpoint já existente de até 620 px. Os banners internos voltam ao fluxo normal e ao padding original de 60 px; sua altura acompanha o conteúdo, mantendo as fontes e os fundos originais.
+- Correção de recortes: restringe posicionamento absoluto e padding zero à `.hero .hero-copy`, no breakpoint já existente de até 620 px. Os banners internos voltam ao fluxo normal e ao padding original de 60 px; sua altura acompanha o conteúdo, mantendo as fontes.
+- Revisão visual posterior: somente em até 620 px, Cortes reutiliza a foto limpa já existente em Serviços e Sobre recebe uma camada verde-escura mais uniforme atrás do texto. Nenhum arquivo de imagem é editado; as versões a partir de 621 px e Impressos permanecem intactas.
 - Cabeçalhos, menus, rodapés e widgets de WhatsApp mantidos sem alterações no código.
 - Botões, mensagens preenchidas, destinos de WhatsApp, Instagram, IA e livro publicado preservados.
 - Não há seções, cards, fontes, bibliotecas de produção ou arquivos de mídia novos. Os textos usam os blocos existentes e suas alturas naturais.
@@ -49,19 +50,19 @@ Não foram acrescentados preços, prazos fixos, materiais, acabamentos, garantia
 node scripts/check-seo-etapa-2.mjs
 ```
 
-O teste requer Node.js, Playwright e Chromium. Usa dois servidores locais, compara a correção com a versão aprovada da etapa 2 (`961bfa9d2298b24aa746f620f64967f309cea4ae`) e intercepta os destinos de WhatsApp, Instagram e IA, sem enviar mensagens ou iniciar atendimentos.
+O teste requer Node.js, Playwright e Chromium. Usa dois servidores locais, compara a correção com a versão aprovada da etapa 2 (`8fff965106752c5293038fb89745c6809a365c1e`) e intercepta os destinos de WhatsApp, Instagram e IA, sem enviar mensagens ou iniciar atendimentos.
 
 Larguras: 320, 360, 375, 390, 430, 620, 621, 768, 980, 1024 e 1440 pixels, nas 11 páginas. O teste verifica:
 
-- HTML das 11 páginas idêntico à versão aprovada da etapa 2, preservando textos, metadados, dados estruturados, canonicals e links.
+- Os dez HTMLs fora de Cortes são idênticos à versão anterior da PR. Em Cortes, somente a classe `service-hero-cortes` é acrescentada à seção existente; textos, metadados, dados estruturados, canonicals e links são preservados.
 - Sitemap, robots.txt, configuração do Netlify, JavaScript e imagens sem alterações; o CSS só pode conter a mudança exata autorizada.
 - Ausência de recortes de texto e botões, rolagem horizontal, sobreposição de blocos do banner, imagens quebradas e erros JavaScript.
 - Abertura, fechamento, Escape, clique fora e acesso aos links do menu até 980 px, incluindo 621–980 px.
 - Links contextuais por teclado; Serviços → Impressões Rápidas; todos os botões visíveis de WhatsApp, Instagram e IA, com navegação interceptada localmente.
-- Cabeçalho, fontes, cores e estrutura preservados. Comparação de pixels da página inteira em todas as larguras a partir de 621 px e, nas outras oito páginas, também nas larguras menores. Pequeno ruído de rasterização é limitado a 2/255 por canal em no máximo 0,005% dos pixels.
+- Cabeçalho, fontes, cores e estrutura preservados. Comparação de pixels da página inteira em todas as larguras a partir de 621 px e, nas outras nove páginas, também nas larguras menores. Pequeno ruído de rasterização é limitado a 2/255 por canal em no máximo 0,005% dos pixels.
 - Banner principal da home e de Impressões Rápidas preservados em todas as larguras.
 
-Relatório e capturas são gerados em `.preview/banners-mobile/`, fora dos arquivos a integrar. Capturas de página inteira das 11 páginas: 390, 768 e 1440 px. Capturas de antes/depois dos três banners: 320, 360, 375, 390, 430, 620, 621, 768 e 1440 px.
+Relatório e capturas são gerados em `.preview/fundos-mobile/`, fora dos arquivos a integrar. Capturas de página inteira das 11 páginas: 390, 768 e 1440 px. Capturas de antes/depois dos dois banners: 320, 360, 375, 390, 430, 620, 621, 768 e 1440 px.
 
 ## Correção final autorizada dos banners
 
@@ -73,11 +74,24 @@ A regra mobile `.hero-copy` impunha posicionamento absoluto também aos banners 
 | Cortes Especiais | Título cortado em 320/360 px; parágrafo e botão cortados em 320–620 px. |
 | Sobre | Parágrafo cortado em 320–430 px. |
 
-Não foram reduzidas fontes nem trocadas imagens. O HTML e as melhorias comerciais da etapa 2 foram preservados integralmente. O relatório anterior de SEO e suas capturas permanecem como histórico; a nova matriz confirmou também que os recortes antigos foram eliminados.
+Na correção de recortes não foram reduzidas fontes nem trocadas imagens. As melhorias comerciais da etapa 2 foram preservadas integralmente. O relatório anterior de SEO e suas capturas permanecem como histórico; a nova matriz confirmou também que os recortes antigos foram eliminados.
 
-Resultado final: 121 combinações aprovadas, 103 comparações de página inteira preservadas e 87 capturas (54 de banners antes/depois e 33 de páginas completas). Os casos já aprovados foram reaproveitados; somente casos incompletos por espera ou captura foram revalidados, sem outra alteração de produção. As capturas completas tiveram a pintura estabilizada antes da revisão.
+Resultado da correção anterior (commit 8fff965): 121 combinações aprovadas, 103 comparações de página inteira preservadas e 87 capturas (54 de banners antes/depois e 33 de páginas completas). Os casos já aprovados foram reaproveitados; somente casos incompletos por espera ou captura foram revalidados, sem outra alteração de produção. As capturas completas tiveram a pintura estabilizada antes da revisão.
 
-Nenhuma nova dependência, fonte, imagem ou requisição de produção foi acrescentada. A verificação local de integridade e transferência não equivale a uma medição de Core Web Vitals em usuários reais.
+Nenhuma nova dependência, fonte ou arquivo de imagem foi acrescentado. No mobile, Cortes passa a requisitar a fotografia limpa já existente (`cortes-especiais-maquina-card.png`, aproximadamente 985 KiB); o arquivo não foi reexportado ou comprimido nesta revisão. A verificação local não equivale a uma medição de Core Web Vitals em usuários reais.
+
+## Revisão visual final — fundos mobile
+
+Antes da retomada, já estavam salvos no ambiente a classe de Cortes e as regras de fundo/contraste. As quatro capturas preliminares também existiam. O trabalho foi continuado a partir desses arquivos, sem reaplicar as correções nem modificar Impressos.
+
+- **Cortes Especiais:** o arquivo `cortes-especiais-maquina-idy.png` é uma montagem com cabeçalho, menu e textos incorporados na imagem. Em até 620 px, somente o fundo do banner passa a usar `cortes-especiais-maquina-card.png`, a fotografia limpa da máquina já usada em Serviços. A montagem original continua intacta no projeto, no desktop e na imagem da seção inferior.
+- **Sobre:** mantém `fachada-idy-real.png`, inclusive a marca presente na fotografia. A camada sobre a imagem usa o mesmo verde-escuro do site, com opacidade distribuída de 96% a 86%, melhorando a separação do texto branco. Fontes, conteúdo, posições e alturas não são alterados.
+- **Impressos:** nenhum arquivo ou regra visual específica alterado. A comparação com o commit 8fff965 é feita nas 11 larguras.
+- **Demais páginas:** os arquivos de produção permanecem intactos; as duas novas regras têm seletores específicos e só existem dentro do breakpoint de até 620 px.
+
+Resultado desta revisão: **121 combinações aprovadas**, **109 comparações de página inteira preservadas** e **69 capturas** (36 de banners antes/depois e 33 de páginas completas). As posições dos títulos, parágrafos e botões permaneceram iguais em todos os casos; Impressos permaneceu preservado nas 11 larguras. O rótulo inclinado da Xerox em 980 px foi revalidado com renderização consistente, sem alterar o site ou afrouxar a comparação de pixels.
+
+A revisão visual humana continua necessária: testes de navegação e recortes não identificam um menu gravado dentro de uma fotografia. As novas capturas de antes/depois e de desktop são apresentadas para aprovação antes de qualquer publicação.
 
 ## Controle de publicação
 
