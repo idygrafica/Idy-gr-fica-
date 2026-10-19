@@ -56,7 +56,9 @@
     position:absolute!important;inset:0!important;z-index:5!important;width:100%!important;max-width:none!important;
     padding:0!important;margin:0!important
   }
-  .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}
+  .hero-copy{max-width:none!important}
+  /* Posicionamento e padding do banner inicial não devem cortar os banners internos. */
+  .hero .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}
 
   .eyebrow{
     position:absolute!important;top:38px!important;left:28px!important;width:88%!important;
@@ -515,3 +517,18 @@
 
 /* Cor do fundo do botão Orçamento com IA. */
 .nav .cta.cta-ai{background:#1559C9!important}
+
+/* Revisão visual: foto da máquina sem interface gravada e contraste da fachada.
+   Somente os dois banners mobile; arquivos originais e desktop preservados. */
+@media (max-width:620px){
+  .service-hero-cortes{
+    background:#002a1f url("cortes-especiais-maquina-card.png") center/cover no-repeat;
+  }
+  .service-hero-cortes > img{display:none}
+  .service-hero-cortes:after{
+    background:linear-gradient(90deg,rgba(0,42,31,.94),rgba(0,42,31,.82));
+  }
+  .service-hero.facade:after{
+    background:linear-gradient(90deg,rgba(0,42,31,.96),rgba(0,42,31,.86));
+  }
+}
