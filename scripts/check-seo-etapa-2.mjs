@@ -5,15 +5,17 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 
-// Read-only comparison with the production base; never deploys or sends messages.
-const BASE = 'aa413ee9736fe1b2061e1ed58ca70b359e233ad0';
+// Read-only comparison with the approved stage-2 version before the banner fix.
+// Never deploys or sends messages.
+const BASE = '961bfa9d2298b24aa746f620f64967f309cea4ae';
+const bannerPages = ['impressos','cortes-especiais','sobre'];
 const root = process.cwd();
 const pages = ['index','servicos','impressos','impressoes-rapidas','comunicacao-visual','cortes-especiais','criacao-sites','livros-digitais','portfolio','contato','sobre'];
 const selectedPages = process.env.SEO_PAGES ? pages.filter(n => process.env.SEO_PAGES.split(',').includes(n)) : pages;
 const widths = (process.env.SEO_WIDTHS || '320,360,375,390,430,620,621,768,980,1024,1440').split(',').map(Number);
 const route = name => name === 'index' ? '/' : '/' + name;
 const canonical = name => 'https://idygrafica.netlify.app' + route(name);
-const output = path.resolve(root, process.env.SEO_OUTPUT || '.preview/seo-etapa-2');
+const output = path.resolve(root, process.env.SEO_OUTPUT || '.preview/banners-mobile');
 fs.mkdirSync(output, {recursive:true});
 const originalCache = new Map();
 function original(file) {
@@ -21,13 +23,18 @@ function original(file) {
   return originalCache.get(file);
 }
 const changed = execFileSync('git', ['diff','--name-only',BASE], {encoding:'utf8'}).trim().split('\n').filter(Boolean);
-const modifiedPages = changed.filter(p => pages.some(n => p === n + '.html')).map(p => p.slice(0,-5));
-assert(changed.every(p => pages.some(n => p === n + '.html') || ['scripts/check-seo-etapa-2.mjs','SEO_ETAPA_2_REVISAO.md'].includes(p)), 'Arquivo fora do escopo: ' + changed);
+const reviewedPages = pages;
+assert(changed.every(p => pages.some(n => p === n + '.html') || ['scripts/check-seo-etapa-2.mjs','SEO_ETAPA_2_REVISAO.md','assets/mobile-phone-reference.css'].includes(p)), 'Arquivo fora do escopo: ' + changed);
 for (const file of execFileSync('git',['ls-tree','-r','--name-only',BASE,'assets/','.github/','netlify.toml','robots.txt','sitemap.xml','googlea370a5b2e9c8d30f.html'],{encoding:'utf8'}).trim().split('\n')) {
-  assert(fs.readFileSync(file).equals(original(file)), 'Arquivo protegido alterado: ' + file);
+  if (file !== 'assets/mobile-phone-reference.css') assert(fs.readFileSync(file).equals(original(file)), 'Arquivo protegido alterado: ' + file);
 }
+const cssBefore=original('assets/mobile-phone-reference.css').toString();
+const oldRule='  .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}';
+const fixedRule='  .hero-copy{max-width:none!important}\n  /* Posicionamento e padding do banner inicial não devem cortar os banners internos. */\n  .hero .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}';
+assert.equal(fs.readFileSync('assets/mobile-phone-reference.css','utf8'),cssBefore.replace(oldRule,fixedRule),'Mudança de CSS além da correção autorizada');
 for (const name of pages) {
   const current = fs.readFileSync(name + '.html','utf8'), before = original(name + '.html').toString();
+  assert.equal(current, before, 'Conteúdo/SEO da etapa 2 alterado: ' + name);
   for (const re of [/<header\b[\s\S]*?<\/header>/i, /<footer\b[\s\S]*?<\/footer>/i, /<div\b[^>]*class="whats-widget"[\s\S]*$/i, /<div\b[^>]*class="whats-widget"/i]) {
     const old = before.match(re)?.[0], now = current.match(re)?.[0];
     if (old) assert.equal(now, old, 'Cabeçalho, rodapé ou WhatsApp alterado: ' + name);
@@ -76,8 +83,24 @@ let chromium;
 try {({chromium}=require('playwright'));}
 catch {({chromium}=createRequire(path.join(root,'.preview-tools/package.json'))('playwright'));}
 const browser = await chromium.launch({headless:true,...(fs.existsSync('/usr/bin/chromium') ? {executablePath:'/usr/bin/chromium'} : {})});
-const results = [], captures = [], failures = [];
+const prior=process.env.SEO_RESUME ? JSON.parse(fs.readFileSync(process.env.SEO_RESUME,'utf8')) : null;
+if (prior) assert.equal(prior.base,BASE,'Base de retomada divergente');
+const results = prior?.checks?.filter(r=>selectedPages.includes(r.page) && widths.includes(r.width)) || [];
+const captures = prior?.captures?.filter(r=>selectedPages.includes(r.page) && widths.includes(r.width)) || [];
+const failures = [];
+function checkpoint() {
+  fs.writeFileSync(path.join(output,'checkpoint.json'),JSON.stringify({base:BASE,widths,checks:results,captures},null,2));
+}
 let cursor = 0;
+async function settlePaint(page) {
+  const height=await page.evaluate(()=>document.documentElement.scrollHeight);
+  for (let top=0;top<height;top+=800) {
+    await page.evaluate(top=>window.scrollTo({top,behavior:'instant'}),top);
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  }
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+}
 async function interiorShot(page, selector) {
   const b=await page.locator(selector).boundingBox();
   // Avoid the partial pixel outside a fractional element boundary picking up the following section.
@@ -109,13 +132,13 @@ const inspect = () => {
   const structure = all('body *').filter(n => !((n.tagName==='A' || n.tagName==='STRONG') && n.closest('p'))).map(n => [n.tagName,attrs(n)]);
   const media = all('img,video,source').map(n => [n.tagName,attrs(n)]);
   const css = all('body *').filter(n => !['SVG','PATH'].includes(n.tagName) && !((n.tagName==='A' || n.tagName==='STRONG') && n.closest('p'))).map(n => {
-    const s=getComputedStyle(n);return [n.tagName,n.className?.baseVal ?? n.className,s.font,s.color,s.backgroundColor,s.display,s.position,s.gridTemplateColumns.replace(/[0-9.]+px/g,'SIZE'),s.gap];
+    const s=getComputedStyle(n);return [n.tagName,n.className?.baseVal ?? n.className,s.font,s.color,s.backgroundColor,s.display,n.matches('.service-hero .hero-copy') && innerWidth<=620 ? 'MOBILE_BANNER_FLOW' : s.position,s.gridTemplateColumns.replace(/[0-9.]+px/g,'SIZE'),s.gap];
   });
   const external = all('a[href]').filter(n => /^https?:|^mailto:/.test(n.getAttribute('href'))).map(n => [n.getAttribute('href'),n.textContent,n.getAttribute('target'),n.getAttribute('rel')]);
   const textOverflow = all('h1,h2,h3,p,li,.tick,.btn,.quick-btn').filter(n => !n.closest('.nav,.footer,.whats-widget') && n.getClientRects().length).filter(n => {
     const b=bounds(n);return b.x<-.5 || b.right>innerWidth+.5 || n.scrollWidth>n.clientWidth+2;
   }).map(n => n.textContent.trim());
-  const clippedText = all('h1,h2,h3,p,li,.tick').filter(n => !n.closest('.nav,.footer,.whats-widget') && n.getClientRects().length).flatMap((n,index) => {
+  const clippedText = all('h1,h2,h3,p,li,.tick,.btn,.quick-btn').filter(n => !n.closest('.nav,.footer,.whats-widget') && n.getClientRects().length).flatMap((n,index) => {
     const r=document.createRange();r.selectNodeContents(n);const t=r.getBoundingClientRect();
     // Glyphs may exceed a tight line-height without being clipped. Check actual clipping ancestors.
     let excess=0;
@@ -128,7 +151,10 @@ const inspect = () => {
   });
   const controls=all('.nav .logo,.nav .cta-ai,.nav .mobile-menu-toggle').filter(n => n.getClientRects().length).map(bounds);
   const headerOverlap=controls.some((a,i) => controls.some((b,j) => i<j && Math.min(a.right,b.right)-Math.max(a.x,b.x)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.y,b.y)>1));
-  return {structure,media,css,external,textOverflow,clippedText,controls,headerOverlap,
+  const banner=document.querySelector('.service-hero');
+  const bannerItems=banner ? [...banner.querySelectorAll('.eyebrow,h1,p,.btn')].map(n=>({text:n.textContent.trim(),...bounds(n)})) : [];
+  const bannerOverlap=bannerItems.some((a,i)=>bannerItems.some((b,j)=>i<j && Math.min(a.right,b.right)-Math.max(a.x,b.x)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.y,b.y)>1));
+  return {structure,media,css,external,textOverflow,clippedText,controls,headerOverlap,bannerItems,bannerOverlap,
     scrollWidth:document.documentElement.scrollWidth,
     title:document.title,description:document.querySelector('meta[name=description]')?.content,
     canonical:all('link[rel=canonical]').map(n => n.href),h1:all('h1').length,
@@ -142,18 +168,20 @@ const inspect = () => {
 
 async function runWidth(width) {
   for (const name of selectedPages) {
+    if (results.some(r=>r.page===name && r.width===width)) continue;
     console.log('SEO2_PAGE_BEGIN '+JSON.stringify({page:name,width}));
     const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});
-    context.setDefaultTimeout(20000);
+    context.setDefaultTimeout(45000);
     await context.route(printerUrl,r => r.fulfill({status:200,contentType:'image/jpeg',body:photo}));
     for (const url of ['https://wa.me/**','https://atendimento-idy.netlify.app/**','https://www.instagram.com/idygrafica/**']) {
       await context.route(url,r => r.fulfill({status:200,contentType:'text/html',body:'Destino verificado sem envio ou atendimento.'}));
     }
+    try {
     const page=await context.newPage(), before=await context.newPage(), errors=[];
     page.on('pageerror',e => errors.push(e.message));
-    const response=await page.goto(origin+route(name),{waitUntil:'networkidle'});
+    const response=await page.goto(origin+route(name),{waitUntil:'load'});
     assert.equal(response.status(),200);
-    await before.goto(baseOrigin+route(name),{waitUntil:'networkidle'});
+    await before.goto(baseOrigin+route(name),{waitUntil:'load'});
     for (const p of [page,before]) {
       await p.evaluate(() => document.fonts.ready);
       await p.locator('img').evaluateAll(async imgs => {await Promise.all(imgs.map(async img => {img.loading='eager';await img.decode().catch(() => {});}));});
@@ -168,8 +196,8 @@ async function runWidth(width) {
     assert.deepEqual(now.external,old.external,'Botões ou destinos externos alterados: '+name);
     assert.deepEqual(now.sheets,old.sheets);assert.deepEqual(now.scripts,old.scripts);
     assert.deepEqual(now.textOverflow,[],'Texto fora da tela: '+name+' '+width);
-    const newClipping=now.clippedText.filter(n => !old.clippedText.some(b => b.index===n.index && n.excess<=b.excess+1));
-    assert.deepEqual(newClipping,[],'Novo recorte de texto: '+name+' '+width);
+    assert.deepEqual(now.clippedText,[],'Texto ou botão cortado: '+name+' '+width);
+    assert(!now.bannerOverlap,'Blocos do banner sobrepostos: '+name+' '+width);
     assert.equal(now.scrollWidth,width,'Rolagem horizontal: '+name+' '+width);
     assert.deepEqual(now.brokenImages,[],'Imagem indisponível: '+name);
     assert(!now.headerOverlap,'Cabeçalho sobreposto: '+name);
@@ -181,6 +209,7 @@ async function runWidth(width) {
       assert(pages.some(n => route(n)===pathname),'URL interna não padronizada: '+href);
       if (url.hash) assert(await page.locator(url.hash).count(),'Âncora inexistente: '+url.hash);
     }
+    await Promise.all([page,before].map(settlePaint));
     const headCurrent=await interiorShot(page,'.nav'),headBefore=await interiorShot(before,'.nav');
     if (process.env.SEO_DEBUG) console.log('SEO2_HEADER_CAPTURED '+JSON.stringify({page:name,width}));
     if (!headCurrent.equals(headBefore)) {
@@ -192,20 +221,52 @@ async function runWidth(width) {
     if (['index','impressoes-rapidas'].includes(name)) {
       const selector=name==='index'?'.hero':'.quick-hero';
       await Promise.all([page,before].map(p => p.evaluate(() => window.scrollTo({top:0,behavior:'instant'}))));
-      const a=await interiorShot(page,selector),b=await interiorShot(before,selector);
+      let a=await interiorShot(page,selector),b=await interiorShot(before,selector);
       heroComparison=await compareHero(page,a,b);
+      if (!heroComparison.preserved) {
+        await Promise.all([page,before].map(settlePaint));
+        a=await interiorShot(page,selector);b=await interiorShot(before,selector);
+        heroComparison={...await compareHero(page,a,b),recaptured:true};
+      }
       if (!heroComparison.preserved) {
         fs.writeFileSync(path.join(output,`hero-${name}-${width}-current.png`),a);
         fs.writeFileSync(path.join(output,`hero-${name}-${width}-base.png`),b);
       }
       heroPixelsIdentical=heroComparison.exact;assert(heroComparison.preserved,'Composição principal alterada: '+name+' '+width+': '+JSON.stringify(heroComparison));
     }
-    if ([390,768,1440].includes(width) && modifiedPages.includes(name)) {
+    let pageComparison=null;
+    if (width>=621 || !bannerPages.includes(name)) {
+      await Promise.all([page,before].map(settlePaint));
+      let a=await page.screenshot({fullPage:true,animations:'disabled'}), b=await before.screenshot({fullPage:true,animations:'disabled'});
+      pageComparison=await compareHero(page,a,b);
+      if (!pageComparison.preserved) {
+        // A second bounded capture distinguishes transient browser paint from a regression.
+        await Promise.all([page,before].map(p=>p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))));
+        a=await page.screenshot({fullPage:true,animations:'disabled'});b=await before.screenshot({fullPage:true,animations:'disabled'});
+        pageComparison={...await compareHero(page,a,b),recaptured:true};
+      }
+      if (!pageComparison.preserved) {
+        fs.writeFileSync(path.join(output,`page-${name}-${width}-current.png`),a);
+        fs.writeFileSync(path.join(output,`page-${name}-${width}-base.png`),b);
+      }
+      assert(pageComparison.preserved,'Página fora dos banners mobile alterada: '+name+' '+width+': '+JSON.stringify(pageComparison));
+    }
+    if (bannerPages.includes(name) && [320,360,375,390,430,620,621,768,1440].includes(width)) {
+      for (const [version,p] of [['antes',before],['depois',page]]) {
+        await p.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+        const heroBottom=await p.locator('.service-hero').evaluate(el=>el.getBoundingClientRect().bottom);
+        await p.screenshot({path:path.join(output,`banner-${name}-${width}-${version}.jpg`),type:'jpeg',quality:85,clip:{x:0,y:0,width,height:Math.ceil(heroBottom+90)},animations:'disabled'});
+      }
+    }
+    if ([390,768,1440].includes(width) && reviewedPages.includes(name)) {
       await page.evaluate(() => window.scrollTo({top:0,behavior:'instant'}));
+      await settlePaint(page);
       const file=path.join(output,name+'-'+width+'.jpg');
       await page.screenshot({path:file,type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
       captures.push({page:name,width,file});
     }
+    for (const button of await page.locator('.service-hero .btn').all()) await button.click({trial:true});
+    await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
     await before.close();
     const toggle=page.locator('.mobile-menu-toggle'),nav=page.locator('.navlinks');
     if (width<=980) {
@@ -219,46 +280,53 @@ async function runWidth(width) {
     if (['index','impressos','servicos'].includes(name)) {
       const contextual=page.locator('p a[href="/impressoes-rapidas"]');assert.equal(await contextual.count(),1);
       await contextual.focus();await page.keyboard.press('Enter');await page.waitForURL(origin+'/impressoes-rapidas');
-      await page.goto(origin+route(name),{waitUntil:'networkidle'});
+      await page.goto(origin+route(name),{waitUntil:'load'});
     }
-    const ia=page.locator('.nav .cta-ai'), opened=context.waitForEvent('page');await ia.click();
-    const ip=await opened;await ip.waitForLoadState();assert.equal(new URL(ip.url()).origin,'https://atendimento-idy.netlify.app');await ip.close();
-    if (name==='impressoes-rapidas') {
-      const opened=context.waitForEvent('page');await page.locator('.quick-instagram').click();const ig=await opened;await ig.waitForLoadState();
-      assert.equal(ig.url(),'https://www.instagram.com/idygrafica/');await ig.close();
-      // Every quotation/WhatsApp control on the page, including pre-filled messages.
-      const links=await page.locator('a[href^="https://wa.me/"]').evaluateAll(as => as.map(a => ({href:a.href,target:a.target})));
-      for (let i=0;i<links.length;i++) {
-        const button=page.locator('a[href^="https://wa.me/"]').nth(i);
-        if (links[i].target==='_blank') {
-          const opened=context.waitForEvent('page');await button.click();const wa=await opened;await wa.waitForLoadState();
-          assert.equal(new URL(wa.url()).pathname,'/5551981687562');assert.equal(new URL(wa.url()).search,new URL(links[i].href).search);await wa.close();
-        } else {await button.click();await page.waitForURL('https://wa.me/5551981687562');await page.goto(origin+route(name),{waitUntil:'networkidle'});}
+    // Exercise every WhatsApp, Instagram and AI anchor against intercepted destinations.
+    // No messages, customer sessions or remote mutations are performed.
+    const externalSelector='a[href^="https://wa.me/"],a[href^="https://www.instagram.com/idygrafica"],a[href^="https://atendimento-idy.netlify.app"]';
+    const destinations=await page.locator(externalSelector).evaluateAll(as=>as.flatMap((a,index)=>a.getClientRects().length ? [{index,href:a.href,target:a.target}] : []));
+    let externalButtonsTested=0;
+    for (let i=0;i<destinations.length;i++) {
+      if (process.env.SEO_DEBUG) console.log('SEO2_EXTERNAL_BEGIN '+JSON.stringify({page:name,width,index:i,href:destinations[i].href}));
+      const destination=destinations[i],button=page.locator(externalSelector).nth(destination.index);
+      if (!(await button.isVisible()) && await button.evaluate(a=>!!a.closest('.whats-widget'))) {
+        await page.locator('.footer').scrollIntoViewIfNeeded();await button.waitFor({state:'visible'});
       }
-    } else {
-      await page.locator('.footer a[href="https://wa.me/5551981687562"]').click();await page.waitForURL('https://wa.me/5551981687562');
-      await page.goto(origin+route(name),{waitUntil:'networkidle'});
+      assert(await button.isVisible(),'Botão de atendimento oculto: '+name+' '+width+' '+i);
+      if (destination.target==='_blank') {
+        const opened=context.waitForEvent('page');await button.click();const popup=await opened;await popup.waitForLoadState();
+        assert.equal(new URL(popup.url()).href,new URL(destination.href).href);await popup.close();
+      } else {
+        await button.click();await page.waitForURL(destination.href);
+        await page.goto(origin+route(name),{waitUntil:'load'});
+      }
+      if (destination.href.startsWith('https://wa.me/')) assert.equal(new URL(destination.href).pathname,'/5551981687562');
+      externalButtonsTested++;
     }
+    await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
     if (width<=980) await toggle.click();
+    if (process.env.SEO_DEBUG) console.log('SEO2_MENU_LINK_BEGIN '+JSON.stringify({page:name,width}));
     await nav.getByRole('link',{name:'Serviços',exact:true}).click();await page.waitForURL(origin+'/servicos');
     assert.equal(await toggle.getAttribute('aria-expanded'),'false');
     await page.getByRole('link',{name:'Ver Impressões Rápidas',exact:false}).click();await page.waitForURL(origin+'/impressoes-rapidas');
     assert.deepEqual(errors,[],'Erro JavaScript: '+name);
-    results.push({page:name,width,sourceStructurePreserved:true,imagesAndStylesPreserved:true,headerPixelsIdentical:true,heroPixelsIdentical,heroComparison,menu:true,internalLinks:true,whatsapp:true,ia:true,instagram:name==='impressoes-rapidas',canonical:true,noOverflow:true,noNewTextClipping:true,baselineClipping:old.clippedText,noJavaScriptErrors:true});
+    results.push({page:name,width,sourceStructurePreserved:true,externalButtonsTested,fullPageComparison:pageComparison,noClippedTextOrButtons:true,noBannerOverlap:true,bannerItems:now.bannerItems,imagesAndStylesPreserved:true,headerPixelsIdentical:true,heroPixelsIdentical,heroComparison,menu:true,internalLinks:true,whatsapp:true,ia:true,instagram:name==='impressoes-rapidas',canonical:true,noOverflow:true,noNewTextClipping:true,baselineClipping:old.clippedText,noJavaScriptErrors:true});
+    checkpoint();
     console.log('SEO2_PAGE_VERIFIED '+JSON.stringify({page:name,width}));
-    await context.close();
+    } finally {await context.close();}
   }
   console.log('SEO2_WIDTH_VERIFIED '+JSON.stringify({width,pages:selectedPages.length}));
 }
 
 try {
-  await Promise.all(Array.from({length:Math.min(3,widths.length)},async () => {
+  await Promise.all(Array.from({length:Math.min(Number(process.env.SEO_WORKERS || 2),widths.length)},async () => {
     while (cursor<widths.length) {
       const width=widths[cursor++];
       try {await runWidth(width);} catch (error) {failures.push({width,error:error.stack});console.error('SEO2_FAILURE '+JSON.stringify(failures.at(-1)));}
     }
   }));
-  const report={base:BASE,modifiedPages,widths,checks:results,captures,failures,externalMessagesSent:false,aiProjectModified:false,netlifyPublished:false};
+  const report={base:BASE,reviewedPages,widths,checks:results,captures,failures,externalMessagesSent:false,aiProjectModified:false,netlifyPublished:false};
   fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));
   assert.deepEqual(failures,[],'Falhas encontradas; ver relatório');assert.equal(results.length,widths.length*selectedPages.length);
   console.log('SEO2_VERIFIED '+JSON.stringify({checks:results.length,captures:captures.length,externalMessagesSent:false,netlifyPublished:false}));

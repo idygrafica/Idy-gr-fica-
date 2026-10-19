@@ -56,7 +56,9 @@
     position:absolute!important;inset:0!important;z-index:5!important;width:100%!important;max-width:none!important;
     padding:0!important;margin:0!important
   }
-  .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}
+  .hero-copy{max-width:none!important}
+  /* Posicionamento e padding do banner inicial não devem cortar os banners internos. */
+  .hero .hero-copy{position:absolute!important;inset:0!important;padding:0!important;max-width:none!important}
 
   .eyebrow{
     position:absolute!important;top:38px!important;left:28px!important;width:88%!important;
