@@ -65,3 +65,22 @@ if(mobileWhats){
   mobileWhatsQuery.addEventListener('change',positionMobileWhats);
   positionMobileWhats();
 }
+
+// Fecha o submenu de serviços ao navegar, clicar fora ou mudar o tamanho da tela.
+const serviceMenus=[...document.querySelectorAll('.nav-service-menu')];
+const closeServiceMenus=()=>serviceMenus.forEach(menu=>{menu.open=false;});
+serviceMenus.forEach(menu=>menu.addEventListener('click',event=>{
+  if(event.target.closest('a'))closeServiceMenus();
+}));
+document.addEventListener('click',event=>{
+  if(!event.target.closest('.nav-service-group'))closeServiceMenus();
+});
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape')return;
+  const openMenu=serviceMenus.find(menu=>menu.open);
+  if(!openMenu)return;
+  closeServiceMenus();
+  (window.matchMedia('(max-width:980px)').matches?menuBtn:openMenu.querySelector('summary'))?.focus();
+});
+menuBtn?.addEventListener('click',closeServiceMenus);
+window.matchMedia('(max-width:980px)').addEventListener('change',closeServiceMenus);
