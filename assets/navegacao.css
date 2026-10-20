@@ -34,3 +34,20 @@
  body:not(.quick-page) .nav .container{gap:12px!important}
  body:not(.quick-page) .navlinks{gap:14px}
 }
+
+/* Acesso às páginas de impressão sem acrescentar um item longo ao cabeçalho. */
+.nav-service-group{position:relative;display:flex;align-items:center;gap:2px}
+.nav-service-menu>summary{display:grid;place-items:center;width:24px;height:34px;cursor:pointer;list-style:none;border-radius:5px}
+.nav-service-menu>summary::-webkit-details-marker{display:none}
+.nav-service-menu>summary:focus-visible{outline:2px solid #1559c9;outline-offset:2px}
+.nav-service-menu[open]>summary svg{transform:rotate(180deg)}
+.nav-service-links{position:absolute;left:0;top:100%;z-index:105;min-width:245px;display:grid;gap:4px;padding:10px;background:#fff;border:1px solid #dfe7e2;border-radius:12px;box-shadow:0 12px 28px #001c1526}
+.nav-service-links a{display:flex;align-items:center;min-height:44px;padding:8px 10px;font-size:14px;line-height:1.4;white-space:normal;border-radius:6px}
+.nav-service-links a:hover,.nav-service-links a:focus-visible{background:#f0f7f2}
+a.daily-context-link{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:980px){
+ .nav-service-group{display:block;width:100%}
+ .nav-service-group>a{padding-right:48px}
+ .nav-service-menu>summary{position:absolute;right:0;top:0;width:44px;height:44px}
+ .nav-service-links{position:static;min-width:0;width:100%;margin:2px 0 8px;padding:3px 0 3px 10px;border:0;border-left:2px solid #1559c9;border-radius:0;box-shadow:none}
+}
