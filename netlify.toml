@@ -18,3 +18,16 @@
   to = "/impressoes-rapidas"
   status = 301
   force = true
+
+# Rota exclusiva de Impressões do Dia a Dia.
+[[redirects]]
+  from = "/impressoes-do-dia-a-dia"
+  to = "/impressoes-do-dia-a-dia.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/impressoes-do-dia-a-dia/"
+  to = "/impressoes-do-dia-a-dia"
+  status = 301
+  force = true
