@@ -218,3 +218,22 @@
  .home-printer-badge>span,.home-printer-badge li{font-size:11px}
  .home-art .home-benefits{gap:10px 12px}
 }
+
+/* No celular, a composição aparece entre a apresentação e os controles. */
+@media(max-width:620px){
+ .home-opening-grid{display:flex;flex-direction:column;gap:0}
+ .home-intro,.home-art{display:contents}
+ .home-presentation{order:0;width:100%;padding-top:22px}
+ .home-composition{order:1;max-width:400px;align-self:center;background:linear-gradient(145deg,transparent 25%,#d8f2b9 25.2%,#b3e45b 42%,transparent 42.2%)}
+ .home-art .home-ribbon{order:2;width:100%}
+ .home-contact{order:3;width:100%;padding:8px 0}
+ .home-art .home-benefits{order:4;width:100%;margin-top:8px}
+ .home-hero-printer{width:clamp(176px,56.5vw,240px)}
+ .home-actions{grid-template-columns:1fr}
+ .home-actions .home-button{min-height:52px;padding:12px 14px;gap:8px;font-size:15px;line-height:1.35}
+ .home-actions .home-button>svg:first-child{width:24px;height:24px}
+ .home-actions .home-button>svg:last-child{display:block;width:18px;height:18px}
+}
+@media(max-width:350px){
+ .home-hero-printer{width:176px}
+}
