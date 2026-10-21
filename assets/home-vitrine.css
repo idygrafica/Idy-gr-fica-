@@ -149,46 +149,72 @@
  .home-actions .home-button>span{min-width:0}
 }
 
-/* Composição da abertura: arquivos oficiais, sem alteração das imagens. */
-.home-art{display:flex;flex-direction:column;justify-content:center;gap:8px;min-height:520px}
-.home-composition{position:relative;width:100%;height:440px;flex:none;overflow:hidden}
+/* Composição da referência: mascote inteiro e foto original da Xerox. */
+.home-art{display:grid;grid-template-columns:minmax(0,1fr) 116px;align-items:end;gap:12px;min-height:540px}
+.home-composition{position:relative;width:100%;height:520px;overflow:hidden}
 .home-composition .home-character{position:absolute;inset:0;height:100%;min-height:0;overflow:visible;z-index:2;pointer-events:none}
-.home-composition .home-mascot{width:400px;left:-12px;top:12px;transform:none}
-.home-hero-printer{position:absolute;right:0;bottom:8px;width:clamp(220px,18vw,250px);margin:0;z-index:1;display:grid;gap:7px}
+.home-composition .home-mascot{width:340px;left:-20px;top:8px;transform:none}
+.home-hero-printer{position:absolute;right:0;bottom:4px;width:clamp(260px,23vw,330px);margin:0;z-index:1}
 .home-hero-printer img{width:100%;height:auto;border-radius:12px}
-.home-hero-printer figcaption{font-size:13px;font-weight:800;line-height:1.4;text-align:center;color:var(--home-blue)}
-.home-art .home-benefits{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px;align-self:stretch;padding:0 0 18px}
-.home-art .home-benefits li{font-size:13px;align-items:flex-start}
+.home-printer-badge{position:absolute;right:20px;top:-135px;width:195px;max-width:100%;padding:12px 14px;border-radius:14px;background:#ffe34b;color:var(--home-blue);box-shadow:0 6px 16px #07366a15;transform:rotate(-5deg);text-align:left}
+.home-printer-badge>span{display:block;font-size:12px;line-height:1.4}
+.home-printer-badge>strong{display:block;font-size:21px;line-height:1.2;margin:2px 0 6px;letter-spacing:-.025em}
+.home-printer-badge ul{list-style:none;padding:0;margin:0;display:grid;gap:2px}
+.home-printer-badge li{font-size:12px;line-height:1.4}
+.home-printer-badge li:before{content:"✓";margin-right:5px;font-weight:800}
+.home-art .home-ribbon:after{left:78%;height:150px}
+.home-art .home-ribbon p{left:82%;right:clamp(-64px,calc(700px - 52vw),-16px);top:20px;font-size:16px;max-width:180px;transform:rotate(-5deg)}
+.home-art .home-benefits{grid-template-columns:1fr;gap:24px;align-self:center;padding:130px 0 20px}
+.home-art .home-benefits li{font-size:12px;gap:8px;align-items:flex-start}
+.home-art .home-benefits svg{width:25px;height:25px}
+@media(min-width:901px){
+ .home-opening-grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:20px}
+ .home-intro h1{font-size:clamp(38px,4vw,58px)}
+}
 @media(min-width:901px) and (max-width:1150px){
- .home-composition .home-mascot{width:360px;left:-22px;top:24px}
- .home-hero-printer{width:220px}
- .home-art .home-benefits{gap:12px 10px}
- .home-art .home-benefits li{font-size:12px}
+ .home-art{grid-template-columns:minmax(0,1fr) 100px;gap:8px}
+ .home-composition .home-mascot{width:320px;top:36px;left:-20px}
+ .home-hero-printer{width:260px}
+ .home-printer-badge{right:0;top:-220px;width:150px;padding:10px}
+ .home-printer-badge>strong{font-size:17px}
+ .home-printer-badge>span,.home-printer-badge li{font-size:11px}
+ .home-art .home-benefits{gap:20px}
 }
 @media(max-width:900px){
- .home-art{min-height:0}
- .home-composition{height:400px}
- .home-composition .home-mascot{width:405px;left:10px;top:0}
- .home-hero-printer{right:10px;width:210px}
- .home-art .home-benefits{padding:0 10px 18px;gap:14px 20px}
- .home-art .home-benefits li{font-size:14px}
+ .home-art{grid-template-columns:minmax(0,1fr) 104px;min-height:0;gap:12px}
+ .home-composition{height:480px}
+ .home-composition .home-mascot{width:310px;left:-20px;top:10px}
+ .home-hero-printer{width:290px;bottom:4px}
+ .home-printer-badge{right:0;top:-170px;width:195px;padding:10px 12px}
+ .home-printer-badge>strong{font-size:21px}
+ .home-printer-badge>span,.home-printer-badge li{font-size:11px}
+ .home-art .home-ribbon p{right:-16px;font-size:14px;top:20px}
+ .home-art .home-benefits{gap:22px;padding:120px 0 18px}
 }
 @media(max-width:620px){
- .home-composition{height:340px}
- .home-composition .home-mascot{width:clamp(310px,92vw,405px);left:clamp(-34px,calc(10vw - 73px),-11px);top:0}
- .home-hero-printer{right:0;bottom:8px;width:clamp(146px,46vw,180px);gap:5px}
- .home-hero-printer figcaption{font-size:12px}
- .home-art .home-benefits{padding:0 0 12px;gap:12px 14px}
+ .home-art{display:flex;flex-direction:column;gap:4px;justify-content:flex-start;background:linear-gradient(145deg,transparent 25%,#d8f2b9 25.2%,#b3e45b 42%,transparent 42.2%)}
+ .home-composition{height:360px;order:0;flex:none}
+ .home-composition .home-mascot{width:230px;left:-10px;top:10px}
+ .home-hero-printer{width:clamp(146px,46vw,220px);bottom:0}
+ .home-printer-badge{right:0;top:calc(-360px + 100%);width:180px;padding:8px 10px;transform:none;box-shadow:none}
+ .home-printer-badge>span{font-size:12px;line-height:1.25}
+ .home-printer-badge>strong{font-size:19px;margin:2px 0 4px}
+ .home-printer-badge li{font-size:12px;line-height:1.25}
+ .home-printer-badge ul{gap:1px}
+ .home-art .home-ribbon{position:static;inset:auto;order:1;background:none;align-self:stretch;z-index:1}
+ .home-art .home-ribbon:after{display:none}
+ .home-art .home-ribbon p{position:static;transform:none;max-width:none;color:var(--home-blue);font-size:12.5px;line-height:1.4;text-align:center;margin:0}
+ .home-art .home-ribbon p br{display:none}
+ .home-art .home-benefits{order:2;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 0 12px;gap:12px 14px;align-self:stretch}
  .home-art .home-benefits li{font-size:12px;line-height:1.4;gap:8px}
  .home-art .home-benefits svg{width:23px;height:23px}
 }
 @media(max-width:350px){
- .home-composition{height:320px}
- .home-composition .home-mascot{left:-38px}
+ .home-composition{height:340px}
+ .home-composition .home-mascot{width:220px;left:-14px}
+ .home-hero-printer{width:146px}
+ .home-printer-badge{top:calc(-340px + 100%);width:148px;padding:8px}
+ .home-printer-badge>strong{font-size:16px}
+ .home-printer-badge>span,.home-printer-badge li{font-size:11px}
  .home-art .home-benefits{gap:10px 12px}
-}
-
-@media(min-width:500px) and (max-width:620px){
- .home-composition{height:380px}
- .home-hero-printer{width:220px}
 }
