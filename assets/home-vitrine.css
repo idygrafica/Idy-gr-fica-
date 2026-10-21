@@ -127,3 +127,24 @@
 @media(max-width:620px){.home-page .container{width:calc(100% - 32px)}.home-intro{padding-top:30px}.home-page .home-kicker{font-size:11px}.home-intro h1{font-size:clamp(36px,9.8vw,57px);line-height:1.06;margin-bottom:16px}.home-lead{font-size:17px;line-height:1.5;margin-bottom:20px}.home-search-bar{padding-left:10px;gap:5px}.home-search input{font-size:14px}.home-search-bar>svg{width:20px;height:20px}.home-search-bar button{padding:12px 15px;font-size:14px}.home-actions{gap:10px;grid-template-columns:1fr}.home-button{min-height:60px;font-size:16px;justify-content:flex-start;padding:13px 18px}.home-button span br{display:none}.home-online{font-size:12px}.home-art{min-height:420px;grid-template-columns:minmax(0,1fr) 122px;margin-top:6px}.home-character{min-height:420px}.home-mascot{width:405px;left:54%;top:8px}.home-ribbon:after{left:29%;height:146px}.home-ribbon p{left:54%;font-size:18px;top:25px;max-width:175px}.home-benefits{gap:23px;padding-left:3px;padding-bottom:25px}.home-benefits li{font-size:12px;gap:7px;align-items:flex-start}.home-benefits svg{width:23px;height:23px}.home-shortcuts .container{gap:24px 13px;padding:24px 0}.home-shortcuts a{gap:9px;align-items:flex-start}.home-shortcuts svg{width:29px;height:29px}.home-shortcuts strong{font-size:13px}.home-shortcuts small{font-size:12px}.home-showcase{padding:32px 0 24px}.home-section-heading{display:block;margin-bottom:20px}.home-section-heading h2{font-size:32px;max-width:350px}.home-outline{margin-top:16px}.home-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.home-product-art{height:150px}.home-product-copy{padding:13px 29px 14px 11px}.home-product h3{font-size:15px;line-height:1.3}.home-product p{font-size:12px}.home-product-arrow{right:7px;width:18px;height:18px;top:15px}.home-more{display:grid;gap:0;margin-top:24px}.home-more strong{margin-bottom:4px}.home-quick-grid{grid-template-columns:1fr;padding:28px 0}.home-quick-copy{max-width:440px}.home-quick h2{font-size:43px}.home-quick-copy li{font-size:15px}.home-quick .home-button{font-size:15px}.home-printer{width:100%;max-width:350px;margin:-12px auto -22px}.home-quick-details{grid-column:auto;grid-template-columns:1fr;gap:18px;padding:22px}.home-quick-details>p{font-size:26px}.home-quick-details>div,.home-quick-details>a{font-size:15px}.home-trust .container{gap:25px 12px;padding:25px 0 32px}.home-trust .container>div{gap:9px;padding:0;border:0}.home-trust svg{width:27px;height:27px}.home-trust strong{font-size:13px}.home-trust small{font-size:12px}.home-page .footer{padding-bottom:85px}}
 @media(max-width:350px){.home-mascot{left:57%}.home-art{grid-template-columns:minmax(0,1fr) 110px}.home-ribbon p{left:54%;font-size:16px}.home-product-art{height:135px}.home-cup{left:15%}.home-bottle{right:10%}.home-flyers b{font-size:11px}.home-flyers>span+span{padding:8px 4px}.home-shirt img{width:55px}.home-cap{right:4%;width:67px}}
 @media(prefers-reduced-motion:reduce){html:has(.home-page){scroll-behavior:auto}.home-product{transition:none}.home-product:hover{transform:none}}
+
+/* Ajuste final: aproxima a vitrine no celular, preservando o mascote de 405 px. */
+@media(max-width:620px){
+ .home-intro{padding:22px 0 8px}
+ .home-intro .home-kicker{margin-bottom:8px}
+ .home-intro h1{margin-bottom:12px}
+ .home-lead{margin-bottom:16px}
+ .home-search{margin-bottom:12px}
+ .home-online{margin-top:10px}
+ .home-art{margin-top:0}
+ .home-shortcuts .container{padding:18px 0;row-gap:16px}
+ .home-showcase{padding-top:26px}
+ .home-section-heading .home-outline{margin-top:12px}
+}
+@media(min-width:360px) and (max-width:620px){
+ .home-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .home-actions .home-button{min-height:72px;padding:12px 10px;gap:8px;font-size:14px;line-height:1.35}
+ .home-actions .home-button>svg:first-child{width:24px;height:24px}
+ .home-actions .home-button>svg:last-child{display:none}
+ .home-actions .home-button>span{min-width:0}
+}
