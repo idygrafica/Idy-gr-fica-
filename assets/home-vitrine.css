@@ -176,7 +176,7 @@
  .home-composition .home-mascot{width:320px;top:36px;left:-20px}
  .home-hero-printer{width:260px}
  .home-printer-badge{width:170px;padding:12px}
- .home-printer-badge>strong{font-size:20px}
+ .home-printer-badge>strong{font-size:19px}
  .home-printer-badge>span,.home-printer-badge li{font-size:12.65px}
  .home-art .home-benefits{gap:20px}
 }
@@ -224,7 +224,7 @@
  .home-opening-grid{display:flex;flex-direction:column;gap:0}
  .home-intro,.home-art{display:contents}
  .home-presentation{order:0;width:100%;padding-top:22px}
- .home-composition{--home-composition-height:max(410px,calc(clamp(176px,56.5vw,240px) + 196px));order:1;height:var(--home-composition-height);max-width:400px;align-self:center;background:linear-gradient(145deg,transparent 25%,#d8f2b9 25.2%,#b3e45b 42%,transparent 42.2%)}
+ .home-composition{--home-composition-height:max(416px,calc(clamp(176px,56.5vw,240px) + 196px));order:1;height:var(--home-composition-height);max-width:400px;align-self:center;background:linear-gradient(145deg,transparent 25%,#d8f2b9 25.2%,#b3e45b 42%,transparent 42.2%)}
  .home-art .home-ribbon{order:2;width:100%}
  .home-contact{order:3;width:100%;padding:8px 0}
  .home-art .home-benefits{order:4;width:100%;margin-top:8px}
