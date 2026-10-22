@@ -21,7 +21,7 @@ jobs:
           ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
       - name: Test exact proposal without publishing
         env:
-          SOURCE_SHA: a4de367824754c5acb4a83e5b540dcff4e9ce7b1
+          SOURCE_SHA: b63794654069a09b2f3719c6d5e212bba831c1c4
           PLAYWRIGHT_PATH: ${{ github.workspace }}/.preview-tools/node_modules/playwright
         run: node scripts/check-xerox-selo.cjs
       - name: Save mobile and desktop previews

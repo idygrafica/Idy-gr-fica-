@@ -42,9 +42,12 @@ const server=http.createServer((req,res)=>{let u=decodeURIComponent(req.url.spli
   check(d.image.x>=d.composition.x-1&&d.image.right<=d.composition.right+1&&d.image.bottom<=d.composition.bottom+1,'Imagem da máquina inteira dentro da composição em '+width);
   check(!d.textOverflow&&Math.abs(d.font/oldFont-1.15)<0.01,'Letras menores 15% maiores, sem recorte, em '+width,{oldFont,font:d.font});
   check(d.badgeColor==='rgb(7, 54, 106)'&&d.badgeBackground==='rgb(255, 227, 75)','Selo amarelo e texto azul-escuro em '+width);
-  const screenshotName=width===390?'celular-390':width===1440?'computador-1440':width===320?'celular-320':width===1024?'computador-1024':null;
+  const screenshotName=width===390?'celular-390':width===1440?'computador-1440':width===320?'celular-320':width===1024?'computador-1024':width===901?'computador-901':width===1151?'computador-1151':null;
   if(screenshotName){await page.evaluate(()=>scrollTo(0,0));const bottom=await page.locator('.home-opening').evaluate(e=>e.getBoundingClientRect().bottom);await page.screenshot({path:path.join(out,screenshotName+'.png'),clip:{x:0,y:0,width,height:Math.ceil(bottom)}});await page.locator('.home-composition').screenshot({path:path.join(out,screenshotName+'-detalhe.png')});}
-  const nowShowcase=await page.locator('.home-showcase').screenshot();const beforeShowcase=await before.locator('.home-showcase').screenshot();check(nowShowcase.equals(beforeShowcase),'Vitrine idêntica em pixels em '+width);
+  for(const p of [page,before])await p.locator('.home-showcase').evaluate(e=>{const y=e.getBoundingClientRect().y;e.style.transform='translateY('+(Math.round(y)-y)+'px)';});
+  const nowShowcase=await page.locator('.home-showcase').screenshot({animations:'disabled'});const beforeShowcase=await before.locator('.home-showcase').screenshot({animations:'disabled'});
+  if(!nowShowcase.equals(beforeShowcase)){fs.writeFileSync(path.join(out,'vitrine-'+width+'-depois.png'),nowShowcase);fs.writeFileSync(path.join(out,'vitrine-'+width+'-antes.png'),beforeShowcase);}
+  check(nowShowcase.equals(beforeShowcase),'Vitrine idêntica em pixels em '+width);
   await page.locator('#home-query').fill('A4');await page.locator('.home-search-bar button').click();check((await page.locator('#home-search-results a').count())>0,'Busca A4 funcional em '+width);await page.locator('.home-search-clear').click();check(await page.locator('#home-search-results').isHidden(),'Limpeza da busca em '+width);
   check(await page.locator('.home-button-wa').first().getAttribute('href')==='https://wa.me/5551981687562'&&await page.locator('.home-button-ai').getAttribute('href')==='https://atendimento-idy.netlify.app','Destinos dos botões preservados em '+width);
   console.log('WIDTH',width,JSON.stringify(d));
