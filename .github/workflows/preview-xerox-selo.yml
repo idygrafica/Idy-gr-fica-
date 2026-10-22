@@ -1,0 +1,33 @@
+name: Prévia Xerox e selo (sem publicação)
+on:
+  push:
+    branches: [codex/validacao-xerox-selo]
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install isolated browser
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Test exact proposal without publishing
+        env:
+          SOURCE_SHA: a4de367824754c5acb4a83e5b540dcff4e9ce7b1
+          PLAYWRIGHT_PATH: ${{ github.workspace }}/.preview-tools/node_modules/playwright
+        run: node scripts/check-xerox-selo.cjs
+      - name: Save mobile and desktop previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: previa-xerox-selo
+          path: .preview/xerox-selo/
+          retention-days: 14
