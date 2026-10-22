@@ -44,6 +44,7 @@ const server=http.createServer((req,res)=>{let u=decodeURIComponent(req.url.spli
   check(d.badgeColor==='rgb(7, 54, 106)'&&d.badgeBackground==='rgb(255, 227, 75)','Selo amarelo e texto azul-escuro em '+width);
   const screenshotName=width===390?'celular-390':width===1440?'computador-1440':width===320?'celular-320':width===1024?'computador-1024':width===901?'computador-901':width===1151?'computador-1151':null;
   if(screenshotName){await page.evaluate(()=>scrollTo(0,0));const bottom=await page.locator('.home-opening').evaluate(e=>e.getBoundingClientRect().bottom);await page.screenshot({path:path.join(out,screenshotName+'.png'),clip:{x:0,y:0,width,height:Math.ceil(bottom)}});await page.locator('.home-composition').screenshot({path:path.join(out,screenshotName+'-detalhe.png')});}
+  for(const p of [page,before]){await p.mouse.move(0,0);await p.addStyleTag({content:'.nav,.whats-widget{visibility:hidden!important}.home-product{transition:none!important}'});}
   for(const p of [page,before])await p.locator('.home-showcase').evaluate(e=>{const y=e.getBoundingClientRect().y;e.style.transform='translateY('+(Math.round(y)-y)+'px)';});
   const nowShowcase=await page.locator('.home-showcase').screenshot({animations:'disabled'});const beforeShowcase=await before.locator('.home-showcase').screenshot({animations:'disabled'});
   if(!nowShowcase.equals(beforeShowcase)){fs.writeFileSync(path.join(out,'vitrine-'+width+'-depois.png'),nowShowcase);fs.writeFileSync(path.join(out,'vitrine-'+width+'-antes.png'),beforeShowcase);}
