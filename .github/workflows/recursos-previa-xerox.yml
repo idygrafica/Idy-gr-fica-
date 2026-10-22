@@ -1,0 +1,19 @@
+name: Recursos da prévia Xerox (sem publicação)
+on:
+  push:
+    branches: [codex/validacao-xerox-selo]
+permissions:
+  contents: read
+jobs:
+  recursos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recursos-originais-xerox
+          path: |
+            assets/mascote-idy.png
+            assets/raizes-estradas-jornada-luz.png
+          retention-days: 7
