@@ -1,11 +1,12 @@
 name: Loja na página inicial — testes e prévias
 on:
   push:
-    branches: [codex/loja-na-pagina-inicial]
+    branches: [codex/loja-na-pagina-inicial, main]
 permissions:
   contents: read
 jobs:
   preview:
+    if: github.ref == 'refs/heads/codex/loja-na-pagina-inicial'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -31,8 +32,46 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: node scripts/loja/netlify-check.mjs
+      - name: Conferir a prévia pública sem alterar a produção
+        env:
+          LOJA_PUBLIC_URL: https://deploy-preview-9--idygrafica.netlify.app/
+        run: node scripts/loja/public-check.mjs
+      - name: Testar carrinho e abertura do WhatsApp na prévia pública
+        env:
+          LOJA_PUBLIC_URL: https://deploy-preview-9--idygrafica.netlify.app/
+        run: node scripts/loja/public-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: loja-inicio-previas-e-testes
           path: .preview/loja/
+  published:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verificar o site oficial após publicação autorizada
+        env:
+          LOJA_PUBLIC_URL: https://idygrafica.netlify.app/
+        run: node scripts/loja/public-check.mjs
+      - name: Instalar navegador para conferir o site público
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Conferir o carrinho no site público sem enviar mensagens
+        env:
+          LOJA_PUBLIC_URL: https://idygrafica.netlify.app/
+        run: node scripts/loja/public-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: loja-inicio-publicacao-verificada
+          path: |
+            .preview/loja/public-check.json
+            .preview/loja/public-browser.json

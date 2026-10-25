@@ -69,7 +69,7 @@ try {
   await page.locator('#clear-cart').click();await close();
   // Capturas mostram dados reais de teste: 3 folhas A3 + cartões sob orçamento.
   await page.locator('#option-a3').selectOption('frente');await page.locator('#qty-a3').fill('3');await page.locator('[data-add="a3"]').click();await page.locator('[data-add="cartoes"]').click();
-  await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`.preview/loja/loja-${width}.png`,fullPage:true});
+  await page.waitForTimeout(4300);await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`.preview/loja/loja-${width}.png`,fullPage:true});
   if(width<=1100){await open();assert.equal(await page.locator('#cart').getAttribute('role'),'dialog');await page.screenshot({path:`.preview/loja/carrinho-${width}.png`,fullPage:true});await page.keyboard.press('Escape');assert.equal(await page.locator('.cart-toggle').getAttribute('aria-expanded'),'false');}
   assert.deepEqual(errors,[]);assert(network.every(host=>!host.includes('wa.me')&&!host.includes('atendimento-idy')));
   results.push({viewport:width,result:'passed',scenarios:['8 produtos','categorias','pesquisa com acento','sem resultados','A3 3=9','100 duplex=600','alteração de quantidade','persistência','orçamento misto sem preço inventado','remover','limpar','WhatsApp','link IA','sem overflow','imagens carregadas','quantidade inválida','sem envio externo'],javascriptErrors:errors,externalRequestsBlocked:network,realMessagesSent:0,institutionalRoutes:11});
