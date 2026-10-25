@@ -1,0 +1,61 @@
+name: SEO técnico da loja — auditoria sem publicação
+on:
+  push:
+    branches: [codex/seo-tecnico-loja]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node scripts/seo-technical/audit-public.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seo-loja-auditoria-publica
+          path: .preview/seo-technical/
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Gerar catálogo rastreável com os dados atuais
+        run: node scripts/seo-technical/build-catalog.mjs
+      - name: Conferir fontes comerciais, corpos das páginas e configuração SEO
+        run: node scripts/seo-technical/check-source.mjs
+      - name: Testar preços e carrinho atuais
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+      - name: Instalar navegador isolado
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Comparar as 12 páginas com a versão atual e conferir SEO
+        run: node scripts/seo-technical/browser.mjs
+      - name: Conferir busca, categorias, quantidades, carrinho e WhatsApp
+        if: always()
+        run: node scripts/loja/browser.mjs
+      - name: Conferir aliases e catálogo no Netlify da PR
+        if: always()
+        run: node scripts/seo-technical/check-preview.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seo-loja-testes-e-comparacoes
+          path: |
+            .preview/seo-technical/
+            .preview/loja/browser-report.json

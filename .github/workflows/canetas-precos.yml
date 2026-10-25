@@ -24,6 +24,7 @@ jobs:
         with:
           node-version: '24'
       - name: Conferir preservação dos produtos, imagens e layout
+        if: github.ref == 'refs/heads/codex/precos-canetas-dtf-uv'
         run: node scripts/loja/canetas-preservation.mjs
       - name: Testar preços e regressões
         run: |

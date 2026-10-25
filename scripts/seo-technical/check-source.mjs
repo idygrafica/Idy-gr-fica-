@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {products} from '../../assets/loja/catalog.js';
+import {renderProductCard} from '../../assets/loja/product-card.js';
+const baseline=JSON.parse(readFileSync('scripts/seo-technical/baseline.json','utf8'));
+const pages=JSON.parse(readFileSync('scripts/seo-technical/pages.json','utf8'));
+const allowed=new Set([...pages.map(p=>p.file),'netlify.toml','assets/loja/app.js','.github/workflows/canetas-precos.yml','.github/workflows/loja-inicio.yml','scripts/loja/public-check.mjs']);
+const hash=b=>createHash('sha1').update(Buffer.from(`blob ${b.length}\0`)).update(b).digest('hex');
+for(const f of baseline.files)if(!allowed.has(f.path))assert.equal(hash(readFileSync(f.path)),f.sha,'Arquivo comercial/protegido alterado: '+f.path);
+let bodies=0;
+for(const page of pages){
+ const before=execFileSync('git',['show',baseline.commit+':'+page.file],{encoding:'utf8'}).split('</head>')[1];
+ const current=readFileSync(page.file,'utf8').split('</head>')[1].replace(/<!-- idy:catalog:start -->[\s\S]*?<!-- idy:catalog:end -->/,'');
+ assert.equal(current,before,'Conteúdo/estrutura visível alterado em '+page.file);bodies++;
+}
+const previousApp=execFileSync('git',['show',baseline.commit+':assets/loja/app.js'],{encoding:'utf8'});
+const currentApp=readFileSync('assets/loja/app.js','utf8');
+assert.equal(currentApp.slice(currentApp.indexOf('function renderCart()')),previousApp.slice(previousApp.indexOf('function renderCart()')),'Carrinho, quantidades ou handlers comerciais alterados');
+const oldTemplate=previousApp.split("$('#product-grid').innerHTML=visible.map(p=>`")[1].split("`).join('');")[0];
+const {money}=await import('../../assets/loja/cart.js');
+const renderBefore=new Function('p','money','return `'+oldTemplate+'`;');
+for(const p of products)assert.equal(renderProductCard(p).replace(' id="produto-'+p.id+'"',''),renderBefore(p,money),'Apresentação/preço de produto alterado: '+p.id);
+const xml=readFileSync('sitemap.xml','utf8');const locs=[...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);
+assert.deepEqual([...locs].sort(),pages.map(p=>'https://idygrafica.netlify.app'+p.path).sort());
+assert.equal(new Set(locs).size,12);assert(locs.every(u=>!new URL(u).hash&&!new URL(u).search));
+const robots=readFileSync('robots.txt','utf8');assert(robots.includes('Allow: /'));assert(robots.includes('Sitemap: https://idygrafica.netlify.app/sitemap.xml'));assert(!/Disallow:\s*\/\s*$/m.test(robots));
+const html=readFileSync('index.html','utf8');
+assert.equal((html.match(/data-product=/g)||[]).length,8);
+for(const p of products)assert(html.includes('id="produto-'+p.id+'"'));
+const config=JSON.parse(execFileSync('python3',['-c',"import json,tomllib;print(json.dumps(tomllib.load(open('netlify.toml','rb'))))"],{encoding:'utf8'}));
+assert.equal(config.build.publish,'.');assert.equal(config.build.command,'node scripts/seo-technical/build-catalog.mjs');
+assert(!config.redirects.some(r=>r.from.includes('*')),'Regra geral pode criar soft 404 ou interceptar o atendimento');
+for(const p of pages){const alias=p.path==='/'?'/index.html':p.path+'.html';const redirect=config.redirects.find(r=>r.from===alias);assert(redirect&&redirect.status===301&&redirect.to===p.path);}
+assert(config.redirects.every(r=>r.status===301&&r.from.endsWith('.html')),'Não forçar barras finais: Netlify normaliza os caminhos antes das regras');
+const before=hash(Buffer.from(html));execFileSync('node',['scripts/seo-technical/build-catalog.mjs']);assert.equal(hash(readFileSync('index.html')),before,'Build não é idempotente');
+mkdirSync('.preview/seo-technical',{recursive:true});
+const report={base:baseline.commit,pages:pages.length,bodiesPreserved:bodies,productsUnchanged:products.length,commercialLogicUnchanged:true,stylesAndImagesUnchanged:true,pricesUnchanged:true,sitemapCanonicalUrls:locs.length,robotsAllowsCrawl:true,staticCatalog:true,buildIdempotent:true,productionPublished:false};
+writeFileSync('.preview/seo-technical/source-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
