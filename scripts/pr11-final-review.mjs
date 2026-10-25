@@ -45,16 +45,17 @@ try{
  for(const width of [1440,390]){
   const context=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});
   // A barra de colaboração não pertence à loja; bloqueada só no navegador de QA.
-  await context.route('**/.netlify/scripts/cdp',r=>r.fulfill({contentType:'text/javascript',body:''}));
+  await context.route(/\/\.netlify\/scripts\/cdp(?:\?|$)/,r=>r.fulfill({contentType:'text/javascript',body:''}));
   // Simular abertura do aplicativo sem enviar mensagens nem iniciar atendimento.
   await context.route('https://wa.me/**',r=>r.fulfill({contentType:'text/html',body:'Destino conferido sem enviar mensagem.'}));
   const page=await context.newPage(),before=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   for(const p of pages){
-   await Promise.all([page.goto(preview+p.path,{waitUntil:'networkidle'}),before.goto(production+p.path,{waitUntil:'networkidle'})]);
+   await Promise.all([page.goto(preview+p.path,{waitUntil:'domcontentloaded'}),before.goto(production+p.path,{waitUntil:'domcontentloaded'})]);
    for(const site of [page,before]){
     await site.evaluate(()=>document.fonts.ready);
-    await site.locator('img').evaluateAll(async images=>{await Promise.all(images.map(async img=>{img.loading='eager';await img.decode().catch(()=>{});}));});
+    await site.locator('img').evaluateAll(async images=>{await Promise.race([Promise.all(images.map(async img=>{img.loading='eager';await img.decode().catch(()=>{});})),new Promise(r=>setTimeout(r,20000))]);});
+    const missing=await site.locator('img').evaluateAll(images=>images.filter(i=>new URL(i.src).origin===location.origin&&(!i.complete||!i.naturalWidth)).map(i=>i.src));assert.deepEqual(missing,[],'Imagem local não carregou');
     await site.mouse.move(0,0);
    }
    assert.equal(await page.title(),p.title);assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),production+p.path);
@@ -69,7 +70,7 @@ try{
    }
    report.pages.find(x=>x.path===p.path)['visual'+width]={pixelIdentical:true,nativeVideoRegionMasked:await page.locator('video').count()>0,previewToolbarExcluded:true};
   }
-  await before.close();await page.goto(preview+'/',{waitUntil:'networkidle'});
+  await before.close();await page.goto(preview+'/',{waitUntil:'domcontentloaded'});
   const open=async()=>{if(width<1101&&!await page.locator('#cart').isVisible())await page.locator('.cart-toggle').click();};
   const close=async()=>{if(width<1101)await page.keyboard.press('Escape');};
   for(const [cat,count] of [['impressoes',1],['cartoes',1],['pastas',2],['comandas',1],['adesivos',1],['brindes',2],['todos',8]]){await page.locator('[data-category="'+cat+'"]').click();assert.equal(await page.locator('.product').count(),count);}
@@ -86,7 +87,7 @@ try{
   const quoted=new URL(await page.locator('#checkout').getAttribute('href'));assert.equal(quoted.pathname,'/5551981687562');assert.match(quoted.searchParams.get('text'),/Preço a confirmar/);
   const popup=context.waitForEvent('page');await page.locator('#checkout').click();const external=await popup;await external.waitForLoadState();assert.equal(new URL(external.url()).pathname,'/5551981687562');await external.close();
   await page.locator('[data-quantity="0"]').fill('500');await page.locator('[data-quantity="0"]').press('Tab');assert.match(await page.locator('#cart-totals').innerText(),/2\.000,00/);
-  await close();await page.reload({waitUntil:'networkidle'});await open();assert.match(await page.locator('#cart-totals').innerText(),/2\.000,00/);
+  await close();await page.reload({waitUntil:'domcontentloaded'});await open();assert.match(await page.locator('#cart-totals').innerText(),/2\.000,00/);
   await page.locator('[data-remove="0"]').click();assert.equal(await page.locator('#checkout').getAttribute('aria-disabled'),'true');await close();
   assert.equal(new URL(await page.locator('.ai').getAttribute('href')).origin,'https://atendimento-idy.netlify.app');
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);
