@@ -36,10 +36,10 @@ function renderProducts(){
  $('#product-grid').innerHTML=visible.map(p=>`<article class="product" data-product="${p.id}">
  <div class="product-photo photo-${p.photo}" role="img" aria-label="${p.name}: imagem da referência aprovada"></div>
  <div class="product-content"><h3>${p.name}</h3><p class="product-description">${p.description}</p>
- <label class="sr-only" for="option-${p.id}">Opção de ${p.name}</label><select id="option-${p.id}" class="product-option">${p.options.map(o=>`<option value="${o.id}">${o.label}${o.priceCents!==null?' · '+money(o.priceCents):''}</option>`).join('')}</select>
- <div class="price">${p.options[0].priceCents===null?'<strong>Sob orçamento</strong><small>Valor sujeito a orçamento.</small>':`<strong>${money(p.options[0].priceCents)}<small>/folha</small></strong><small>R$ 3,00 por face · sem desconto automático</small>`}</div>
- <div class="product-action"><label for="qty-${p.id}">${p.id==='cartoes'?'Lotes':'Qtd.'}</label><input id="qty-${p.id}" type="number" min="1" max="100000" step="1" value="1" inputmode="numeric" aria-label="Quantidade de ${p.id==='cartoes'?'lotes de ':''}${p.name}"></div>
- <button class="add-product" data-add="${p.id}">${p.id==='a3'?'Adicionar ao carrinho':'Solicitar orçamento'}</button></div></article>`).join('');
+ <label class="sr-only" for="option-${p.id}">${p.quantityPrices?'Quantidade':'Opção'} de ${p.name}</label><select id="option-${p.id}" class="product-option">${p.quantityPrices?Object.entries(p.quantityPrices).map(([n,price])=>`<option value="${n}">${Number(n).toLocaleString('pt-BR')} unidades · ${money(price)}/un.</option>`).join('')+'<option value="other">Outra quantidade · orçamento</option>':p.options.map(o=>`<option value="${o.id}">${o.label}${o.priceCents!==null?' · '+money(o.priceCents):''}</option>`).join('')}</select>
+ <div class="price">${p.quantityPrices?`<strong><small>A partir de </small>${money(Math.min(...Object.values(p.quantityPrices)))}<small>/un.</small></strong><small>— para 1.000 unidades</small>`:p.options[0].priceCents===null?'<strong>Sob orçamento</strong><small>Valor sujeito a orçamento.</small>':`<strong>${money(p.options[0].priceCents)}<small>/folha</small></strong><small>R$ 3,00 por face · sem desconto automático</small>`}</div>
+ <div class="product-action"><label for="qty-${p.id}">${p.id==='cartoes'?'Lotes':'Qtd.'}</label><input id="qty-${p.id}" type="number" min="1" max="100000" step="1" value="${p.defaultQuantity||1}" inputmode="numeric" aria-label="Quantidade de ${p.id==='cartoes'?'lotes de ':''}${p.name}"></div>
+ <button class="add-product" data-add="${p.id}">${p.id==='a3'||p.quantityPrices?'Adicionar ao carrinho':'Solicitar orçamento'}</button></div></article>`).join('');
  $('.empty-results').hidden=visible.length>0;
  $('#search-status').textContent=query||category!=='todos'?`${visible.length} produto(s) encontrado(s)` : '';
 }
@@ -60,13 +60,30 @@ $('.all-products').addEventListener('click',()=>{category='todos';query='';$('#s
 $('#product-grid').addEventListener('change',e=>{
  if(!e.target.matches('.product-option'))return;
  const product=products.find(p=>p.id===e.target.closest('[data-product]').dataset.product);
+ if(product.quantityPrices){
+  const input=$(`#qty-${product.id}`);
+  if(e.target.value!=='other')input.value=e.target.value;
+  else if(Object.hasOwn(product.quantityPrices,Number(input.value)))input.value='1';
+  syncQuantityPrice(product);return;
+ }
  const option=product.options.find(o=>o.id===e.target.value);
  if(option.priceCents!==null)e.target.closest('.product-content').querySelector('.price strong').innerHTML=money(option.priceCents)+'<small>/folha</small>';
+});
+function syncQuantityPrice(product){
+ const amount=Number($(`#qty-${product.id}`).value),priced=Object.hasOwn(product.quantityPrices,amount);
+ $(`#option-${product.id}`).value=priced?String(amount):'other';
+ $(`[data-add="${product.id}"]`).textContent=priced?'Adicionar ao carrinho':'Solicitar orçamento';
+}
+$('#product-grid').addEventListener('input',e=>{
+ if(!e.target.matches('.product-action input'))return;
+ const product=products.find(p=>p.id===e.target.closest('[data-product]').dataset.product);
+ if(product.quantityPrices)syncQuantityPrice(product);
 });
 $('#product-grid').addEventListener('click',e=>{
  const button=e.target.closest('[data-add]');if(!button)return;
  const id=button.dataset.add;const input=$(`#qty-${id}`);
- try{cart=addItem(cart,id,$(`#option-${id}`).value,input.value);save();toast(`${products.find(p=>p.id===id).name}: adicionado ao carrinho.`);}catch(error){input.focus();toast(error.message);}
+ const product=products.find(p=>p.id===id);
+ try{cart=addItem(cart,id,product.quantityPrices?product.options[0].id:$(`#option-${id}`).value,input.value);save();toast(`${product.name}: adicionado ao carrinho.`);}catch(error){input.focus();toast(error.message);}
 });
 $('#cart-items').addEventListener('click',e=>{
  const remove=e.target.closest('[data-remove]');const change=e.target.closest('[data-change]');

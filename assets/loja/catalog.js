@@ -8,7 +8,7 @@ export const products = [
   { id:'comandas', name:'Comandas', category:'comandas', description:'1, 2 ou 3 vias · diversos tamanhos', photo:4, options:[{id:'1via',label:'1 via',priceCents:null},{id:'2vias',label:'2 vias',priceCents:null},{id:'3vias',label:'3 vias',priceCents:null}] },
   { id:'adesivos', name:'Adesivos e etiquetas', category:'adesivos', description:'Diversos tamanhos e materiais', photo:5, options:[{id:'personalizado',label:'Tamanho e material sob consulta',priceCents:null}] },
   { id:'brindes', name:'Brindes personalizados', category:'brindes', description:'Camisetas, canecas, agendas e muito mais', photo:6, options:[{id:'caneca',label:'Caneca',priceCents:null},{id:'camiseta',label:'Camiseta',priceCents:null},{id:'agenda',label:'Agenda',priceCents:null},{id:'outro',label:'Outro brinde',priceCents:null}] },
-  { id:'canetas', name:'Canetas personalizadas', category:'brindes', description:'Diversas cores e modelos · sob consulta', photo:7, options:[{id:'personalizada',label:'Personalização sob consulta',priceCents:null}] }
+  { id:'canetas', name:'Canetas personalizadas', category:'brindes', description:'Personalização DTF UV · diversas cores e modelos', photo:7, defaultQuantity:100, quantityPrices:{100:520,500:400,1000:360}, options:[{id:'personalizada',label:'Personalização DTF UV',priceCents:null}] }
 ];
 export const categories = [
   {id:'todos',label:'Todos os produtos',icon:'grid'}, {id:'impressoes',label:'Impressões',icon:'printer'},

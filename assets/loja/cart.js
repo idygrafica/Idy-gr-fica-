@@ -10,7 +10,9 @@ export function itemDetails(item) {
   const product = products.find(p=>p.id===item.productId);
   const option = product?.options.find(o=>o.id===item.optionId);
   if (!option) throw new Error('Produto ou opção indisponível.');
-  return {...item, quantity:quantity(item.quantity), product, option, totalCents:option.priceCents===null ? null : option.priceCents*quantity(item.quantity)};
+  const amount=quantity(item.quantity);
+  const priceCents=product.quantityPrices ? (Object.hasOwn(product.quantityPrices,amount)?product.quantityPrices[amount]:null) : option.priceCents;
+  return {...item, quantity:amount, product, option:{...option,priceCents}, totalCents:priceCents===null ? null : priceCents*amount};
 }
 export function restoreCart(raw) {
   try {

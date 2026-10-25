@@ -1,0 +1,709 @@
+{
+  "commit": "953c57a2f51199a1d2a5564facdb02762290177a",
+  "files": [
+    {
+      "path": ".github/workflows/impressoes-rapidas-preview.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9714aa0e83c7d32cf9903455c85a5b9fc812ad22",
+      "size": 1929,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/9714aa0e83c7d32cf9903455c85a5b9fc812ad22"
+    },
+    {
+      "path": ".github/workflows/loja-inicio.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "536382c4176f46dee02574a33eeeda27275050ae",
+      "size": 3025,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/536382c4176f46dee02574a33eeeda27275050ae"
+    },
+    {
+      "path": ".github/workflows/seo-etapa-1.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fbf0203e1a23b351786b04381949f9e2e0d1a63",
+      "size": 1180,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/2fbf0203e1a23b351786b04381949f9e2e0d1a63"
+    },
+    {
+      "path": "IMPRESSOES_RAPIDAS_REVISAO.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30bd2a45a5d55049060bc0b86d6bc00d7b44517a",
+      "size": 5746,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/30bd2a45a5d55049060bc0b86d6bc00d7b44517a"
+    },
+    {
+      "path": "LOJA_INTEGRACAO.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22be077bd2c4df13ca740ddfe26476d2033ed103",
+      "size": 2564,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/22be077bd2c4df13ca740ddfe26476d2033ed103"
+    },
+    {
+      "path": "SEO_ETAPA_1_REVISAO.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c400fd8e1556c688a05ac9a6d06f80d20360dcc",
+      "size": 2831,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/7c400fd8e1556c688a05ac9a6d06f80d20360dcc"
+    },
+    {
+      "path": "SEO_ETAPA_2_REVISAO.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c479bada665f6a840ae41843b484d69c31fb2d6",
+      "size": 10491,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/7c479bada665f6a840ae41843b484d69c31fb2d6"
+    },
+    {
+      "path": "assets/app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2994d17202058ca2fe86d3fa7ce21dc62baa459c",
+      "size": 4097,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/2994d17202058ca2fe86d3fa7ce21dc62baa459c"
+    },
+    {
+      "path": "assets/comandas-blocos-destaque.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4930898e0b8f365f034745b47d755aeca391a07",
+      "size": 235308,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/e4930898e0b8f365f034745b47d755aeca391a07"
+    },
+    {
+      "path": "assets/comandas-blocos-nova.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4930898e0b8f365f034745b47d755aeca391a07",
+      "size": 235308,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/e4930898e0b8f365f034745b47d755aeca391a07"
+    },
+    {
+      "path": "assets/comandas-blocos-personalizados.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17972847fc45e6c8598343c886e211fca0572efd",
+      "size": 155788,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/17972847fc45e6c8598343c886e211fca0572efd"
+    },
+    {
+      "path": "assets/comandas-blocos-reais.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25b6f7835f4df2b0c23b5f5dea127efbf2c9050a",
+      "size": 215567,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/25b6f7835f4df2b0c23b5f5dea127efbf2c9050a"
+    },
+    {
+      "path": "assets/comunicacao-visual-gremio-medalhas.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3f4a3d79e559248a62e66f9c7444bc7111cfa3f",
+      "size": 2339697,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/d3f4a3d79e559248a62e66f9c7444bc7111cfa3f"
+    },
+    {
+      "path": "assets/comunicacao-visual-inovar.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2cb027a9cbb8eb81578ce24689599dc37a44476",
+      "size": 95020,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c2cb027a9cbb8eb81578ce24689599dc37a44476"
+    },
+    {
+      "path": "assets/comunicacao-visual-pilates.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4cff0954c9fad55952159d3fede83b25131e6fbf",
+      "size": 118347,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/4cff0954c9fad55952159d3fede83b25131e6fbf"
+    },
+    {
+      "path": "assets/comunicacao-visual-refletto.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9519fd9dc8c31644994a6d76066bbb6ff2e10ee1",
+      "size": 145692,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/9519fd9dc8c31644994a6d76066bbb6ff2e10ee1"
+    },
+    {
+      "path": "assets/comunicacao-visual-seguros.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4be03c284881112b34ec60313d9529d52c434310",
+      "size": 170604,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/4be03c284881112b34ec60313d9529d52c434310"
+    },
+    {
+      "path": "assets/cortes-especiais-maquina-card.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "384318423729a2db0fbf26fbeb289c32a406a315",
+      "size": 1007726,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/384318423729a2db0fbf26fbeb289c32a406a315"
+    },
+    {
+      "path": "assets/cortes-especiais-maquina-idy.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdabbe23cc172f167a8a9c74b250c5b50189a49c",
+      "size": 296975,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/fdabbe23cc172f167a8a9c74b250c5b50189a49c"
+    },
+    {
+      "path": "assets/criacao-sites-idy.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b51698f8ab8e064a3d8a4fdd39ec1d697a6cbfe8",
+      "size": 1888325,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/b51698f8ab8e064a3d8a4fdd39ec1d697a6cbfe8"
+    },
+    {
+      "path": "assets/criacao-sites-nova.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1769fde8907482bf2f71b688083ab4bf4de1de5",
+      "size": 1852711,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c1769fde8907482bf2f71b688083ab4bf4de1de5"
+    },
+    {
+      "path": "assets/editoracao-livro-digital.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b7540ff1a8a1cbfea4e204287e964b0f6e2b332",
+      "size": 71470,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/7b7540ff1a8a1cbfea4e204287e964b0f6e2b332"
+    },
+    {
+      "path": "assets/editoracao-livros-digital-nova.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a82ef1a3334714246fcb3f5bc1f010607eb99bc",
+      "size": 1694624,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/1a82ef1a3334714246fcb3f5bc1f010607eb99bc"
+    },
+    {
+      "path": "assets/el-patron.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "152ac379f4466605e1b5ceab938553e4a2c2e6fe",
+      "size": 385300,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/152ac379f4466605e1b5ceab938553e4a2c2e6fe"
+    },
+    {
+      "path": "assets/fachada-comunicacao-visual.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eaceaea756ff1620e64c8b2163332c56f13851fc",
+      "size": 106814,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/eaceaea756ff1620e64c8b2163332c56f13851fc"
+    },
+    {
+      "path": "assets/fachada-idy-real.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab6cbf447151ab51a347ecfdc739cbcd016972bb",
+      "size": 337722,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/ab6cbf447151ab51a347ecfdc739cbcd016972bb"
+    },
+    {
+      "path": "assets/fachada-pai-filho.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9fb00f2da501caa3e9cdcc406572d275dda26855",
+      "size": 347411,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/9fb00f2da501caa3e9cdcc406572d275dda26855"
+    },
+    {
+      "path": "assets/fachadas-trabalhos-idy.mp4",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af0d27d8e7190fae6cf4210fa8d61426db6b4f90",
+      "size": 2855081,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/af0d27d8e7190fae6cf4210fa8d61426db6b4f90"
+    },
+    {
+      "path": "assets/home-vitrine.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e732441e578375054d08a6a58226e33dcb556a59",
+      "size": 25270,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/e732441e578375054d08a6a58226e33dcb556a59"
+    },
+    {
+      "path": "assets/home-vitrine.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c2fd3979ccf4fac5c943374287c6b30cefb39ee",
+      "size": 2665,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/3c2fd3979ccf4fac5c943374287c6b30cefb39ee"
+    },
+    {
+      "path": "assets/impressao-banner-real.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "74e418301a46ec634685c714fa558a01a8369e80",
+      "size": 105175,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/74e418301a46ec634685c714fa558a01a8369e80"
+    },
+    {
+      "path": "assets/impressao-grafica-porto-alegre.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2c6f198d8167d498106b5ed32b869e93157380d",
+      "size": 89568,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c2c6f198d8167d498106b5ed32b869e93157380d"
+    },
+    {
+      "path": "assets/impressoes-do-dia-a-dia.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ee5ae69958e44bb57ba64e77d0916692d82f5ab",
+      "size": 18600,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/5ee5ae69958e44bb57ba64e77d0916692d82f5ab"
+    },
+    {
+      "path": "assets/impressoes-rapidas.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "384c1b528b10a6081deafe37ef59759338a06f8b",
+      "size": 20006,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/384c1b528b10a6081deafe37ef59759338a06f8b"
+    },
+    {
+      "path": "assets/interior-idy.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dfae26d00c56836b49b22980d5f959d01ec51b6c",
+      "size": 307429,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/dfae26d00c56836b49b22980d5f959d01ec51b6c"
+    },
+    {
+      "path": "assets/logo-idy-grafica.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4bcfcd8ba8a5f859da376a4f9a6ac15755249266",
+      "size": 593430,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/4bcfcd8ba8a5f859da376a4f9a6ac15755249266"
+    },
+    {
+      "path": "assets/loja/app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b9e6e77f681180fed2bc08e4a543916bc757c1f",
+      "size": 9912,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/6b9e6e77f681180fed2bc08e4a543916bc757c1f"
+    },
+    {
+      "path": "assets/loja/cart.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6a226eddbe46d333ecb2356e56733b208ddab66",
+      "size": 2824,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c6a226eddbe46d333ecb2356e56733b208ddab66"
+    },
+    {
+      "path": "assets/loja/catalog.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "561b4eb6f01f46adf7515428a63b4ce7381d57fd",
+      "size": 2704,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/561b4eb6f01f46adf7515428a63b4ce7381d57fd"
+    },
+    {
+      "path": "assets/loja/referencia-aprovada.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32287ed24a2d44f65723ed3a18bddad72a103d2f",
+      "size": 229326,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/32287ed24a2d44f65723ed3a18bddad72a103d2f"
+    },
+    {
+      "path": "assets/loja/styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b5265bfc91caaba0009edeff36aa214a731a03ea",
+      "size": 17340,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/b5265bfc91caaba0009edeff36aa214a731a03ea"
+    },
+    {
+      "path": "assets/mascote-idy.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "462b89ded5c0849159378b42431062fe08a9a78e",
+      "size": 1890630,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/462b89ded5c0849159378b42431062fe08a9a78e"
+    },
+    {
+      "path": "assets/material-grafico-personalizado.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a3bc7c8a0ba14cb711aa1bd0afe3a2cb2efbc0f4",
+      "size": 165752,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/a3bc7c8a0ba14cb711aa1bd0afe3a2cb2efbc0f4"
+    },
+    {
+      "path": "assets/mobile-phone-reference.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d0d6d19f37952da62e9867ffc84d7cfb7db456f",
+      "size": 22379,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/1d0d6d19f37952da62e9867ffc84d7cfb7db456f"
+    },
+    {
+      "path": "assets/navegacao.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d5a5895ab831cb3ffdd82d6bd799218f21a0418",
+      "size": 3551,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/4d5a5895ab831cb3ffdd82d6bd799218f21a0418"
+    },
+    {
+      "path": "assets/papeis-materiais-graficos.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d940dc2113ff50f40452d080c4b59cd09737c13f",
+      "size": 142308,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/d940dc2113ff50f40452d080c4b59cd09737c13f"
+    },
+    {
+      "path": "assets/qr-code-whatsapp-idy.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "749a21bc63532daaf8f27b8afad1a1200c20324f",
+      "size": 4062,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/749a21bc63532daaf8f27b8afad1a1200c20324f"
+    },
+    {
+      "path": "assets/raizes-estradas-jornada-luz.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b78a4004051f314580de1061a6e5a71ccc19a83",
+      "size": 2883130,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/0b78a4004051f314580de1061a6e5a71ccc19a83"
+    },
+    {
+      "path": "assets/rotulos-etiquetas-personalizadas.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c065d5e9bf1fc726d0c982d5ea19c80e55d6bdae",
+      "size": 115576,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c065d5e9bf1fc726d0c982d5ea19c80e55d6bdae"
+    },
+    {
+      "path": "assets/sinalizacao-interna.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1622e899c84ce8146896970998e28056c50c4f2",
+      "size": 201641,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c1622e899c84ce8146896970998e28056c50c4f2"
+    },
+    {
+      "path": "assets/sinalizacao-toilette.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1622e899c84ce8146896970998e28056c50c4f2",
+      "size": 201641,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c1622e899c84ce8146896970998e28056c50c4f2"
+    },
+    {
+      "path": "assets/style.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f73963b94579ff695168e37cee6360fb5223a9af",
+      "size": 37835,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/f73963b94579ff695168e37cee6360fb5223a9af"
+    },
+    {
+      "path": "assets/titulos-mobile.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea0bb8d6622150bb7d1aab0e595adcac685cd727",
+      "size": 171,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/ea0bb8d6622150bb7d1aab0e595adcac685cd727"
+    },
+    {
+      "path": "assets/whatsapp-3d.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad234c4adea9acb05ebcddef40e1aeabd8a90a8b",
+      "size": 134278,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/ad234c4adea9acb05ebcddef40e1aeabd8a90a8b"
+    },
+    {
+      "path": "assets/wind-banner-comunicacao-visual.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3dbb9f48b90c34afd4d0aed0af392e00a780fc98",
+      "size": 68564,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/3dbb9f48b90c34afd4d0aed0af392e00a780fc98"
+    },
+    {
+      "path": "assets/xerox-color-560-home.webp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "06ecc985b6e35923fe0a19101e0ae6e8a7612624",
+      "size": 127152,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/06ecc985b6e35923fe0a19101e0ae6e8a7612624"
+    },
+    {
+      "path": "comunicacao-visual.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8760d1c7bb4abfa5c3edc81c1e500307b7a51bb",
+      "size": 7429,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/d8760d1c7bb4abfa5c3edc81c1e500307b7a51bb"
+    },
+    {
+      "path": "contato.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "165f8bc3ebbd3996c4aa6ca2d402992a256b3cd0",
+      "size": 6092,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/165f8bc3ebbd3996c4aa6ca2d402992a256b3cd0"
+    },
+    {
+      "path": "cortes-especiais.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e73c0b67185501cf18f122e96a4bb9d9f2005c02",
+      "size": 6448,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/e73c0b67185501cf18f122e96a4bb9d9f2005c02"
+    },
+    {
+      "path": "criacao-sites.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41fdc7b3b0cb4ec97a246a3a2eda2fb1df7aee16",
+      "size": 7624,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/41fdc7b3b0cb4ec97a246a3a2eda2fb1df7aee16"
+    },
+    {
+      "path": "googlea370a5b2e9c8d30f.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "772935db3abc62d0fb7ec348b4e0dc6e4f02382c",
+      "size": 53,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/772935db3abc62d0fb7ec348b4e0dc6e4f02382c"
+    },
+    {
+      "path": "impressoes-do-dia-a-dia.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b20d239fe4f50f03037a3a662ce13dcf305cea9",
+      "size": 22909,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/2b20d239fe4f50f03037a3a662ce13dcf305cea9"
+    },
+    {
+      "path": "impressoes-rapidas.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0066f4f4b5f65e48f22df4841703c4f62cf46503",
+      "size": 20551,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/0066f4f4b5f65e48f22df4841703c4f62cf46503"
+    },
+    {
+      "path": "impressos.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3fb0daf0e7ef47237c8270a1047efbf52a45d72",
+      "size": 6452,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/c3fb0daf0e7ef47237c8270a1047efbf52a45d72"
+    },
+    {
+      "path": "index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5aa681bde0cc3db0c81a87217c104c88eeafbcac",
+      "size": 7814,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/5aa681bde0cc3db0c81a87217c104c88eeafbcac"
+    },
+    {
+      "path": "leia-me.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e76ad87b146067b235fe10ddeb742b99dece03e",
+      "size": 621,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/5e76ad87b146067b235fe10ddeb742b99dece03e"
+    },
+    {
+      "path": "livros-digitais.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac781e187b2c6c044b9b7ed0aeb65d5eb4d078d0",
+      "size": 8930,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/ac781e187b2c6c044b9b7ed0aeb65d5eb4d078d0"
+    },
+    {
+      "path": "netlify.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72915a9d2d0c7fbffb294d9b5689ac2d767bac2b",
+      "size": 655,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/72915a9d2d0c7fbffb294d9b5689ac2d767bac2b"
+    },
+    {
+      "path": "portfolio.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f983cda9f9a3bcc9bc2d0a2e5572678d910dbc48",
+      "size": 6328,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/f983cda9f9a3bcc9bc2d0a2e5572678d910dbc48"
+    },
+    {
+      "path": "rafael.zip",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02109d26033600e1210d602e1dcf7304186ea132",
+      "size": 21584167,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/02109d26033600e1210d602e1dcf7304186ea132"
+    },
+    {
+      "path": "robots.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b44dcb68959ce70bd24b0eeb12b53574f7759fb",
+      "size": 76,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/4b44dcb68959ce70bd24b0eeb12b53574f7759fb"
+    },
+    {
+      "path": "scripts/check-impressoes-rapidas.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91af4a2f9da90760e4afcab1f5166df184276425",
+      "size": 14609,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/91af4a2f9da90760e4afcab1f5166df184276425"
+    },
+    {
+      "path": "scripts/check-seo-etapa-1.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbef51c806aebc6280bdac6c06156c8e7537675e",
+      "size": 12851,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/cbef51c806aebc6280bdac6c06156c8e7537675e"
+    },
+    {
+      "path": "scripts/check-seo-etapa-2.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1cbdb4faa210e3f2599e3879582cb4be2c453acd",
+      "size": 27859,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/1cbdb4faa210e3f2599e3879582cb4be2c453acd"
+    },
+    {
+      "path": "scripts/loja/baseline.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c5c3890f474dd9137b3c3eee02cf2b9eb902126",
+      "size": 22108,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/6c5c3890f474dd9137b3c3eee02cf2b9eb902126"
+    },
+    {
+      "path": "scripts/loja/browser.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4b9e92d67861e96e9274d4bf02b0cacbfbb4248",
+      "size": 7567,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/f4b9e92d67861e96e9274d4bf02b0cacbfbb4248"
+    },
+    {
+      "path": "scripts/loja/cart.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af87f5e99967ef0bb940ca64a7a4d7b52301cb75",
+      "size": 3235,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/af87f5e99967ef0bb940ca64a7a4d7b52301cb75"
+    },
+    {
+      "path": "scripts/loja/netlify-check.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08b7bf7fa0bd5d47278d57accf8592c5d1741ad1",
+      "size": 1908,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/08b7bf7fa0bd5d47278d57accf8592c5d1741ad1"
+    },
+    {
+      "path": "scripts/loja/preservation.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da5f8752c5708c30b442928b7f5dbeef3d88194e",
+      "size": 2253,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/da5f8752c5708c30b442928b7f5dbeef3d88194e"
+    },
+    {
+      "path": "scripts/loja/public-browser.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ab7348eb4472c926ad690b36380544001daa4e9",
+      "size": 2715,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/2ab7348eb4472c926ad690b36380544001daa4e9"
+    },
+    {
+      "path": "scripts/loja/public-check.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "46f6a6a2efc7bee070c9a0d29e8d8afbc4d1325d",
+      "size": 4483,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/46f6a6a2efc7bee070c9a0d29e8d8afbc4d1325d"
+    },
+    {
+      "path": "scripts/loja/server.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d439824bfc1a849ecddf959126ba76dc2c1b8ef1",
+      "size": 1063,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/d439824bfc1a849ecddf959126ba76dc2c1b8ef1"
+    },
+    {
+      "path": "scripts/probe-seo-urls.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a7b22958f070023629c5c598bcabc3a0a439f30",
+      "size": 1969,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/3a7b22958f070023629c5c598bcabc3a0a439f30"
+    },
+    {
+      "path": "seo-idygrafica-18-08-2026.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d7f6a630ede6af8c51bd1aa31eeb1bc325aa568",
+      "size": 416,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/6d7f6a630ede6af8c51bd1aa31eeb1bc325aa568"
+    },
+    {
+      "path": "servicos.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05207b5e380d84972ae26895f03810210c44b585",
+      "size": 8166,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/05207b5e380d84972ae26895f03810210c44b585"
+    },
+    {
+      "path": "site_idy_grafica_corrigido.zip",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac9fd6dec661bd42adae14a9154d663727d26efb",
+      "size": 2179805,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/ac9fd6dec661bd42adae14a9154d663727d26efb"
+    },
+    {
+      "path": "sitemap.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8476725d7c4744f846f3ffbce8e7bd8991cfa08e",
+      "size": 1019,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/8476725d7c4744f846f3ffbce8e7bd8991cfa08e"
+    },
+    {
+      "path": "sobre.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd78a358797ee10ef68d93071cadbda38919f943",
+      "size": 6020,
+      "url": "https://api.github.com/repos/idygrafica/Idy-gr-fica-/git/blobs/bd78a358797ee10ef68d93071cadbda38919f943"
+    }
+  ]
+}
