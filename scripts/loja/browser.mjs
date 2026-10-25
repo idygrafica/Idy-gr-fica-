@@ -43,7 +43,7 @@ try {
   await page.locator('[data-add="cartoes"]').click();await open();
   const url=new URL(await page.locator('#checkout').getAttribute('href'));
   assert.equal(url.pathname,'/5551981687562');assert.match(url.searchParams.get('text'),/Preço a confirmar/);
-  assert.match(await page.locator('#cart-totals').innerText(),/Subtotal aprovado/);assert.match(await page.locator('#cart-totals').innerText(),/9,00/);
+  assert.match(await page.locator('#cart-totals').innerText(),/Subtotal calculado/);assert.match(await page.locator('#cart-totals').innerText(),/9,00/);
   await page.locator('[data-remove="1"]').click();assert.equal(await page.locator('.cart-item').count(),1);
   await page.locator('#clear-cart').click();assert.equal(await page.locator('#checkout').getAttribute('aria-disabled'),'true');
   await close();await page.locator('#option-a3').selectOption('duplex');assert.match(await page.locator('[data-product="a3"] .price').innerText(),/6,00/);
