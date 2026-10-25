@@ -21,7 +21,7 @@ const get=async(url,options={})=>{
  for(let i=0;i<3;i++)try{return await fetch(url,{signal:AbortSignal.timeout(20000),...options});}catch(e){last=e;}
  throw last;
 };
-const browser=await chromium.launch();
+const browser=await chromium.launch({channel:'chrome'});
 try{
  for(const file of ['assets/logo-idy-grafica.png','assets/mascote-idy.png','assets/xerox-color-560-home.webp','assets/loja/referencia-aprovada.jpg','assets/loja/styles.css','assets/loja/catalog.js','assets/loja/cart.js']){
   const [a,b]=await Promise.all([get(preview+'/'+file),get(production+'/'+file)]);assert.equal(a.status,200);assert.equal(b.status,200);

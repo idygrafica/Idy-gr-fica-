@@ -18,10 +18,10 @@ jobs:
           node-version: '24'
       - name: Conferir HTTP e aliases da prévia existente
         run: node scripts/seo-technical/check-preview.mjs
-      - name: Instalar navegador isolado de revisão
+      - name: Preparar ferramenta de revisão com o Chrome do executor
         run: |
           npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
-          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+          google-chrome --version
       - name: Revisar a prévia publicada e preservar a produção
         run: node scripts/pr11-final-review.mjs
       - uses: actions/upload-artifact@v4
