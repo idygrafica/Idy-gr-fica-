@@ -52,6 +52,7 @@ try {
   await page.locator('[data-quantity="0"]').fill('-2');await page.locator('[data-quantity="0"]').press('Tab');assert.equal(await page.locator('[data-quantity="0"]').inputValue(),'100');
   await page.locator('#clear-cart').click();await close();
   assert.equal(await page.locator('.ai').getAttribute('href'),'https://atendimento-idy.netlify.app/');
+  await page.locator('#qty-canetas').fill('1');
   for(const id of ['cartoes','pastas','blocos','comandas','adesivos','brindes','canetas']){
    await page.locator('[data-add="'+id+'"]').click();
   }

@@ -1,0 +1,44 @@
+name: Canetas DTF UV — preços e publicação
+on:
+  push:
+    branches: [codex/precos-canetas-dtf-uv, main]
+    paths:
+      - assets/loja/app.js
+      - assets/loja/cart.js
+      - assets/loja/catalog.js
+      - scripts/loja/canetas*
+      - scripts/loja/browser-canetas.mjs
+      - .github/workflows/canetas-precos.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir preservação dos produtos, imagens e layout
+        run: node scripts/loja/canetas-preservation.mjs
+      - name: Testar preços e regressões
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+      - name: Instalar navegador isolado
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Testar canetas no computador e celular
+        env:
+          PUBLICATION: ${{ github.ref == 'refs/heads/main' && 'true' || '' }}
+        run: node scripts/loja/browser-canetas.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: canetas-precos-testes
+          path: .preview/canetas/
