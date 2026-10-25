@@ -56,6 +56,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Gerar o mesmo HTML inicial do build Netlify
+        run: node scripts/seo-technical/build-catalog.mjs
       - name: Verificar o site oficial após publicação autorizada
         env:
           LOJA_PUBLIC_URL: https://idygrafica.netlify.app/

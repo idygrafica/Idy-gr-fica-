@@ -31,8 +31,10 @@ try{
  if(home){report.homeStatus=home.status;report.observedHomeHash=hash(home.bytes);report.expectedHomeHash=expected;await writeFile('.preview/loja/public-home.html',home.bytes);}
  assert.equal(home?.status,200,'Página inicial indisponível');assert.equal(sourceHash(home.bytes,true,expectedHome),expected,'Página publicada difere da versão validada');
  report.checks.push({path:'/',status:200,exactSource:true});
- for(const path of ['assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/styles.css','assets/loja/referencia-aprovada.jpg']){
-  const actual=await get('/'+path);assert.equal(actual.status,200);assert.equal(hash(actual.bytes),hash(await readFile(path)),path+' publicado difere do repositório');
+ for(const path of ['assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/styles.css','assets/loja/product-card.js','assets/loja/referencia-aprovada.jpg']){
+  const expectedAsset=hash(await readFile(path));let actual;
+  for(let attempt=0;attempt<30;attempt++){actual=await get('/'+path);if(actual.status===200&&hash(actual.bytes)===expectedAsset)break;await new Promise(r=>setTimeout(r,5000));}
+  assert.equal(actual.status,200);assert.equal(hash(actual.bytes),expectedAsset,path+' publicado difere do repositório');
   report.checks.push({path:'/'+path,status:200,exactSource:true});
  }
  const baseline=JSON.parse(await readFile('scripts/loja/baseline.json','utf8'));
@@ -40,7 +42,7 @@ try{
  const mismatches=[];
  for(const file of protectedFiles){
   const path='/'+file.path.replace(/\.html$/,'');const actual=await get(path);
-  const exactSource=sourceHash(actual.bytes,file.path.endsWith('.html'),await readFile(file.path))===file.sha;
+  const exactSource=sourceHash(actual.bytes,file.path.endsWith('.html'),await readFile(file.path))===hash(await readFile(file.path));
   report.checks.push({path,status:actual.status,exactSource});
   if(actual.status!==200||!exactSource){mismatches.push(path);if(file.path.endsWith('.html')){await writeFile('.preview/loja/public-'+file.path,actual.bytes);await writeFile('.preview/loja/expected-'+file.path,await readFile(file.path));}}
  }

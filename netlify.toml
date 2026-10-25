@@ -1,4 +1,5 @@
 [build]
+  command = "node scripts/seo-technical/build-catalog.mjs"
   publish = "."
 
 [[headers]]
@@ -6,11 +7,131 @@
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
 
-# Rota exclusiva da página de Impressões Rápidas.
+# Consolidar endereços antigos nas URLs canônicas, sem remover páginas.
 [[redirects]]
-  from = "/impressoes-rapidas"
-  to = "/impressoes-rapidas.html"
-  status = 200
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/servicos.html"
+  to = "/servicos"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/impressos.html"
+  to = "/impressos"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/comunicacao-visual.html"
+  to = "/comunicacao-visual"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cortes-especiais.html"
+  to = "/cortes-especiais"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/livros-digitais.html"
+  to = "/livros-digitais"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/criacao-sites.html"
+  to = "/criacao-sites"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/portfolio.html"
+  to = "/portfolio"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/sobre.html"
+  to = "/sobre"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/contato.html"
+  to = "/contato"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/impressoes-rapidas.html"
+  to = "/impressoes-rapidas"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/impressoes-do-dia-a-dia.html"
+  to = "/impressoes-do-dia-a-dia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/servicos/"
+  to = "/servicos"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/impressos/"
+  to = "/impressos"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/comunicacao-visual/"
+  to = "/comunicacao-visual"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cortes-especiais/"
+  to = "/cortes-especiais"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/livros-digitais/"
+  to = "/livros-digitais"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/criacao-sites/"
+  to = "/criacao-sites"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/portfolio/"
+  to = "/portfolio"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/sobre/"
+  to = "/sobre"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/contato/"
+  to = "/contato"
+  status = 301
   force = true
 
 [[redirects]]
@@ -19,15 +140,21 @@
   status = 301
   force = true
 
-# Rota exclusiva de Impressões do Dia a Dia.
+[[redirects]]
+  from = "/impressoes-do-dia-a-dia/"
+  to = "/impressoes-do-dia-a-dia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/impressoes-rapidas"
+  to = "/impressoes-rapidas.html"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/impressoes-do-dia-a-dia"
   to = "/impressoes-do-dia-a-dia.html"
   status = 200
   force = true
 
-[[redirects]]
-  from = "/impressoes-do-dia-a-dia/"
-  to = "/impressoes-do-dia-a-dia"
-  status = 301
-  force = true

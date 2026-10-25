@@ -9,7 +9,10 @@ async function probe(path){
  const chain=[];let url=new URL(path,origin).href;
  try{
   for(let i=0;i<6;i++){
-   const response=await fetch(url,{redirect:'manual',signal:AbortSignal.timeout(15000)});
+   let response;
+   for(let attempt=0;attempt<2;attempt++){
+    try{response=await fetch(url,{redirect:'manual',signal:AbortSignal.timeout(15000)});break;}catch(e){if(attempt===1)throw e;}
+   }
    const location=response.headers.get('location'),type=response.headers.get('content-type');
    const step={url,status:response.status,location,robotsHeader:response.headers.get('x-robots-tag')};chain.push(step);
    if(response.status>=300&&response.status<400&&location){url=new URL(location,url).href;continue;}
