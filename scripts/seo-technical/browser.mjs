@@ -37,6 +37,11 @@ try{
    assert.equal(await page.locator('meta[name="robots"],meta[name="googlebot"]').count(),0);
    const snippets=await page.locator('script[type="application/ld+json"]').allTextContents();for(const raw of snippets)JSON.parse(raw);
    const a=await page.screenshot({fullPage:true,animations:'disabled'}),b=await before.screenshot({fullPage:true,animations:'disabled'});
+   if(!a.equals(b)){
+    const name=item.path==='/'?'index':item.path.slice(1);
+    await writeFile(`.preview/seo-technical/diff-${name}-${width}-current.png`,a);
+    await writeFile(`.preview/seo-technical/diff-${name}-${width}-before.png`,b);
+   }
    assert(a.equals(b),'Visual mudou: '+item.path+' em '+width+'px');
    if(item.path==='/'&&[390,1440].includes(width))await page.screenshot({path:`.preview/seo-technical/loja-${width}.png`,fullPage:true});
    if(width===1440){

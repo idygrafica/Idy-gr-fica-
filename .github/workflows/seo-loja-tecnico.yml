@@ -47,7 +47,11 @@ jobs:
       - name: Comparar as 12 páginas com a versão atual e conferir SEO
         run: node scripts/seo-technical/browser.mjs
       - name: Conferir busca, categorias, quantidades, carrinho e WhatsApp
+        if: always()
         run: node scripts/loja/browser.mjs
+      - name: Conferir aliases e catálogo no Netlify da PR
+        if: always()
+        run: node scripts/seo-technical/check-preview.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
