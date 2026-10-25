@@ -10,10 +10,12 @@ await mkdir('.preview/loja',{recursive:true});
 const get=async path=>{const r=await fetch(new URL(path,origin),{signal:AbortSignal.timeout(20000),headers:{'Cache-Control':'no-cache'}});return{status:r.status,bytes:Buffer.from(await r.arrayBuffer())};};
 try{
  const expected=hash(await readFile('index.html'));let home;
- for(let i=0;i<30;i++){
-  try{home=await get('/');if(home.status===200&&hash(home.bytes)===expected)break;}catch{}
-  if(i<29)await new Promise(r=>setTimeout(r,8000));
+ const attempts=origin.hostname.startsWith('deploy-preview-')?1:30;
+ for(let i=0;i<attempts;i++){
+  try{home=await get('/');if(home.status===200&&hash(home.bytes)===expected)break;}catch(e){report.homeError=e.message;}
+  if(i<attempts-1)await new Promise(r=>setTimeout(r,8000));
  }
+ if(home){report.homeStatus=home.status;report.observedHomeHash=hash(home.bytes);report.expectedHomeHash=expected;await writeFile('.preview/loja/public-home.html',home.bytes);}
  assert.equal(home?.status,200,'Página inicial indisponível');assert.equal(hash(home.bytes),expected,'Página publicada difere da versão validada');
  report.checks.push({path:'/',status:200,exactSource:true});
  for(const path of ['assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/styles.css','assets/loja/referencia-aprovada.jpg']){
