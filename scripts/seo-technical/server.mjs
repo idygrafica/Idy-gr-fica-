@@ -12,6 +12,7 @@ export function makeServer(baselineCommit){return http.createServer((req,res)=>{
    const rule=config.redirects.find(r=>r.from===p);
    if(rule?.status===301){res.writeHead(301,{Location:rule.to+url.search}).end();return;}
    if(rule?.status===200)p=rule.to;
+   if(p!=='/'&&p.endsWith('/')){res.writeHead(301,{Location:p.slice(0,-1)+url.search}).end();return;}
   }
   let f=p==='/'?'index.html':p.slice(1).replace(/\/$/,'');if(!extname(f))f+='.html';
   const local=resolve(root,f);if(!local.startsWith(root+sep)){res.writeHead(403).end();return;}

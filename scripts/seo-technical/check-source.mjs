@@ -33,7 +33,7 @@ const config=JSON.parse(execFileSync('python3',['-c',"import json,tomllib;print(
 assert.equal(config.build.publish,'.');assert.equal(config.build.command,'node scripts/seo-technical/build-catalog.mjs');
 assert(!config.redirects.some(r=>r.from.includes('*')),'Regra geral pode criar soft 404 ou interceptar o atendimento');
 for(const p of pages){const alias=p.path==='/'?'/index.html':p.path+'.html';const redirect=config.redirects.find(r=>r.from===alias);assert(redirect&&redirect.status===301&&redirect.to===p.path);}
-for(const path of ['/impressoes-rapidas','/impressoes-do-dia-a-dia'])assert(config.redirects.findIndex(r=>r.from===path+'/')<config.redirects.findIndex(r=>r.from===path&&r.status===200));
+assert(config.redirects.every(r=>r.status===301&&r.from.endsWith('.html')),'Não forçar barras finais: Netlify normaliza os caminhos antes das regras');
 const before=hash(Buffer.from(html));execFileSync('node',['scripts/seo-technical/build-catalog.mjs']);assert.equal(hash(readFileSync('index.html')),before,'Build não é idempotente');
 mkdirSync('.preview/seo-technical',{recursive:true});
 const report={base:baseline.commit,pages:pages.length,bodiesPreserved:bodies,productsUnchanged:products.length,commercialLogicUnchanged:true,stylesAndImagesUnchanged:true,pricesUnchanged:true,sitemapCanonicalUrls:locs.length,robotsAllowsCrawl:true,staticCatalog:true,buildIdempotent:true,productionPublished:false};

@@ -36,7 +36,9 @@ try{
    assert.equal(await page.locator('html').getAttribute('lang'),'pt-BR');
    assert.equal(await page.locator('meta[name="robots"],meta[name="googlebot"]').count(),0);
    const snippets=await page.locator('script[type="application/ld+json"]').allTextContents();for(const raw of snippets)JSON.parse(raw);
-   const a=await page.screenshot({fullPage:true,animations:'disabled'}),b=await before.screenshot({fullPage:true,animations:'disabled'});
+   // Controles nativos do vídeo têm animação de carregamento independente do HTML.
+   // Só essa região é mascarada nos dois lados; arquivo, atributos e corpo são protegidos por hash.
+   const a=await page.screenshot({fullPage:true,animations:'disabled',mask:[page.locator('video')]}),b=await before.screenshot({fullPage:true,animations:'disabled',mask:[before.locator('video')]});
    if(!a.equals(b)){
     const name=item.path==='/'?'index':item.path.slice(1);
     await writeFile(`.preview/seo-technical/diff-${name}-${width}-current.png`,a);
@@ -51,7 +53,7 @@ try{
      if(href.startsWith('#'))assert.equal(await page.locator('[id="'+href.slice(1)+'"]').count(),1,'Âncora quebrada: '+item.path+' '+href);
     }
    }
-   assert.deepEqual(errors,[]);report.push({path:item.path,width,pixelIdentical:true,metadataCorrect:true,javascriptErrors:errors});
+   assert.deepEqual(errors,[]);report.push({path:item.path,width,pixelIdentical:true,nativeVideoRegionMasked:await page.locator('video').count()>0,metadataCorrect:true,javascriptErrors:errors});
    await page.close();await before.close();
   }
   await context.close();

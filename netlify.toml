@@ -7,7 +7,8 @@
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
 
-# Consolidar endereços antigos nas URLs canônicas, sem remover páginas.
+# Arquivos HTML antigos apontam às URLs canônicas.
+# Barras finais e acesso aos arquivos estáticos usam a normalização nativa Netlify.
 [[redirects]]
   from = "/index.html"
   to = "/"
@@ -78,83 +79,5 @@
   from = "/impressoes-do-dia-a-dia.html"
   to = "/impressoes-do-dia-a-dia"
   status = 301
-  force = true
-
-[[redirects]]
-  from = "/servicos/"
-  to = "/servicos"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/impressos/"
-  to = "/impressos"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/comunicacao-visual/"
-  to = "/comunicacao-visual"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/cortes-especiais/"
-  to = "/cortes-especiais"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/livros-digitais/"
-  to = "/livros-digitais"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/criacao-sites/"
-  to = "/criacao-sites"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/portfolio/"
-  to = "/portfolio"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/sobre/"
-  to = "/sobre"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/contato/"
-  to = "/contato"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/impressoes-rapidas/"
-  to = "/impressoes-rapidas"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/impressoes-do-dia-a-dia/"
-  to = "/impressoes-do-dia-a-dia"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/impressoes-rapidas"
-  to = "/impressoes-rapidas.html"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/impressoes-do-dia-a-dia"
-  to = "/impressoes-do-dia-a-dia.html"
-  status = 200
   force = true
 
