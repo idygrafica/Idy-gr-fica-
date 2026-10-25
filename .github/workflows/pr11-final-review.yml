@@ -1,0 +1,33 @@
+name: Revisão final da prévia PR 11 — sem publicação
+on:
+  push:
+    branches: [codex/revisao-final-pr11]
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir HTTP e aliases da prévia existente
+        run: node scripts/seo-technical/check-preview.mjs
+      - name: Instalar navegador isolado de revisão
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Revisar a prévia publicada e preservar a produção
+        run: node scripts/pr11-final-review.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr11-revisao-final-previa
+          path: |
+            .preview/pr11-final/
+            .preview/seo-technical/preview-report.json
