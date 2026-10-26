@@ -6,7 +6,7 @@ A página antes destacava uma publicação digital específica, sem apresentar o
 
 - Estilo branco, azul e detalhes verdes; tipografia ampliada, elementos retos, novo CSS carregado apenas nesta página.
 - Textos sem preços, prazos ou descontos inventados. Espiral, grampeamento e encadernações são preferências para consulta, expressamente sujeitas à confirmação de disponibilidade e viabilidade.
-- Fotografias/ilustrações editoriais já existentes no repositório, identificadas como referências visuais; nenhuma imagem ou identidade da loja foi substituída.
+- Fotografias ilustrativas de livros, materiais de estudo e publicações; nenhuma imagem ou identidade da loja foi substituída. As fotos são carregadas do CDN público Pexels e não representam trabalhos produzidos pela IDY.
 - Cabeçalho, rodapé, script de navegação, telefone comercial e acesso ao atendimento com IA preservados.
 - Seis informações para orçamento: material, formato, páginas, exemplares, cor e acabamento. Links diretos para o WhatsApp comercial, sem envio automático.
 - Título, descrição, Open Graph e dados estruturados alinhados à impressão digital de livros, apostilas e catálogos em Porto Alegre. Canonical `/livros-digitais`, sitemap de 12 páginas, robots e redirecionamentos preservados.
@@ -18,3 +18,13 @@ O workflow dedicado executa os 25 testes comerciais existentes, confere a lista 
 Capturas e resultados ficam no artefato `livros-digitais-revisao`. A prévia nativa do Netlify será conferida após a abertura da PR. O `noindex` automático da prévia é esperado; a página não adiciona bloqueio à produção.
 
 **Não fazer merge nem publicar em produção antes da aprovação visual do responsável.**
+
+## Fotografias
+
+Licença Pexels: https://www.pexels.com/license/ (uso comercial em sites permitido; fotos apresentadas como ilustrativas, sem alegação de autoria/produção IDY).
+
+- Livros: https://www.pexels.com/photo/open-books-with-printed-pages-9247607/
+- Materiais de estudo: Ahmet Polat, https://www.pexels.com/photo/books-and-spiral-notebook-5226071/
+- Publicações/catálogos: alleksana, https://www.pexels.com/photo/a-stack-of-open-magazines-4271613/
+
+Os arquivos editoriais legados foram inspecionados: um deles, apesar do nome, mostra blocos de pedidos; foi descartado nesta página, sem alterar o arquivo original ou seu uso nas demais páginas.

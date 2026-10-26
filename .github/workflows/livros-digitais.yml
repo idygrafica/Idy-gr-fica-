@@ -25,6 +25,8 @@ jobs:
           npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
           ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
       - name: Conferir página, SEO, links e preservação da loja
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-12--idygrafica.netlify.app
         run: node scripts/livros/check.mjs
       - name: Conferir fluxos existentes da loja
         run: node scripts/loja/browser.mjs
@@ -32,9 +34,7 @@ jobs:
         if: always()
         with:
           name: livros-digitais-revisao
+          include-hidden-files: true
           path: |
             .preview/livros/
             .preview/loja/browser-report.json
-            assets/editoracao-livro-digital.webp
-            assets/editoracao-livros-digital-nova.png
-            assets/impressao-grafica-porto-alegre.webp

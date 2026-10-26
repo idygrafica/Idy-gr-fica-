@@ -33,8 +33,9 @@ try{
   const isPreview=origin===preview;
   if(isPreview){
    // A prévia mantém o canonical de produção e o noindex automático do Netlify.
-   const response=await fetch(origin+'/livros-digitais',{signal:AbortSignal.timeout(30000)});assert.equal(response.status,200);
-   const body=await response.text();assert(body.includes('Seu orçamento começa com estas informações.'));
+   let response,body;const expected=section(html,'<main','</main>');
+   for(let attempt=0;attempt<30;attempt++){response=await fetch(origin+'/livros-digitais',{signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-cache'}});body=await response.text();if(response.status===200&&body.includes(expected))break;await new Promise(r=>setTimeout(r,5000));}
+   assert.equal(response.status,200);assert(body.includes(expected),'A prévia ainda não serve este commit');
    assert(!/<meta[^>]+(?:name="robots"|name="googlebot")[^>]+noindex/i.test(body));
    const alias=await fetch(origin+'/livros-digitais.html',{redirect:'manual'});assert.equal(alias.status,301);assert.equal(new URL(alias.headers.get('location'),origin).pathname,'/livros-digitais');
    const slash=await fetch(origin+'/livros-digitais/',{redirect:'manual'});assert.equal(slash.status,301);
