@@ -36,6 +36,9 @@ try{
    let response,body;const expected=section(html,'<main','</main>');
    for(let attempt=0;attempt<30;attempt++){response=await fetch(origin+'/livros-digitais',{signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-cache'}});body=await response.text();if(response.status===200&&body.includes(expected))break;await new Promise(r=>setTimeout(r,5000));}
    assert.equal(response.status,200);assert(body.includes(expected),'A prévia ainda não serve este commit');
+   assert.match(response.headers.get('x-robots-tag')||'',/noindex/i,'Proteção da prévia');
+   const sitemapResponse=await fetch(origin+'/sitemap.xml');assert.equal(sitemapResponse.status,200);assert.equal((await sitemapResponse.text()).match(/<loc>/g).length,12);
+   const robotsResponse=await fetch(origin+'/robots.txt');assert.equal(robotsResponse.status,200);const robots=await robotsResponse.text();assert(!/^Disallow:\s*\/\s*$/mi.test(robots));assert(robots.includes('https://idygrafica.netlify.app/sitemap.xml'));
    assert(!/<meta[^>]+(?:name="robots"|name="googlebot")[^>]+noindex/i.test(body));
    const alias=await fetch(origin+'/livros-digitais.html',{redirect:'manual'});assert.equal(alias.status,301);assert.equal(new URL(alias.headers.get('location'),origin).pathname,'/livros-digitais');
    const slash=await fetch(origin+'/livros-digitais/',{redirect:'manual'});assert.equal(slash.status,301);
@@ -65,6 +68,7 @@ try{
    for(const href of links){if(href.startsWith('#'))assert.equal(await page.locator('[id="'+href.slice(1)+'"]').count(),1);if(href.startsWith('/'))assert.equal((await page.request.get(origin+href)).status(),200);}
    for(const a of await page.locator('main a[href*="wa.me"]').all()){assert.equal(new URL(await a.getAttribute('href')).pathname,'/5551981687562');}
    const [popup]=await Promise.all([context.waitForEvent('page'),page.locator('.ed-button').first().click()]);await popup.waitForLoadState('domcontentloaded');assert.equal(new URL(popup.url()).hostname,'wa.me');await popup.close();
+   if(width>980)assert(!await page.locator('.mobile-menu-toggle').isVisible(),'Botão móvel fora do celular/tablet');
    if(width<=980){const menu=page.locator('.mobile-menu-toggle');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');}
    await page.locator('.ed-service-content>a').first().click();await page.waitForFunction(()=>location.hash==='#orcamento-editorial');
    await page.goto(origin+'/livros-digitais',{waitUntil:'domcontentloaded'});await waitImages(page);await page.mouse.move(0,0);
@@ -78,6 +82,7 @@ try{
    assert.deepEqual(errors,[]);checks.push({origin:isPreview?'Netlify':'local',width,brokenImages:images.filter(x=>!x.ok),horizontalOverflow:false,whatsappClickVerified:true,javascriptErrors:errors});await context.close();
   }
  }
+ const production=await fetch('https://idygrafica.netlify.app/livros-digitais',{signal:AbortSignal.timeout(30000)});assert.equal(production.status,200);assert((await production.text()).includes('<section class="service-hero">'),'A produção deve continuar com a versão anterior');
  await writeFile('.preview/livros/report.json',JSON.stringify({verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,checks,unchangedHomeVisualWidths:[1440,768,390],allOtherSourcesPreserved:true,realMessagesSent:0,productionPublished:false,previewNoindexIsExpected:true},null,2));
  console.log(JSON.stringify({verified:true,checks:checks.length,realMessagesSent:0,productionPublished:false}));
 }finally{await browser.close();await Promise.all([server,previous].map(s=>new Promise(r=>s.close(r))));}

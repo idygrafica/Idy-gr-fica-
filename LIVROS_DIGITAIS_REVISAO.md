@@ -15,7 +15,7 @@ A página antes destacava uma publicação digital específica, sem apresentar o
 
 O workflow dedicado executa os 25 testes comerciais existentes, confere a lista exata de arquivos alterados, preservação dos componentes compartilhados, estrutura SEO, links e imagens. Chromium verifica a página em 1440, 1024, 768, 390 e 320 px e compara a vitrine anterior e atual em 1440, 768 e 390 px. O fluxo existente de navegação e carrinho é testado sem mensagens reais no WhatsApp.
 
-Capturas e resultados ficam no artefato `livros-digitais-revisao`. A prévia nativa do Netlify será conferida após a abertura da PR. O `noindex` automático da prévia é esperado; a página não adiciona bloqueio à produção.
+Capturas e resultados ficam no artefato `livros-digitais-revisao`. A PR #12 possui prévia nativa em https://deploy-preview-12--idygrafica.netlify.app/livros-digitais, conferida nas cinco larguras. As 12 páginas continuam acessíveis, os aliases da página redirecionam corretamente e URLs inexistentes continuam retornando 404. O `noindex` automático da prévia é esperado; a página não adiciona bloqueio à produção.
 
 **Não fazer merge nem publicar em produção antes da aprovação visual do responsável.**
 
@@ -28,3 +28,5 @@ Licença Pexels: https://www.pexels.com/license/ (uso comercial em sites permiti
 - Publicações/catálogos: alleksana, https://www.pexels.com/photo/a-stack-of-open-magazines-4271613/
 
 Os arquivos editoriais legados foram inspecionados: um deles, apesar do nome, mostra blocos de pedidos; foi descartado nesta página, sem alterar o arquivo original ou seu uso nas demais páginas.
+
+A primeira validação passou com a estrutura nova. A revisão visual identificou imagens legadas inadequadas; a seleção foi corrigida e a segunda execução confirmou fotos carregadas na prévia real, sem erros de JavaScript ou rolagem horizontal. O botão móvel do menu foi ocultado no computador apenas nesta página. O workflow também verifica o noindex da prévia, o sitemap/robots e que a produção segue com a página anterior.

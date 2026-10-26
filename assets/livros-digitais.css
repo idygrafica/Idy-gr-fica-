@@ -3,6 +3,8 @@
 .editorial-page a:focus-visible,.editorial-page button:focus-visible,.editorial-page summary:focus-visible{outline:3px solid #08733e;outline-offset:5px}
 .editorial-page .ed-skip{position:fixed;top:8px;left:8px;z-index:200;background:#fff;padding:12px;transform:translateY(-160%)}.editorial-page .ed-skip:focus{transform:translateY(0)}
 .editorial-page .cta,.editorial-page .mobile-menu-toggle,.editorial-page .nav-service-links,.editorial-page .footer img{border-radius:0!important}
+.editorial-page .mobile-menu-toggle{display:none}
+.editorial-page .nav .navlinks.open{border-radius:0!important}
 .editorial-page .topbar{background:var(--ed-dark)}
 .editorial-page .ed-breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding-top:24px;padding-bottom:24px;font-size:13px;color:var(--ed-gray)}
 .editorial-page .ed-breadcrumb a:hover{text-decoration:underline;color:var(--ed-blue)}
