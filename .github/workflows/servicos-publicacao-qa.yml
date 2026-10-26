@@ -1,4 +1,4 @@
-name: Serviços — conferência pública somente leitura
+name: Serviços — conferência pública com Chrome disponível
 on:
   push:
     branches: [qa/servicos-publicacao-20261026]
@@ -20,7 +20,7 @@ jobs:
       - name: Instalar navegador de conferência
         run: |
           npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
-          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+          google-chrome --version
       - name: Conferir a versão aprovada no endereço oficial
         env:
           PREVIEW_ORIGIN: https://idygrafica.netlify.app
@@ -35,7 +35,8 @@ jobs:
            ("origin:origin===preview?'Netlify':'local'", "origin:'produção'"),
            ("servicos-${origin===preview?'netlify':'local'}-${width}.png", "servicos-producao-${width}.png"),
            ("importantPagesAccessible:12", "publicUrl:preview,importantPagesAccessible:12"),
-           ("productionPublished:false", "productionPublished:true")
+           ("productionPublished:false", "productionPublished:true"),
+           ("const browser=await chromium.launch();", "const browser=await chromium.launch({channel:'chrome'});")
           ]
           for old,new in changes:
            assert old in s,old
