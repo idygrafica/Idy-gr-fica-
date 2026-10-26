@@ -1,0 +1,33 @@
+/* Complemento exclusivo de Serviços. O padrão visual de Livros Digitais permanece intacto. */
+.services-page #sv-title{font-size:clamp(38px,3.7vw,54px);line-height:1.08}
+.services-page .ed-hero-grid{grid-template-columns:1.08fr 1fr;gap:50px}
+.services-page .ed-hero-image>img{height:365px;object-position:45% center}
+.services-page .ed-hero-photo figcaption span{font-size:10px;letter-spacing:.09em}
+.services-page .ed-material-nav{grid-template-columns:1fr repeat(3,1fr)}
+.services-page .ed-material-nav a{padding-left:12px;padding-right:12px;font-size:14px}
+.services-page .ed-service-image{height:auto;aspect-ratio:1.64;flex:none}
+.services-page .sv-approved-photo{background-image:url('/assets/loja/referencia-aprovada.jpg');background-repeat:no-repeat;background-size:595% auto;background-color:#f1f2f3}
+.services-page .sv-photo-cards{background-position:2.3% 49%}
+.services-page .sv-photo-gifts{background-position:44.75% 78.1%}
+.services-page .sv-machine{background:linear-gradient(120deg,#f0f7fc,#e7f3ed)}
+.services-page .sv-machine img{object-fit:contain;padding:10px}
+.services-page .sv-labels img{object-position:50% 53%}
+.services-page .sv-signage img{object-position:50% 52%}
+.services-page .sv-brand-section{background:#f3f7fa;border-top:1px solid #dce5ed;border-bottom:1px solid #dce5ed;padding:64px 0;scroll-margin-top:110px}
+.services-page .sv-business{display:grid;grid-template-columns:1fr 1.15fr;gap:70px;align-items:center}
+.services-page .sv-business-photo{border-left:4px solid var(--ed-green);height:430px;background:#f3f7fa;overflow:hidden}
+.services-page .sv-business-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+.services-page .sv-business-copy>p:not(.ed-label){font-size:16px;color:var(--ed-gray)}
+.services-page .sv-business-copy h3{font-size:22px;margin-top:22px}
+.services-page .sv-business-copy ul{padding-left:20px;font-size:15px;color:var(--ed-dark)}
+.services-page .sv-business-copy li{padding:4px 0}.services-page .sv-business-copy li::marker{color:var(--ed-green)}
+.services-page .sv-quote{background:var(--ed-blue);color:#fff;border-top:4px solid var(--ed-green);padding:52px 0;scroll-margin-top:110px}
+.services-page .sv-quote>.container{display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center}
+.services-page .sv-quote .ed-label{color:#a3f2bf}.services-page .sv-quote h2{color:#fff;font-size:32px}
+.services-page .sv-quote p{color:#e0eaf7;font-size:16px;margin:0}
+.services-page .sv-quote .ed-button{background:#fff;border-color:#fff;color:var(--ed-blue);font-size:12px;width:100%}
+.services-page .sv-quote .ed-button:hover{background:#eff8f3;color:#073d25}
+.services-page .sv-quote-action>p{font-size:13px;margin:16px 0 8px}.services-page .sv-quote-action small{font-size:12px;color:#c8def3}
+@media(max-width:1100px){.services-page .ed-hero-grid{gap:30px}.services-page .sv-business{gap:44px}.services-page .sv-quote>.container{gap:40px}}
+@media(max-width:800px){.services-page #sv-title{font-size:38px}.services-page .ed-hero-grid{gap:24px}.services-page .ed-hero-image>img{height:350px}.services-page .ed-material-nav{grid-template-columns:repeat(3,1fr)}.services-page .ed-material-nav>span{grid-column:1 / -1}.services-page .ed-service{grid-template-columns:1fr 1.15fr}.services-page .ed-service-image{height:100%;min-height:320px;aspect-ratio:auto}.services-page .sv-approved-photo{align-self:center;width:100%;height:auto;min-height:0;aspect-ratio:1.64}.services-page .sv-business{gap:30px}.services-page .sv-business-photo{height:480px}.services-page .sv-quote>.container{grid-template-columns:1fr;gap:24px}.services-page .sv-quote-action{max-width:480px}}
+@media(max-width:620px){.services-page #sv-title{font-size:clamp(34px,9.8vw,45px)}.services-page .ed-hero-grid{grid-template-columns:1fr}.services-page .ed-hero-image>img{height:260px}.services-page .ed-material-nav a{font-size:12px;padding:10px 7px;gap:5px}.services-page .ed-service{display:flex}.services-page .ed-service-image{height:auto;min-height:0;aspect-ratio:1.64}.services-page .sv-brand-section{padding:42px 0}.services-page .sv-business{grid-template-columns:1fr;gap:26px}.services-page .sv-business-photo{height:300px}.services-page .sv-quote{padding:38px 0}.services-page .sv-quote h2{font-size:29px}.services-page .sv-quote .ed-button{font-size:11px}.services-page .sv-business-copy .ed-text-link{font-size:13px}}

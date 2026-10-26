@@ -1,0 +1,47 @@
+name: Serviços — revisão visual e prévia para aprovação
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - servicos.html
+      - assets/servicos.css
+      - scripts/servicos/check.mjs
+      - .github/workflows/servicos-preview.yml
+      - SERVICOS_REVISAO.md
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir os preços e o carrinho existentes
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+      - name: Instalar navegador isolado
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Conferir Serviços, SEO e preservação visual
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/servicos/check.mjs
+      - name: Conferir navegação e compra na loja
+        run: node scripts/loja/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: servicos-revisao-e-previas
+          include-hidden-files: true
+          path: |
+            .preview/servicos/
+            .preview/loja/browser-report.json
