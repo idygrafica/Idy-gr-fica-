@@ -64,7 +64,12 @@ try{
    await page.screenshot({path:`.preview/servicos/servicos-${origin===preview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled'});
    if(origin===local&&[1440,768,390].includes(width)){
     for(const path of ['/','/livros-digitais']){
-     const a=await ctx.newPage(),b=await ctx.newPage();await Promise.all([a.goto(local+path,{waitUntil:'domcontentloaded'}),b.goto(oldOrigin+path,{waitUntil:'domcontentloaded'})]);await Promise.all([waitImages(a),waitImages(b)]);
+     const a=await ctx.newPage(),b=await ctx.newPage();
+     // Usa o HTML anterior na mesma origem: os demais arquivos estão protegidos
+     // pelo diff, e o cache compartilhado mantém a rasterização das imagens estável.
+     const baselineHtml=execFileSync('git',['show',base+':'+(path==='/'?'index.html':path.slice(1)+'.html')]);
+     await b.route(local+path,r=>r.fulfill({contentType:'text/html; charset=utf-8',body:baselineHtml}));
+     await Promise.all([a.goto(local+path,{waitUntil:'domcontentloaded'}),b.goto(local+path,{waitUntil:'domcontentloaded'})]);await Promise.all([waitImages(a),waitImages(b)]);
      let same=false,before,after,attempt=0;
      for(;attempt<3;attempt++){
       await Promise.all([waitImages(a),waitImages(b)]);
