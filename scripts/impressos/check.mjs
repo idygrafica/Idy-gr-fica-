@@ -23,7 +23,7 @@ const current=makeServer(),previous=makeServer(base);
 await Promise.all([current,previous].map(s=>new Promise(r=>s.listen(0,'127.0.0.1',r))));
 const local='http://127.0.0.1:'+current.address().port,oldOrigin='http://127.0.0.1:'+previous.address().port;
 const preview=process.env.PREVIEW_ORIGIN.replace(/\/$/,'');
-const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/google-chrome',args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[],comparisons=[];
+const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/google-chrome',args:['--no-sandbox','--disable-dev-shm-usage','--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding']});const checks=[],comparisons=[];
 const waitImages=async page=>{await page.evaluate(()=>document.fonts.ready);await page.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});await page.waitForLoadState('load');await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
 try{
  let raw,head;
@@ -83,7 +83,7 @@ try{
      let same=false,before,after,attempt=0;
      for(;attempt<3;attempt++){
       await Promise.all([waitImages(a),waitImages(b)]);
-      after=await a.screenshot({fullPage:true,animations:'disabled'});before=await b.screenshot({fullPage:true,animations:'disabled'});
+      await a.bringToFront();after=await a.screenshot({fullPage:true,animations:'disabled'});await b.bringToFront();before=await b.screenshot({fullPage:true,animations:'disabled'});
       if(after.equals(before)){same=true;break;}
       await new Promise(r=>setTimeout(r,200));
      }
