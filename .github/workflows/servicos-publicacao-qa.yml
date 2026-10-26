@@ -36,7 +36,8 @@ jobs:
            ("servicos-${origin===preview?'netlify':'local'}-${width}.png", "servicos-producao-${width}.png"),
            ("importantPagesAccessible:12", "publicUrl:preview,importantPagesAccessible:12"),
            ("productionPublished:false", "productionPublished:true"),
-           ("const browser=await chromium.launch();", "const browser=await chromium.launch({channel:'chrome'});")
+           ("const browser=await chromium.launch();", "const browser=await chromium.launch({channel:'chrome'});"),
+           ("await popup.waitForLoadState('domcontentloaded');", "await popup.waitForURL('https://wa.me/**',{waitUntil:'domcontentloaded'});")
           ]
           for old,new in changes:
            assert old in s,old
