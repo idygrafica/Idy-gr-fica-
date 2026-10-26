@@ -38,3 +38,13 @@ Workflow específico da PR: 25 testes comerciais existentes, comparação do dif
 Capturas e relatórios no artefato `servicos-revisao-e-previas`. A URL da prévia nativa será adicionada à PR após a criação.
 
 **Apenas prévia para aprovação: não fazer merge ou publicar em produção sem nova autorização.**
+
+## Finalização de conteúdo e SEO na própria PR #13
+
+Preserva o layout, estilos, fotos, cabeçalho, rodapé e os destinos de orçamento já revisados. A estrutura principal continua com um H1, H2 por seção e H3 por serviço, sem saltos de nível no conteúdo. Os títulos dos cartões recebem IDs para identificação acessível pelo respectivo artigo.
+
+As descrições agora explicam o que informar para orçamento de cada material: formato e quantidade, faces impressas, páginas e exemplares, arte pronta, superfície de aplicação ou campos do formulário. Porto Alegre permanece no H1/metadados e aparece naturalmente no contexto de atendimento local. Links para páginas existentes recebem textos mais descritivos, sem novas rotas ou alteração do WhatsApp.
+
+O JSON-LD mantém apenas WebPage, ItemList, Service e BreadcrumbList; os oito serviços recebem descrições iguais aos parágrafos visíveis. Não são acrescentados preços, avaliações, promoções, FAQ ou capacidades não confirmadas. Canonical, sitemap, robots e regras de redirecionamento permanecem idênticos.
+
+O validador verifica a hierarquia principal, correspondência entre dados estruturados e texto, destinos internos e preservação dos estilos e imagens em relação à versão anterior da PR. A prévia continua protegida por noindex automático; não houve publicação em produção.

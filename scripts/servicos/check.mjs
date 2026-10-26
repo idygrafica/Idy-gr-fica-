@@ -9,6 +9,13 @@ const allowed=['servicos.html','assets/servicos.css','scripts/servicos/check.mjs
 const changed=execFileSync('git',['diff','--name-only',base,'HEAD'],{encoding:'utf8'}).trim().split('\n');
 for(const p of changed)assert(allowed.includes(p),'Arquivo fora do escopo: '+p);
 const html=await readFile('servicos.html','utf8');
+const priorHead='f18f4b9ef44314db5e107d23593c05bacd8b9a61';
+const priorHtml=execFileSync('git',['show',priorHead+':servicos.html'],{encoding:'utf8'});
+const incremental=execFileSync('git',['diff','--name-only',priorHead,'HEAD'],{encoding:'utf8'}).trim().split('\n');
+for(const p of incremental)assert(['servicos.html','scripts/servicos/check.mjs','SERVICOS_REVISAO.md'].includes(p),'Refinamento fora do escopo: '+p);
+// Nesta etapa só mudam texto, semântica e a validação: imagens, estilos e
+// endereços de todos os links, inclusive WhatsApp, continuam idênticos.
+for(const pattern of [/<img\b[^>]*>/g,/\bhref="[^"]*"/g,/\bclass="[^"]*"/g,/\bstyle="[^"]*"/g])assert.deepEqual(html.match(pattern),priorHtml.match(pattern),'Imagem, estilo ou destino alterado');
 const reference=execFileSync('git',['show',base+':livros-digitais.html'],{encoding:'utf8'});
 const section=(s,start,end)=>s.slice(s.indexOf(start),s.indexOf(end,s.indexOf(start)));
 assert.equal(section(html,'<header','</header>'),section(reference,'<header','</header>'),'Cabeçalho deve seguir Livros Digitais');
@@ -46,11 +53,21 @@ try{
    const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
    assert.equal((await page.goto(origin+'/servicos',{waitUntil:'domcontentloaded'})).status(),200);await waitImages(page);
    assert.equal(await page.locator('h1').count(),1);assert.match(await page.locator('h1').innerText(),/Impressão gráfica e[\s\S]*comunicação visual[\s\S]*Porto Alegre/);
+   const hierarchy=await page.locator('main h1,main h2,main h3').evaluateAll(els=>els.map(e=>({level:Number(e.tagName.slice(1)),text:e.textContent.trim()})));
+   assert.equal(hierarchy[0].level,1);for(let i=0;i<hierarchy.length;i++){assert(hierarchy[i].text.length>0);if(i>0)assert(hierarchy[i].level<=hierarchy[i-1].level+1,'Salto de nível nos títulos');}
+   for(const article of await page.locator('.ed-service').all()){const id=await article.getAttribute('aria-labelledby');assert(id);assert.equal(await article.locator('h3#'+id).count(),1);}
    assert.equal(await page.locator('link[rel="canonical"]').count(),1);assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app/servicos');
    assert.match(await page.title(),/Serviços Gráficos e Comunicação Visual em Porto Alegre/);
    assert((await page.locator('meta[name="description"]').getAttribute('content')).includes('IDY Gráfica'));
    assert.equal(await page.locator('.ed-service').count(),6);assert.equal(await page.locator('.ed-material-nav a').count(),3);
-   for(const s of await page.locator('script[type="application/ld+json"]').allTextContents()){const d=JSON.parse(s);assert(d['@graph'].some(x=>x['@type']==='ItemList'&&x.numberOfItems===8));}
+   for(const s of await page.locator('script[type="application/ld+json"]').allTextContents()){
+    const d=JSON.parse(s),graph=d['@graph'];assert(graph.some(x=>x['@type']==='ItemList'&&x.numberOfItems===8));
+    assert.equal(new Set(graph.map(x=>x['@id'])).size,graph.length,'IDs estruturados duplicados');
+    const services=graph.filter(x=>x['@type']==='Service');assert.equal(services.length,8);
+    const text=(await page.locator('main').innerText()).replace(/\s+/g,' ');
+    for(const service of services){assert(service.description?.length>0);assert(text.includes(service.description.replace(/\s+/g,' ')),'Descrição estruturada diverge do texto visível');assert.equal(service.areaServed.name,'Porto Alegre');assert(!service.offers&&!service.aggregateRating);}
+    const list=graph.find(x=>x['@type']==='ItemList');for(const item of list.itemListElement)assert(services.some(x=>x['@id']===item.item['@id']));
+   }
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Rolagem horizontal: '+width);
    const broken=await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.src));assert.deepEqual(broken,[]);
    const photos=await page.locator('.sv-approved-photo').evaluateAll(els=>els.map(e=>getComputedStyle(e).backgroundImage));assert(photos.length===2&&photos.every(x=>x.includes('referencia-aprovada.jpg')));
@@ -92,6 +109,6 @@ try{
   }
  }
  const prod=await fetch('https://idygrafica.netlify.app/servicos');assert.equal(prod.status,200);const prodBody=await prod.text();assert(!prodBody.includes('<body class="editorial-page services-page">'),'Produção deve continuar na versão anterior');
- await writeFile('.preview/servicos/report.json',JSON.stringify({verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,checks,comparisons,importantPagesAccessible:12,serviceGroupsInInitialHtml:8,protectedSourcesUnchanged:true,productionPublished:false,realWhatsAppMessagesSent:0},null,2));
+ await writeFile('.preview/servicos/report.json',JSON.stringify({verified:true,base,priorHead,incremental,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,checks,comparisons,headingHierarchyValidated:true,structuredDescriptionsMatchVisibleText:8,stylesImagesAndDestinationsUnchanged:true,importantPagesAccessible:12,serviceGroupsInInitialHtml:8,protectedSourcesUnchanged:true,productionPublished:false,realWhatsAppMessagesSent:0},null,2));
  console.log(JSON.stringify({verified:true,responsiveChecks:checks.length,visualComparisons:comparisons.length,productionPublished:false,realWhatsAppMessagesSent:0}));
 }finally{await browser.close();await Promise.all([current,previous].map(s=>new Promise(r=>s.close(r))));}
