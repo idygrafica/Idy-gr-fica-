@@ -1,0 +1,51 @@
+name: Serviços — conferência pública somente leitura
+on:
+  push:
+    branches: [qa/servicos-publicacao-20261026]
+permissions:
+  contents: read
+jobs:
+  published:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: c8a070fc2d74a09846b31845a24516daf1215465
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Instalar navegador de conferência
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Conferir a versão aprovada no endereço oficial
+        env:
+          PREVIEW_ORIGIN: https://idygrafica.netlify.app
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/servicos/check.mjs');s=p.read_text()
+          changes=[
+           ("assert.match(head.get('x-robots-tag')||'',/noindex/i,'Proteção da prévia');", "assert(!/noindex/i.test(head.get('x-robots-tag')||''),'Produção bloqueada por noindex');"),
+           ("for(const origin of [local,preview]){", "for(const origin of [preview]){"),
+           ("assert(!prodBody.includes('<body class=\"editorial-page services-page\">'),'Produção deve continuar na versão anterior');", "assert(prodBody.includes(expected),'Produção não corresponde ao conteúdo aprovado');"),
+           ("origin:origin===preview?'Netlify':'local'", "origin:'produção'"),
+           ("servicos-${origin===preview?'netlify':'local'}-${width}.png", "servicos-producao-${width}.png"),
+           ("importantPagesAccessible:12", "publicUrl:preview,importantPagesAccessible:12"),
+           ("productionPublished:false", "productionPublished:true")
+          ]
+          for old,new in changes:
+           assert old in s,old
+           s=s.replace(old,new)
+          p.write_text(s)
+          PY
+          node scripts/servicos/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: servicos-publicacao-verificada
+          include-hidden-files: true
+          path: .preview/servicos/
