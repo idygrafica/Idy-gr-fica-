@@ -1,11 +1,18 @@
-name: Livros Digitais — revisão e prévia sem publicação
+name: Livros Digitais — revisão e verificação da publicação
 on:
   push:
-    branches: [codex/livros-digitais-comercial]
+    branches: [codex/livros-digitais-comercial, main]
+    paths:
+      - livros-digitais.html
+      - assets/livros-digitais.css
+      - scripts/livros/check.mjs
+      - .github/workflows/livros-digitais.yml
+      - LIVROS_DIGITAIS_REVISAO.md
 permissions:
   contents: read
 jobs:
   verify:
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -38,3 +45,30 @@ jobs:
           path: |
             .preview/livros/
             .preview/loja/browser-report.json
+
+  published:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Instalar navegador isolado para conferir a produção
+        run: |
+          npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+          ./.preview-tools/node_modules/.bin/playwright install --with-deps chromium
+      - name: Aguardar publicação e verificar Livros Digitais em produção
+        env:
+          PUBLICATION: 'true'
+        run: node scripts/livros/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: livros-digitais-producao-verificada
+          include-hidden-files: true
+          path: .preview/livros/

@@ -25,18 +25,21 @@ const server=makeServer(),previous=makeServer(base);
 await Promise.all([server,previous].map(s=>new Promise(r=>s.listen(0,'127.0.0.1',r))));
 const local='http://127.0.0.1:'+server.address().port,oldOrigin='http://127.0.0.1:'+previous.address().port;
 const preview=process.env.PREVIEW_ORIGIN?.replace(/\/$/,'');
+const published=process.env.PUBLICATION==='true';
 const browser=await chromium.launch();const checks=[];
 const waitImages=async p=>{await p.evaluate(()=>document.fonts.ready);await p.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});};
 const pages=JSON.parse(await readFile('scripts/seo-technical/pages.json','utf8'));
 try{
- for(const origin of [local,...(preview?[preview]:[])]){
-  const isPreview=origin===preview;
-  if(isPreview){
+ for(const origin of published?['https://idygrafica.netlify.app']:[local,...(preview?[preview]:[])]){
+  const isPreview=origin===preview,isProduction=published;
+  const mode=isProduction?'producao':isPreview?'netlify':'local';
+  if(isPreview||isProduction){
    // A prévia mantém o canonical de produção e o noindex automático do Netlify.
    let response,body;const expected=section(html,'<main','</main>');
    for(let attempt=0;attempt<30;attempt++){response=await fetch(origin+'/livros-digitais',{signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-cache'}});body=await response.text();if(response.status===200&&body.includes(expected))break;await new Promise(r=>setTimeout(r,5000));}
    assert.equal(response.status,200);assert(body.includes(expected),'A prévia ainda não serve este commit');
-   assert.match(response.headers.get('x-robots-tag')||'',/noindex/i,'Proteção da prévia');
+   if(isPreview)assert.match(response.headers.get('x-robots-tag')||'',/noindex/i,'Proteção da prévia');
+   if(isProduction)assert(!/noindex/i.test(response.headers.get('x-robots-tag')||''),'Produção bloqueada');
    const sitemapResponse=await fetch(origin+'/sitemap.xml');assert.equal(sitemapResponse.status,200);assert.equal((await sitemapResponse.text()).match(/<loc>/g).length,12);
    const robotsResponse=await fetch(origin+'/robots.txt');assert.equal(robotsResponse.status,200);const robots=await robotsResponse.text();assert(!/^Disallow:\s*\/\s*$/mi.test(robots));assert(robots.includes('https://idygrafica.netlify.app/sitemap.xml'));
    assert(!/<meta[^>]+(?:name="robots"|name="googlebot")[^>]+noindex/i.test(body));
@@ -57,7 +60,13 @@ try{
    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app/livros-digitais');
    assert.match(await page.title(),/Impressão de Livros e Apostilas em Porto Alegre/);
    assert((await page.locator('meta[name="description"]').getAttribute('content')).includes('catálogos'));
-   assert.equal(await page.locator('.ed-service').count(),3);assert.equal(await page.locator('.ed-checklist li').count(),6);
+   assert.equal(await page.locator('.ed-service').count(),3);
+   assert.equal(await page.locator('.ed-material-nav a').count(),3);
+   assert.equal(await page.locator('.ed-faq details').count(),3);
+   const faq=page.locator('.ed-faq details').first();await faq.locator('summary').click();assert(await faq.getAttribute('open')!==null);assert(await faq.locator('p').isVisible());await faq.locator('summary').click();
+   for(const id of ['impressao-livros','impressao-apostilas','impressao-catalogos'])assert.equal(await page.locator('#'+id).count(),1);
+   const structured=JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent());assert(structured['@graph'].some(x=>x['@type']==='WebPage'));
+   assert.equal(await page.locator('.ed-checklist li').count(),6);
    assert(await page.locator('.ed-finishing-note').innerText().then(t=>t.includes('serão confirmadas')));
    const snippets=await page.locator('script[type="application/ld+json"]').allTextContents();for(const s of snippets)JSON.parse(s);
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Rolagem horizontal em '+width);
@@ -72,17 +81,17 @@ try{
    if(width<=980){const menu=page.locator('.mobile-menu-toggle');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');}
    await page.locator('.ed-service-content>a').first().click();await page.waitForFunction(()=>location.hash==='#orcamento-editorial');
    await page.goto(origin+'/livros-digitais',{waitUntil:'domcontentloaded'});await waitImages(page);await page.mouse.move(0,0);
-   await page.screenshot({path:`.preview/livros/livros-${isPreview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled'});
-   if(!isPreview&&[1440,768,390].includes(width)){
+   await page.screenshot({path:`.preview/livros/livros-${mode}-${width}.png`,fullPage:true,animations:'disabled'});
+   if(!isPreview&&!isProduction&&[1440,768,390].includes(width)){
     const home=await context.newPage(),oldHome=await context.newPage();await Promise.all([home.goto(local,{waitUntil:'domcontentloaded'}),oldHome.goto(oldOrigin,{waitUntil:'domcontentloaded'})]);await Promise.all([waitImages(home),waitImages(oldHome)]);
     assert.equal(await home.locator('[data-product]').count(),8);assert.match(await home.locator('[data-product="canetas"]').innerText(),/3,60/);
     const a=await home.screenshot({fullPage:true,animations:'disabled'}),b=await oldHome.screenshot({fullPage:true,animations:'disabled'});assert(a.equals(b),'Visual da loja mudou em '+width);
     await home.close();await oldHome.close();
    }
-   assert.deepEqual(errors,[]);checks.push({origin:isPreview?'Netlify':'local',width,brokenImages:images.filter(x=>!x.ok),horizontalOverflow:false,whatsappClickVerified:true,javascriptErrors:errors});await context.close();
+   assert.deepEqual(errors,[]);checks.push({origin:isProduction?'produção':isPreview?'Netlify':'local',width,brokenImages:images.filter(x=>!x.ok),horizontalOverflow:false,whatsappClickVerified:true,javascriptErrors:errors});await context.close();
   }
  }
- const production=await fetch('https://idygrafica.netlify.app/livros-digitais',{signal:AbortSignal.timeout(30000)});assert.equal(production.status,200);assert((await production.text()).includes('<section class="service-hero">'),'A produção deve continuar com a versão anterior');
- await writeFile('.preview/livros/report.json',JSON.stringify({verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,checks,unchangedHomeVisualWidths:[1440,768,390],allOtherSourcesPreserved:true,realMessagesSent:0,productionPublished:false,previewNoindexIsExpected:true},null,2));
- console.log(JSON.stringify({verified:true,checks:checks.length,realMessagesSent:0,productionPublished:false}));
+ const production=await fetch('https://idygrafica.netlify.app/livros-digitais',{signal:AbortSignal.timeout(30000)});assert.equal(production.status,200);const productionBody=await production.text();if(published)assert(productionBody.includes(section(html,'<main','</main>')),'Produção desatualizada');else assert(productionBody.includes('<section class="service-hero">'),'A produção deve continuar com a versão anterior antes do merge');
+ await writeFile('.preview/livros/report.json',JSON.stringify({verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,checks,unchangedHomeVisualWidths:published?[]:[1440,768,390],allOtherSourcesPreserved:true,realMessagesSent:0,productionPublished:published,previewNoindexIsExpected:true},null,2));
+ console.log(JSON.stringify({verified:true,checks:checks.length,realMessagesSent:0,productionPublished:published}));
 }finally{await browser.close();await Promise.all([server,previous].map(s=>new Promise(r=>s.close(r))));}
