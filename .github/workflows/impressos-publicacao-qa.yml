@@ -1,0 +1,51 @@
+name: Impressos — conferência pública somente leitura
+on:
+  push:
+    branches: [qa/impressos-publicacao-20261026]
+permissions:
+  contents: read
+jobs:
+  published:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 713a57053bd0697a2663978176e5d82e833ea37f
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Preparar automação com Chrome disponível
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir a página aprovada no endereço oficial
+        env:
+          PREVIEW_ORIGIN: https://idygrafica.netlify.app
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/impressos/check.mjs');s=p.read_text()
+          changes=[
+           ("assert.match(head.get('x-robots-tag')||'',/noindex/i,'Proteção da prévia');", "assert(!/noindex/i.test(head.get('x-robots-tag')||''),'Produção bloqueada por noindex');"),
+           ("for(const origin of [local,preview]){", "for(const origin of [preview]){"),
+           ("assert(prodBody.includes('<h1>Impressos gráficos em Porto Alegre</h1>'),'Produção deve continuar na versão anterior');assert(!prodBody.includes('id=\"ip-title\"'));", "assert(prodBody.includes(expected),'Produção não corresponde à página aprovada');"),
+           ("origin:origin===preview?'Netlify':'local'", "origin:'produção'"),
+           ("impressos-${origin===preview?'netlify':'local'}-${width}.png", "impressos-producao-${width}.png"),
+           ("importantPagesAccessible:12", "publicUrl:preview,importantPagesAccessible:12"),
+           ("productionPublished:false", "productionPublished:true")
+          ]
+          for old,new in changes:
+           assert old in s,old
+           s=s.replace(old,new)
+          p.write_text(s)
+          PY
+          node scripts/impressos/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: impressos-publicacao-verificada
+          include-hidden-files: true
+          path: .preview/impressos/
