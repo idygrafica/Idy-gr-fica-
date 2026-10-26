@@ -24,7 +24,7 @@ await Promise.all([current,previous].map(s=>new Promise(r=>s.listen(0,'127.0.0.1
 const local='http://127.0.0.1:'+current.address().port,oldOrigin='http://127.0.0.1:'+previous.address().port;
 const preview=process.env.PREVIEW_ORIGIN.replace(/\/$/,'');
 const browser=await chromium.launch();const checks=[],comparisons=[];
-const waitImages=async page=>{await page.evaluate(()=>document.fonts.ready);await page.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});};
+const waitImages=async page=>{await page.evaluate(()=>document.fonts.ready);await page.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});await page.waitForLoadState('load');await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
 try{
  let raw,head;
  const expected=section(html,'<main','</main>');
@@ -65,8 +65,22 @@ try{
    if(origin===local&&[1440,768,390].includes(width)){
     for(const path of ['/','/livros-digitais']){
      const a=await ctx.newPage(),b=await ctx.newPage();await Promise.all([a.goto(local+path,{waitUntil:'domcontentloaded'}),b.goto(oldOrigin+path,{waitUntil:'domcontentloaded'})]);await Promise.all([waitImages(a),waitImages(b)]);
-     assert((await a.screenshot({fullPage:true,animations:'disabled'})).equals(await b.screenshot({fullPage:true,animations:'disabled'})),'Visual alterado em '+path+' '+width);
-     comparisons.push({path,width,pixelIdentical:true});await a.close();await b.close();
+     let same=false,before,after,attempt=0;
+     for(;attempt<3;attempt++){
+      await Promise.all([waitImages(a),waitImages(b)]);
+      after=await a.screenshot({fullPage:true,animations:'disabled'});before=await b.screenshot({fullPage:true,animations:'disabled'});
+      if(after.equals(before)){same=true;break;}
+      await new Promise(r=>setTimeout(r,200));
+     }
+     if(!same){
+      const name=path==='/'?'index':path.slice(1);
+      await writeFile(`.preview/servicos/comparacao-${name}-${width}-atual.png`,after);
+      await writeFile(`.preview/servicos/comparacao-${name}-${width}-anterior.png`,before);
+      const diagnose=p=>p.locator('img').evaluateAll(imgs=>imgs.map(i=>({src:i.src,loaded:i.complete&&i.naturalWidth>0,box:i.getBoundingClientRect().toJSON()})));
+      await writeFile(`.preview/servicos/comparacao-${name}-${width}.json`,JSON.stringify({current:await diagnose(a),previous:await diagnose(b)},null,2));
+     }
+     assert(same,'Visual alterado em '+path+' '+width);
+     comparisons.push({path,width,pixelIdentical:true,paintChecks:attempt+1});await a.close();await b.close();
     }
    }
    assert.deepEqual(errors,[]);checks.push({origin:origin===preview?'Netlify':'local',width,brokenImages:broken,horizontalOverflow:false,whatsappVerified:true,javascriptErrors:errors});await ctx.close();
