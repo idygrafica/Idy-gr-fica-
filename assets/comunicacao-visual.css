@@ -1,0 +1,40 @@
+/* Complemento exclusivo de Comunicação Visual. Demais páginas e CSS compartilhado preservados. */
+.communication-page #cv-title{font-size:clamp(38px,3.8vw,55px);line-height:1.08}
+.communication-page .ed-hero-grid{grid-template-columns:1.08fr 1fr;gap:50px}
+.communication-page .ed-hero-image>img{height:365px;object-position:center}
+.communication-page .ed-hero-photo figcaption span{font-size:10px;letter-spacing:.1em}
+.communication-page .ed-material-nav{grid-template-columns:.85fr repeat(3,1fr);gap:16px}
+.communication-page .ed-material-nav a{padding:12px;font-size:14px}
+.communication-page .ed-service-image{height:auto;aspect-ratio:1.64;flex:none}
+.communication-page .cv-inovar img{object-position:50% 51%}
+.communication-page .cv-pilates img{object-position:50% 47%}
+.communication-page .cv-print img{object-fit:contain;transform:rotate(180deg);background:#f0f3f7}
+.communication-page .cv-signage img{object-fit:contain;background:#f0f3f7}
+.communication-page .cv-approved-photo{background-image:url('/assets/loja/referencia-aprovada.jpg');background-repeat:no-repeat;background-size:595% auto;background-position:23.6% 78.1%;background-color:#f1f2f3}
+.communication-page .cv-environments{padding:64px 0;background:#f3f7fa;border-top:1px solid #dce5ed;border-bottom:1px solid #dce5ed;scroll-margin-top:110px}
+.communication-page .cv-gallery{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:22px}
+.communication-page .cv-gallery figure{margin:0;border:1px solid #dce5ed;grid-column:span 2;background:#f3f7fa;overflow:hidden}
+.communication-page .cv-gallery figure:nth-child(n+4){grid-column:span 3}
+.communication-page .cv-gallery img{width:100%;height:260px;object-fit:cover;object-position:center}
+.communication-page .cv-gallery-refletto img{object-position:50% 47%}
+.communication-page .cv-gallery-inovar img{object-position:50% 49%}
+.communication-page .cv-gallery-seguros img{object-position:50% 50%}
+.communication-page .cv-gallery-pilates img{object-position:50% 46%}
+.communication-page .cv-gallery-signage img{object-fit:contain}
+.communication-page .cv-gallery figcaption{padding:14px 18px;background:#fff;color:var(--ed-dark);font-size:14px;font-weight:750;border-top:3px solid var(--ed-green)}
+.communication-page .cv-video{margin-top:34px;display:grid;grid-template-columns:1.1fr 1fr;gap:44px;align-items:center;padding-top:34px;border-top:1px solid #dce5ed}
+.communication-page .cv-video video{display:block;width:100%;max-height:330px;background:#092a52;object-fit:contain;border-radius:0}
+.communication-page .cv-video h3{font-size:26px;margin-top:0}
+.communication-page .cv-video p:not(.ed-label){font-size:16px;color:var(--ed-gray)}
+.communication-page .cv-process{background:var(--ed-blue);border-top:4px solid var(--ed-green);padding:56px 0}
+.communication-page .cv-process h2,.communication-page .cv-process h3{color:#fff}
+.communication-page .cv-process .ed-label,.communication-page .cv-process .ed-number{color:#a3f2bf}
+.communication-page .cv-process h2{max-width:650px}
+.communication-page .cv-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;margin-top:34px}
+.communication-page .cv-steps>div{border-top:1px solid #5782ae;padding-top:22px}
+.communication-page .cv-steps h3{font-size:23px}
+.communication-page .cv-steps p{font-size:15px;color:#e0eaf7;margin-bottom:0}
+.communication-page .cv-availability{font-size:13px!important;border-left:3px solid var(--ed-green);padding-left:14px;margin-top:26px}
+@media(max-width:1100px){.communication-page .ed-hero-grid{gap:30px}.communication-page .ed-material-nav{gap:12px}.communication-page .ed-material-nav a{font-size:13px}.communication-page .cv-gallery img{height:225px}.communication-page .cv-steps{gap:24px}}
+@media(max-width:800px){.communication-page #cv-title{font-size:39px}.communication-page .ed-hero-grid{gap:24px}.communication-page .ed-hero-image>img{height:350px}.communication-page .ed-material-nav{grid-template-columns:repeat(3,minmax(0,1fr))}.communication-page .ed-material-nav>span{grid-column:1 / -1}.communication-page .ed-service{grid-template-columns:1fr 1.15fr}.communication-page .ed-service-image{height:100%;min-height:320px;aspect-ratio:auto}.communication-page .cv-approved-photo{align-self:center;width:100%;height:auto;min-height:0;aspect-ratio:1.64}.communication-page .cv-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.communication-page .cv-gallery figure,.communication-page .cv-gallery figure:nth-child(n+4){grid-column:auto}.communication-page .cv-gallery figure:last-child{grid-column:1 / -1}.communication-page .cv-video{gap:28px}.communication-page .cv-steps{grid-template-columns:1fr;gap:20px}.communication-page .cv-steps h3{margin-top:8px}}
+@media(max-width:620px){.communication-page #cv-title{font-size:clamp(34px,9.8vw,45px)}.communication-page .ed-hero-grid{grid-template-columns:1fr}.communication-page .ed-hero-image>img{height:260px}.communication-page .ed-material-nav{grid-template-columns:minmax(0,1fr);gap:10px}.communication-page .ed-material-nav a{font-size:15px;padding:12px 14px;min-width:0}.communication-page .ed-service{display:flex}.communication-page .ed-service-image{height:auto;min-height:0;aspect-ratio:1.64}.communication-page .cv-environments{padding:42px 0}.communication-page .cv-gallery{grid-template-columns:1fr;gap:22px}.communication-page .cv-gallery img{height:250px}.communication-page .cv-gallery figcaption{font-size:15px}.communication-page .cv-video{grid-template-columns:1fr;gap:24px}.communication-page .cv-process{padding:40px 0}.communication-page .ed-quote .ed-button{font-size:11px}}
