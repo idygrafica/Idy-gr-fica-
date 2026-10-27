@@ -1,0 +1,51 @@
+name: Comunicação Visual — conferência pública somente leitura
+on:
+  push:
+    branches: [qa/comunicacao-visual-publicacao-20261027]
+permissions:
+  contents: read
+jobs:
+  published:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ce2de43a1af266b5f3bf0aa98988f287dd4f402f
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Preparar automação com Chrome disponível
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir a página aprovada no endereço oficial
+        env:
+          PREVIEW_ORIGIN: https://idygrafica.netlify.app
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/comunicacao-visual/check.mjs');s=p.read_text()
+          changes=[
+           ("assert.match(head.get('x-robots-tag')||'',/noindex/i,'Proteção da prévia');", "assert(!/noindex/i.test(head.get('x-robots-tag')||''),'Produção bloqueada por noindex');"),
+           ("for(const origin of [local,preview]){", "for(const origin of [preview]){"),
+           ("assert(prodBody.includes('<h1>Comunicação visual para sua marca</h1>'),'Produção deve continuar na versão anterior');assert(!prodBody.includes('id=\"cv-title\"'));", "assert(prodBody.includes(expected),'Produção não corresponde à página aprovada');"),
+           ("origin:origin===preview?'Netlify':'local'", "origin:'produção'"),
+           ("comunicacao-visual-${origin===preview?'netlify':'local'}-${width}.png", "comunicacao-visual-producao-${width}.png"),
+           ("importantPagesAccessible:12", "publicUrl:preview,importantPagesAccessible:12"),
+           ("productionPublished:false", "productionPublished:true")
+          ]
+          for old,new in changes:
+           assert old in s,old
+           s=s.replace(old,new)
+          p.write_text(s)
+          PY
+          node scripts/comunicacao-visual/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: comunicacao-visual-publicacao-verificada
+          include-hidden-files: true
+          path: .preview/comunicacao-visual/
