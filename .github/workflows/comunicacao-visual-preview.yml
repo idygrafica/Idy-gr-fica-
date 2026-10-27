@@ -1,0 +1,49 @@
+name: Comunicação Visual — revisão visual e prévia para aprovação
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - comunicacao-visual.html
+      - assets/comunicacao-visual.css
+      - scripts/comunicacao-visual/check.mjs
+      - .github/workflows/comunicacao-visual-preview.yml
+      - COMUNICACAO_VISUAL_REVISAO.md
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir os preços e o carrinho existentes
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar automação com o Chrome disponível no runner
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir Comunicação Visual, SEO, produção preservada e capturas
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/comunicacao-visual/check.mjs
+      - name: Conferir navegação e compra na loja
+        run: node scripts/loja/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: comunicacao-visual-revisao-e-previas
+          include-hidden-files: true
+          path: |
+            .preview/comunicacao-visual/
+            .preview/loja/browser-report.json
+
