@@ -25,7 +25,13 @@ await Promise.all([current,previous].map(s=>new Promise(r=>s.listen(0,'127.0.0.1
 const local='http://127.0.0.1:'+current.address().port,oldOrigin='http://127.0.0.1:'+previous.address().port;
 const preview=process.env.PREVIEW_ORIGIN.replace(/\/$/,'');
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/google-chrome',args:['--no-sandbox','--disable-dev-shm-usage','--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding']});const checks=[],comparisons=[];
-const waitImages=async page=>{await page.evaluate(()=>document.fonts.ready);await page.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});await page.waitForLoadState('load');if(await page.locator('video').count())await page.waitForFunction(()=>[...document.querySelectorAll('video')].every(v=>v.readyState>=1),{},{timeout:15000});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
+const waitImages=async page=>{await page.evaluate(()=>document.fonts.ready);await page.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});await page.waitForLoadState('load');if(await page.locator('video').count()){
+ // A barra nativa de buffer varia enquanto o vídeo carrega. Nesta captura de
+ // preservação, aguarda o arquivo completo; mantém poster e controles reais.
+ await page.locator('video').evaluateAll(vs=>vs.forEach(v=>{v.preload='auto';v.load();}));
+ await page.waitForFunction(()=>[...document.querySelectorAll('video')].every(v=>v.readyState>=4&&v.buffered.length>0&&v.buffered.end(v.buffered.length-1)>=v.duration-.01),{},{timeout:20000});
+ await page.mouse.move(0,0);await page.waitForTimeout(500);
+ }await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
 try{
  let raw,head;
  const expected=section(html,'<main','</main>');
