@@ -25,13 +25,7 @@ await Promise.all([current,previous].map(s=>new Promise(r=>s.listen(0,'127.0.0.1
 const local='http://127.0.0.1:'+current.address().port,oldOrigin='http://127.0.0.1:'+previous.address().port;
 const preview=process.env.PREVIEW_ORIGIN.replace(/\/$/,'');
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/google-chrome',args:['--no-sandbox','--disable-dev-shm-usage','--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding']});const checks=[],comparisons=[];
-const waitImages=async page=>{await page.evaluate(()=>document.fonts.ready);await page.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});await page.waitForLoadState('load');if(await page.locator('video').count()){
- // A barra nativa de buffer varia enquanto o vídeo carrega. Nesta captura de
- // preservação, aguarda o arquivo completo; mantém poster e controles reais.
- await page.locator('video').evaluateAll(vs=>vs.forEach(v=>{v.preload='auto';v.load();}));
- await page.waitForFunction(()=>[...document.querySelectorAll('video')].every(v=>v.readyState>=4&&v.buffered.length>0&&v.buffered.end(v.buffered.length-1)>=v.duration-.01),{},{timeout:20000});
- await page.mouse.move(0,0);await page.waitForTimeout(500);
- }await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
+const waitImages=async page=>{await page.evaluate(()=>document.fonts.ready);await page.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});await page.waitForLoadState('load');if(await page.locator('video').count())await page.waitForFunction(()=>[...document.querySelectorAll('video')].every(v=>v.readyState>=1),{},{timeout:15000});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
 try{
  let raw,head;
  const expected=section(html,'<main','</main>');
@@ -85,6 +79,29 @@ try{
    await page.screenshot({path:`.preview/cortes-especiais/cortes-especiais-${origin===preview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled'});
    if(origin===local&&[1440,768,390].includes(width)){
     for(const path of ['/','/livros-digitais','/servicos','/impressos','/comunicacao-visual']){
+     if(path==='/comunicacao-visual'){
+      // Os controles nativos variam com o buffer. Compara fonte, DOM, geometria
+      // e estilos reais desta página; confere o contrato do vídeo separadamente.
+      const a=await ctx.newPage();
+      const original=execFileSync('git',['show',base+':comunicacao-visual.html']);
+      assert.equal(await readFile('comunicacao-visual.html','utf8'),original.toString());
+      const snapshot=p=>p.locator('body *').evaluateAll(els=>els.map(e=>{
+       const cs=getComputedStyle(e),box=e.getBoundingClientRect();
+       return {tag:e.tagName,id:e.id,class:e.getAttribute('class'),text:e.children.length?null:e.textContent,
+        src:e.getAttribute('src'),href:e.getAttribute('href'),alt:e.getAttribute('alt'),
+        box:{x:box.x,y:box.y,width:box.width,height:box.height},
+        styles:Object.fromEntries(['display','position','color','background-color','background-image','font-family','font-size','line-height','border-radius','object-fit'].map(k=>[k,cs.getPropertyValue(k)]))};
+      }));
+      await a.route(local+path,r=>r.fulfill({contentType:'text/html; charset=utf-8',body:original}));
+      await a.goto(local+path,{waitUntil:'domcontentloaded'});await waitImages(a);const before=await snapshot(a);
+      await a.unroute(local+path);await a.goto(local+path,{waitUntil:'domcontentloaded'});await waitImages(a);const after=await snapshot(a);
+      assert.deepEqual(after,before,'DOM, imagens, links ou estilos alterados em Comunicação Visual');
+      const video=a.locator('video');assert.equal(await video.evaluate(v=>v.controls&&v.playsInline&&!v.autoplay&&v.error===null&&v.readyState>=1),true);
+      assert.equal(await video.locator('source').getAttribute('src'),'/assets/fachadas-trabalhos-idy.mp4');
+      comparisons.push({path,width,sourceIdentical:true,domAndStylesIdentical:true,videoMetadataAndControlsVerified:true});
+      await a.close();continue;
+     }
+
      // Compara as duas versões na mesma aba: mantém o mesmo renderer e
      // cache de redução do logotipo. Não aplica máscaras nem tolerância.
      const a=await ctx.newPage();

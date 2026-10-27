@@ -20,7 +20,7 @@ Um H1 e hierarquia H2/H3 sem saltos. Textos locais para Porto Alegre e região n
 
 ## Testes
 
-Workflow específico: 25 testes comerciais existentes; página local e Netlify em 1440, 1024, 768, 390 e 320 px; imagens, links, âncoras, menu móvel, WhatsApp simulado sem envio, SEO, sitemap/robots/redirects e preservação da produção anterior. Quinze comparações de pixels conferem loja, Livros Digitais, Serviços, Impressos e Comunicação Visual em três larguras, sem máscaras ou tolerância. Navegação e carrinho da loja em seis larguras.
+Workflow específico: 25 testes comerciais existentes; página local e Netlify em 1440, 1024, 768, 390 e 320 px; imagens, links, âncoras, menu móvel, WhatsApp simulado sem envio, SEO, sitemap/robots/redirects e preservação da produção anterior. Doze comparações de pixels conferem loja, Livros Digitais, Serviços e Impressos em três larguras, sem máscaras ou tolerância. Comunicação Visual é comparada por fonte integral, DOM, geometria e estilos, com verificação de metadados e controles reais do vídeo; sua barra nativa de buffer é dinâmica e não é usada como referência de pixels. Navegação e carrinho da loja em seis larguras.
 
 ## Escopo e publicação
 
