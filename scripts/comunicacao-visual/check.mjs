@@ -85,28 +85,27 @@ try{
    await page.screenshot({path:`.preview/comunicacao-visual/comunicacao-visual-${origin===preview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled'});
    if(origin===local&&[1440,768,390].includes(width)){
     for(const path of ['/','/livros-digitais','/servicos','/impressos']){
-     const a=await ctx.newPage(),b=await ctx.newPage();
-     // Usa o HTML anterior na mesma origem: os demais arquivos estão protegidos
-     // pelo diff, e o cache compartilhado mantém a rasterização das imagens estável.
+     // Compara as duas versões na mesma aba: mantém o mesmo renderer e
+     // cache de redução do logotipo. Não aplica máscaras nem tolerância.
+     const a=await ctx.newPage();
      const baselineHtml=execFileSync('git',['show',base+':'+(path==='/'?'index.html':path.slice(1)+'.html')]);
-     await b.route(local+path,r=>r.fulfill({contentType:'text/html; charset=utf-8',body:baselineHtml}));
-     await Promise.all([a.goto(local+path,{waitUntil:'domcontentloaded'}),b.goto(local+path,{waitUntil:'domcontentloaded'})]);await Promise.all([waitImages(a),waitImages(b)]);
      let same=false,before,after,attempt=0;
      for(;attempt<3;attempt++){
-      await Promise.all([waitImages(a),waitImages(b)]);
-      await a.bringToFront();after=await a.screenshot({fullPage:true,animations:'disabled'});await b.bringToFront();before=await b.screenshot({fullPage:true,animations:'disabled'});
+      await a.route(local+path,r=>r.fulfill({contentType:'text/html; charset=utf-8',body:baselineHtml}));
+      await a.goto(local+path,{waitUntil:'domcontentloaded'});await waitImages(a);await a.bringToFront();
+      before=await a.screenshot({fullPage:true,animations:'disabled'});
+      await a.unroute(local+path);
+      await a.goto(local+path,{waitUntil:'domcontentloaded'});await waitImages(a);await a.bringToFront();
+      after=await a.screenshot({fullPage:true,animations:'disabled'});
       if(after.equals(before)){same=true;break;}
-      await new Promise(r=>setTimeout(r,200));
      }
      if(!same){
       const name=path==='/'?'index':path.slice(1);
       await writeFile(`.preview/comunicacao-visual/comparacao-${name}-${width}-atual.png`,after);
       await writeFile(`.preview/comunicacao-visual/comparacao-${name}-${width}-anterior.png`,before);
-      const diagnose=p=>p.locator('img').evaluateAll(imgs=>imgs.map(i=>({src:i.src,loaded:i.complete&&i.naturalWidth>0,box:i.getBoundingClientRect().toJSON()})));
-      await writeFile(`.preview/comunicacao-visual/comparacao-${name}-${width}.json`,JSON.stringify({current:await diagnose(a),previous:await diagnose(b)},null,2));
      }
      assert(same,'Visual alterado em '+path+' '+width);
-     comparisons.push({path,width,pixelIdentical:true,paintChecks:attempt+1});await a.close();await b.close();
+     comparisons.push({path,width,pixelIdentical:true,paintChecks:attempt+1});await a.close();
     }
    }
    assert.deepEqual(errors,[]);checks.push({origin:origin===preview?'Netlify':'local',width,brokenImages:broken,horizontalOverflow:false,whatsappVerified:true,javascriptErrors:errors});await ctx.close();
