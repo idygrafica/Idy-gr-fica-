@@ -1,0 +1,50 @@
+name: IDY Resolve — proposta, loja preservada e prévia
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - index.html
+      - assets/idy-resolve.css
+      - assets/idy-resolve.js
+      - scripts/resolve/**
+      - .github/workflows/idy-resolve-preview.yml
+      - IDY_RESOLVE_REVISAO.md
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Cálculos existentes e guia sem preços inventados
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/resolve/guide.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar navegador e auditoria de acessibilidade
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0 axe-core@4.10.3
+      - name: Conferir proposta local, prévia Netlify, acessibilidade e SEO
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/resolve/check.mjs
+      - name: Conferir busca, categorias, carrinho e navegação existentes
+        run: node scripts/loja/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: idy-resolve-proposta-e-capturas
+          include-hidden-files: true
+          path: |
+            .preview/resolve/
+            .preview/loja/browser-report.json
