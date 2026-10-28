@@ -8,7 +8,7 @@ Abertura com a chamada “Sua empresa merece um site à altura”, botão verde 
 
 Três formatos de site, benefícios comerciais sem promessas de resultados, quatro etapas do projeto, integração com impressos e comunicação visual, referência real à loja da própria IDY, seis perguntas frequentes e chamadas para WhatsApp ao longo da página. Escopo, preços, domínio, hospedagem, suporte e integrações são definidos no orçamento. Sem promessa de posição no Google e sem ativação de pagamentos.
 
-Branco, azul e verde, identidade oficial em destaque, cabeçalho e rodapé padronizados. Ativa somente o item de navegação da própria página. Dispositivos usam formas gráficas em HTML, CSS e SVG leves; sem imagens externas, iframes, vídeos, novas fontes, bibliotecas de animação ou carregamento de sites de terceiros.
+Branco, azul e verde, identidade oficial em destaque, cabeçalho e rodapé padronizados. Ativa somente o item de navegação da própria página. Dispositivos usam formas gráficas em HTML, CSS e SVG leves; sem imagens externas, iframes, vídeos, novas fontes, bibliotecas de animação ou carregamento de sites de terceiros. Tablet e celular ficam posicionados para preservar a leitura do exemplo no computador. O WhatsApp flutuante é compacto somente nesta página, com o mesmo link, número e rótulo acessível, sem o balão cobrindo os exemplos.
 
 ## Movimento, funcionamento e desempenho
 
