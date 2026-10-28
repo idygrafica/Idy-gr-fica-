@@ -1,0 +1,49 @@
+name: Criação de Sites — vitrine e prévia para aprovação
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - criacao-sites.html
+      - assets/criacao-sites.css
+      - assets/criacao-sites.js
+      - scripts/criacao-sites/check.mjs
+      - .github/workflows/criacao-sites-preview.yml
+      - CRIACAO_SITES_REVISAO.md
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir cálculos, preços e carrinho existentes
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar automação com Chrome disponível
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir vitrine, interações, acessibilidade e SEO
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/criacao-sites/check.mjs
+      - name: Conferir navegação e compra na loja preservada
+        run: node scripts/loja/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: criacao-sites-vitrine-e-previas
+          include-hidden-files: true
+          path: |
+            .preview/criacao-sites/
+            .preview/loja/browser-report.json
