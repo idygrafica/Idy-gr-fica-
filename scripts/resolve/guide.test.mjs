@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildBrief,briefUrl,needs} from '../../assets/idy-resolve.js';
+const base={mode:'ideia',product:'Quero divulgar minha loja',art:'ideia'};
+test('começa só com a necessidade, sem quantidade ou medidas obrigatórias',()=>{const s=buildBrief(base);assert.match(s,/Quero divulgar minha loja/);assert(!s.includes('Quantidade aproximada:'));assert(!s.includes('Medidas:'));assert(!/R\$|desconto|prazo garantido/i.test(s));});
+test('arte pronta é descrita sem fingir envio ou anexo automático',()=>{const s=buildBrief({...base,mode:'arte',art:'pronta'});assert.match(s,/Já tenho minha arte/);assert.match(s,/Tenho um arquivo pronto/);assert(!/arquivo enviado|arquivo anexado|upload concluído/i.test(s));});
+test('preserva os detalhes fornecidos, inclusive quantidade aproximada por extenso',()=>{const s=buildBrief({...base,quantity:'umas 50',size:'não sei ainda',extra:'Quero usar na inauguração'});assert.match(s,/Quantidade aproximada: umas 50/);assert.match(s,/Medidas: não sei ainda/);assert.match(s,/Quero usar na inauguração/);});
+test('sete necessidades encaminham para serviços locais existentes',()=>{assert.equal(Object.keys(needs).length,7);for(const [need,entry] of Object.entries(needs)){assert(entry.links.length>0&&entry.links.every(x=>x[1].startsWith('/')));const s=buildBrief({...base,mode:'orientacao',need});assert(s.includes(entry.title));assert(s.includes(base.product));}});
+test('WhatsApp correto e conteúdo Unicode reversível, sem preço calculado pelo guia',()=>{const data={...base,product:'Adesivos: café & ação ✓',extra:'Uma ideia\nOutra informação'};const u=new URL(briefUrl(data));assert.equal(u.origin,'https://wa.me');assert.equal(u.pathname,'/5551981687562');assert.equal(u.searchParams.get('text'),buildBrief(data));});
+test('descrição vazia não gera mensagem',()=>{assert.throws(()=>buildBrief({...base,product:' \n '}),/Conte o que/);});
+test('opções desconhecidas não viram destinos ou capacidades inventadas',()=>{assert.throws(()=>buildBrief({...base,mode:'auto-ia'}));assert.throws(()=>buildBrief({...base,art:'upload-enviado'}));assert.throws(()=>buildBrief({...base,need:'https://outro-destino.example'}));});
+test('limites não truncam silenciosamente a informação do cliente',()=>{assert.throws(()=>buildBrief({...base,product:'a'.repeat(601)}),RangeError);assert.throws(()=>buildBrief({...base,extra:'b'.repeat(501)}),RangeError);});
+test('texto com marcação permanece texto e não cria parâmetros no link',()=>{const data={...base,product:'<img src=x onerror=alert(1)> &text=outro'};const u=new URL(briefUrl(data));assert.equal(u.searchParams.size,1);assert(u.searchParams.get('text').includes(data.product));});
