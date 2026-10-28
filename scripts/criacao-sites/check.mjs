@@ -44,6 +44,7 @@ try{
  const robots=await fetch(preview+'/robots.txt');assert.equal(robots.status,200);assert.equal(await robots.text(),await readFile('robots.txt','utf8'));
  for(const origin of [local,preview]){
   for(const width of [1440,1024,768,390,320]){
+   console.log('Conferindo',origin===preview?'Netlify':'local',width);
    const ctx=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});
    await ctx.route('https://wa.me/**',r=>r.fulfill({contentType:'text/html',body:'Destino simulado. Nenhuma mensagem enviada.'}));
    await ctx.route(/https:\/\/[^/]*netlify[^/]*\/.*(?:\.netlify\/cdp|netlify-cdp)/,r=>r.abort());
@@ -87,9 +88,9 @@ try{
    assert.deepEqual(errors,[]);checks.push({origin:origin===preview?'Netlify':'local',width,brokenImages:[],horizontalOverflow:false,demosSynced:3,keyboardTabs:true,faqVerified:6,whatsappVerified:true,javascriptErrors:errors});await ctx.close();
   }
  }
- const fallback=await browser.newContext({viewport:{width:390,height:844},javaScriptEnabled:false});const page=await fallback.newPage();await page.goto(local+'/criacao-sites');await settle(page);
+ const fallback=await browser.newContext({viewport:{width:390,height:844},javaScriptEnabled:false});const page=await fallback.newPage();await page.goto(local+'/criacao-sites',{waitUntil:'load'});
  assert.equal(await page.locator('[data-demo-screen]>.demo-institucional').count(),3);assert(!await page.locator('[data-demo-tabs]').isVisible());assert(await page.locator('.wb-hero-actions .wb-button').isVisible());await page.locator('.wb-faq summary').first().click();assert(await page.locator('.wb-faq details').first().locator('p').isVisible());await fallback.close();
  const prod=await fetch('https://idygrafica.netlify.app/criacao-sites');assert.equal(prod.status,200);assert(!(await prod.text()).includes('id="wb-title"'),'Não publicar em produção antes da aprovação');
  const report={verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,assetBytes,checks,noJavaScriptFallback:true,protectedSourcesUnchanged:true,importantPagesAccessible:12,canonicalAndIndexingPreserved:true,productionPublished:false,realWhatsAppMessagesSent:0};
  await writeFile('.preview/criacao-sites/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
-}finally{await browser.close();await new Promise(r=>server.close(r));}
+}finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
