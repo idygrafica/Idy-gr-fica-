@@ -25,7 +25,7 @@ A3 mantém R$ 3,00 por face e R$ 6,00 frente e verso, sem desconto automático. 
 
 Workflow `idy-resolve-preview.yml`: 25 testes comerciais e nove do guia, pré-renderização, verificação de fontes protegidas, Chrome local/Netlify em cinco larguras (1440, 1024, 768, 390 e 320 px), loja em seis larguras. Confere imagens, botão para IDY Resolve, links, teclado, auditoria automática axe WCAG A/AA, formulário, cópia, alternativa sem JavaScript, movimento reduzido e fim da transição sem loop.
 
-A auditoria registra uma medição em Chrome com viewport de 390 px, CPU 4x e rede de 1,6 Mbps / 150 ms: FCP, LCP e deslocamentos de layout. É uma medição de laboratório. HTML, CSS e JS têm orçamento de tamanho e foram reduzidos com a retirada da vitrine simulada. As imagens novas ficam no próprio site; a abertura não depende de bibliotecas ou serviços externos em tempo de execução.
+A auditoria registra uma medição em Chrome com viewport de 390 px, CPU 4x e rede de 1,6 Mbps / 150 ms: FCP, LCP e deslocamentos de layout. É uma medição de laboratório. HTML, CSS e JS têm orçamento de tamanho e foram reduzidos com a retirada da vitrine simulada. A Xerox tem pré-carregamento e prioridade alta; as imagens secundárias da abertura têm prioridade baixa. A transição começa somente após a decodificação das duas fotografias. As imagens novas ficam no próprio site; a abertura não depende de bibliotecas ou serviços externos em tempo de execução.
 
 WhatsApp é interceptado nos testes, sem mensagem real. A IA recebe somente GET na página e no endpoint público de saúde; não se cadastram clientes, enviam anexos ou acionam atendentes.
 

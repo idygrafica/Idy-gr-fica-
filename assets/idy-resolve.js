@@ -79,6 +79,13 @@ if(typeof document!=='undefined'){
    catch{q('[data-rs-share] details').open=true;q('[data-rs-copy-status]').textContent='Abra o resumo e selecione o texto para copiar; a cópia automática não está disponível neste navegador.';}
   });
   const cartButton=q('[data-rs-cart]');cartButton.hidden=false;cartButton.addEventListener('click',()=>q('.cart-toggle').click());
+  // A transição usa fotografias já carregadas; não simula a máquina em funcionamento.
+  const opening=q('.rx-hero'),printer=q('.rx-printer'),intro=q('.rx-origin-intro');
+  if(opening&&printer&&intro&&!reduced()){
+   Promise.all([printer.decode(),intro.querySelector('img').decode()]).then(()=>{
+    if(reduced())return;intro.hidden=false;opening.classList.add('is-photo-ready');
+   }).catch(()=>{/* A fotografia principal e o atendimento continuam disponíveis. */});
+  }
   if(!reduced()&&'IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.classList.add('rs-inview');observer.unobserve(entry.target);}),{threshold:.1});root.querySelectorAll('.rs-mode,.rs-need,.rs-photo-grid figure').forEach(element=>observer.observe(element));}
  }
 }

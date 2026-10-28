@@ -136,11 +136,11 @@
 .resolve-page .rx-equipment-heading p>span{width:7px;height:7px;border-radius:50%;background:var(--rs-green)}
 .resolve-page .rx-equipment-heading>strong{font-size:14px;color:var(--rs-blue);letter-spacing:-.02em}
 .resolve-page .rx-machine{margin:0;position:relative;min-height:495px;isolation:isolate;background:radial-gradient(ellipse at 50% 45%,#fff 10%,#f5f9fa 46%,#edf4f5 72%)}
-.resolve-page .rx-machine .rx-printer{position:absolute;left:5%;top:10px;bottom:auto;right:auto;width:90%;height:420px;max-width:none;object-fit:contain;filter:drop-shadow(0 14px 11px #173e5424);animation:rx-digital-in 1.8s ease-out both;z-index:1}
+.resolve-page .rx-machine .rx-printer{position:absolute;left:5%;top:10px;bottom:auto;right:auto;width:90%;height:420px;max-width:none;object-fit:contain;filter:drop-shadow(0 14px 11px #173e5424);z-index:1}
 .resolve-page .rx-machine-floor{position:absolute;left:18%;right:18%;bottom:56px;height:17px;background:#0b3c5418;filter:blur(10px);border-radius:50%;z-index:0}
 .resolve-page .rx-machine figcaption{position:absolute;left:25px;right:25px;bottom:15px;text-align:left;color:var(--rs-blue);font-size:11px;font-weight:750;line-height:1.5}
 .resolve-page .rx-machine figcaption>span{display:block;font-size:10px;font-weight:400;color:var(--rs-gray);margin-top:3px}
-.resolve-page .rx-origin-intro{position:absolute;inset:0 8px 61px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:#edf3f3;pointer-events:none;animation:rx-origin-out 1.8s ease-in-out both}
+.resolve-page .rx-origin-intro{position:absolute;inset:0 8px 61px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:#edf3f3;pointer-events:none}
 .resolve-page .rx-origin-intro img{width:260px;height:265px;max-width:70%;object-fit:contain;box-shadow:0 10px 28px #213c4520}
 .resolve-page .rx-origin-intro p{font-size:12px;font-weight:700;line-height:1.6;color:var(--rs-blue);margin:0;text-align:center}
 .resolve-page .rx-origin-intro p>span{font-size:10px;color:var(--rs-gray);font-weight:400;display:block}
@@ -181,3 +181,7 @@
 @media(max-width:360px){.resolve-page .rx-hero h1{font-size:10vw}.resolve-page .rx-description{font-size:16px}.resolve-page .rx-main-cta{font-size:10px;padding:16px 13px}.resolve-page .rx-machine{min-height:315px}.resolve-page .rx-machine .rx-printer{height:257px;top:8px}.resolve-page .rx-equipment-heading{padding:17px 13px 0;gap:10px}.resolve-page .rx-equipment-heading>strong{font-size:11px}.resolve-page .rx-equipment-heading p{font-size:6px}.resolve-page .rx-machine figcaption{left:13px;right:13px;font-size:9px}.resolve-page .rx-machine figcaption>span{font-size:8px}.resolve-page .rx-timeline{padding:14px 13px;gap:9px}.resolve-page .rx-history img{width:35px;height:38px}.resolve-page .rx-history strong{font-size:9px}.resolve-page .rx-history em{font-size:5px}.resolve-page .rx-present{padding-left:9px;gap:7px}.resolve-page .rx-present strong{font-size:10px}.resolve-page .rx-output-card>img{height:100px}.resolve-page .rx-output-card strong{font-size:10px}.resolve-page .rx-output-card small{font-size:8px}.resolve-page .rx-output-heading h2{font-size:27px}}
 @media(prefers-reduced-motion:reduce){.resolve-page .rx-origin-intro{display:none!important;animation:none!important}.resolve-page .rx-machine .rx-printer{animation:none!important;transform:none!important;opacity:1!important}}
 
+
+.resolve-page .rx-hero.is-photo-ready .rx-origin-intro{animation:rx-origin-out 1.8s ease-in-out both}
+.resolve-page .rx-hero.is-photo-ready .rx-printer{animation:rx-digital-in 1.8s ease-out both}
+@media(prefers-reduced-motion:reduce){.resolve-page .rx-hero.is-photo-ready .rx-printer{animation:none!important}}

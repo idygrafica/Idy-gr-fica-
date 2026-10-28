@@ -16,7 +16,7 @@ assert.equal(html.slice(html.indexOf('<section class="rs-start')).trimEnd(),prev
 const part=(s,a,b)=>{assert(s.includes(a)&&s.includes(b),'Marcadores existentes');return s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a)));};
 assert.equal(html.slice(html.indexOf('<div class="store-layout">')).trimEnd(),reference.slice(reference.indexOf('<div class="store-layout">')).trimEnd(),'Catálogo, carrinho, rodapé e navegação institucional preservados');
 assert.equal(part(html,'<header','</header>'),part(reference,'<header','</header>'),'Cabeçalho, busca, logo, IA e WhatsApp preservados');
-const removeAssets=s=>s.replace(/<link rel="stylesheet" href="\/assets\/idy-resolve.css">\s*/,'').replace(/<script type="module" src="\/assets\/idy-resolve.js"><\/script>\s*/,'').replace(/\s+/g,' ');
+const removeAssets=s=>s.replace(/<link rel="preload" as="image" href="\/assets\/xerox-color-560-home.webp" fetchpriority="high">\s*/,'').replace(/<link rel="stylesheet" href="\/assets\/idy-resolve.css">\s*/,'').replace(/<script type="module" src="\/assets\/idy-resolve.js"><\/script>\s*/,'').replace(/\s+/g,' ');
 assert.equal(removeAssets(part(html,'<head','</head>')),removeAssets(part(reference,'<head','</head>')),'Metas, canonical e dados estruturados preservados');
 assert.equal(part(html,'<nav class="category-bar"','</nav>'),part(reference,'<nav class="category-bar"','</nav>'),'Categorias preservadas');
 const pages=JSON.parse(await readFile('scripts/seo-technical/pages.json','utf8'));
