@@ -9,14 +9,6 @@ export const needs=Object.freeze({
  livro:{title:'Preciso imprimir um livro ou apostila.',description:'Conte o tipo de publicação, a quantidade de exemplares e o número de páginas, se souber. Formato, papel e acabamento podem ser avaliados com a equipe.',request:'Preciso imprimir um livro ou apostila e quero orientação sobre o projeto.',links:[['Livros, apostilas e catálogos','/livros-digitais'],['Impressões rápidas','/impressoes-rapidas']]},
  site:{title:'Quero criar um site para minha empresa.',description:'Conte sobre sua empresa e o que você precisa apresentar na internet. A equipe prepara uma proposta de site com páginas e recursos definidos para o seu projeto.',request:'Quero criar um site para a minha empresa.',links:[['Criação de sites','/criacao-sites']]}
 });
-// Cada exemplo usa o mesmo guia e serviços existentes; não é um novo sistema de IA.
-export const examples=Object.freeze({
- menu:{label:'Cardápios e divulgação',need:'divulgar',href:'/impressos',request:'Quero um cardápio ou material de divulgação para o meu negócio de gastronomia. Gostaria de orientação sobre as opções.'},
- fachada:{label:'Fachadas e comunicação visual',need:'fachada',href:'/comunicacao-visual',request:'Quero renovar a fachada da minha empresa e gostaria de orientação sobre materiais e comunicação visual.'},
- livro:{label:'Livros, apostilas e catálogos',need:'livro',href:'/livros-digitais',request:'Quero imprimir um livro, apostila ou catálogo e gostaria de orientação sobre a produção.'},
- adesivo:{label:'Adesivos e rótulos',need:'personalizar',href:'/servicos#adesivos',request:'Quero adesivos ou rótulos para a minha marca. Gostaria de orientação sobre tamanho, material e aplicação.'},
- personalizado:{label:'Produtos personalizados',need:'personalizar',href:'/servicos#personalizacao',request:'Quero personalizar uma camiseta ou outro produto e consultar a técnica e a viabilidade da minha ideia.'}
-});
 const arts={pronta:'Tenho um arquivo pronto',ideia:'Tenho uma ideia ou referência','nao-sei':'Quero orientação sobre a arte'};
 function text(value,max,label){const result=typeof value==='string'?value.replace(/\r\n/g,'\n').trim():'';if(result.length>max)throw new RangeError(label+' excedeu o limite de caracteres.');return result;}
 export function buildBrief(data={}){
@@ -87,55 +79,6 @@ if(typeof document!=='undefined'){
    catch{q('[data-rs-share] details').open=true;q('[data-rs-copy-status]').textContent='Abra o resumo e selecione o texto para copiar; a cópia automática não está disponível neste navegador.';}
   });
   const cartButton=q('[data-rs-cart]');cartButton.hidden=false;cartButton.addEventListener('click',()=>q('.cart-toggle').click());
-  // Vitrine progressiva: o produto continua acessível por link sem JavaScript.
-  const tabs=[...root.querySelectorAll('[data-rv-tab]')],panels=[...root.querySelectorAll('[data-rv-panel]')];
-  let activeExample='menu',revealFrame=0;
-  function revealFacade(value){q('.rv-stage-fachada').style.setProperty('--rv-reveal',value+'%');q('#rv-facade-range').value=String(Math.round(value));}
-  function animateExample(key){
-   cancelAnimationFrame(revealFrame);panels.forEach(panel=>panel.classList.remove('is-transforming'));
-   const panel=q('[data-rv-panel="'+key+'"]');if(!panel)return;
-   if(!reduced()){void panel.offsetWidth;panel.classList.add('is-transforming');}
-   if(key==='fachada'){
-    if(reduced()){revealFacade(100);return;}
-    revealFacade(0);let started;
-    const frame=time=>{if(activeExample!==key||document.visibilityState==='hidden'){revealFacade(100);return;}started??=time;const progress=Math.min((time-started)/1100,1);revealFacade((1-Math.pow(1-progress,3))*100);if(progress<1)revealFrame=requestAnimationFrame(frame);};
-    revealFrame=requestAnimationFrame(frame);
-   }
-   if(key==='personalizado'||key==='adesivo'){
-    panel.classList.remove('is-applied');void panel.offsetWidth;
-    const apply=()=>{panel.classList.add('is-applied');const control=q('[data-rv-apply="'+key+'"]');control.setAttribute('aria-pressed','true');control.firstChild.textContent=key==='personalizado'?'Ver sem estampa ':'Ver a arte ';};
-    if(reduced())apply();else revealFrame=requestAnimationFrame(()=>{if(activeExample===key)apply();});
-   }
-  }
-  function selectExample(key,{focus=false}={}){
-   if(!Object.hasOwn(examples,key))return;
-   activeExample=key;
-   tabs.forEach(tab=>{const active=tab.dataset.rvTab===key;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;});
-   panels.forEach(panel=>{panel.hidden=panel.dataset.rvPanel!==key;});
-   const panel=q('[data-rv-panel="'+key+'"]');panel.querySelectorAll('img[loading="lazy"]').forEach(img=>{img.loading='eager';});
-   animateExample(key);q('[data-rv-status]').textContent=examples[key].label+'. Toque no produto para iniciar um orçamento.';
-   if(focus){const tab=q('[data-rv-tab="'+key+'"]');tab.focus({preventScroll:true});tab.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});}
-  }
-  if(tabs.length){
-   q('[data-rv-tabs]').hidden=false;
-   panels.forEach(panel=>{panel.removeAttribute('aria-label');panel.setAttribute('aria-labelledby','rv-tab-'+panel.dataset.rvPanel);});
-   root.querySelectorAll('[data-rv-replay],[data-rv-open],[data-rv-apply],[data-rv-range-label]').forEach(control=>{control.hidden=false;});
-   tabs.forEach((tab,index)=>{
-    tab.addEventListener('click',()=>selectExample(tab.dataset.rvTab));
-    tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowRight')next=(index+1)%tabs.length;else if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();selectExample(tabs[next].dataset.rvTab,{focus:true});});
-   });
-   q('[data-rv-replay]').addEventListener('click',()=>animateExample('menu'));
-   q('#rv-facade-range').addEventListener('input',event=>{cancelAnimationFrame(revealFrame);revealFacade(event.target.value);});
-   q('[data-rv-open]').addEventListener('click',event=>{const panel=q('[data-rv-panel="livro"]');panel.classList.remove('is-transforming');const open=panel.classList.toggle('is-open'),control=event.currentTarget;control.setAttribute('aria-pressed',String(open));control.firstChild.textContent=open?'Fechar o livro ':'Abrir o livro ';});
-   root.querySelectorAll('[data-rv-apply]').forEach(control=>control.addEventListener('click',()=>{cancelAnimationFrame(revealFrame);const key=control.dataset.rvApply,applied=q('[data-rv-panel="'+key+'"]').classList.toggle('is-applied');control.setAttribute('aria-pressed',String(applied));control.firstChild.textContent=key==='personalizado'?(applied?'Ver sem estampa ':'Aplicar estampa '):(applied?'Ver a arte ':'Ver aplicação ');}));
-   root.querySelectorAll('[data-rs-example]').forEach(link=>link.addEventListener('click',event=>{
-    const key=link.dataset.rsExample;if(!Object.hasOwn(examples,key))return;event.preventDefault();need=examples[key].need;
-    root.querySelectorAll('[data-rs-need]').forEach(item=>{item.classList.remove('is-active');item.setAttribute('aria-expanded','false');});q('[data-rs-need-panel]').hidden=true;
-    openRequest('ideia',examples[key].request);
-   }));
-   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){cancelAnimationFrame(revealFrame);revealFacade(100);panels.forEach(panel=>panel.classList.remove('is-transforming'));}});
-   if(!reduced()&&'IntersectionObserver' in window){const visible=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){animateExample(activeExample);visible.disconnect();}},{threshold:.2});visible.observe(q('.rs-vitrine'));}
-  }
   if(!reduced()&&'IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.classList.add('rs-inview');observer.unobserve(entry.target);}),{threshold:.1});root.querySelectorAll('.rs-mode,.rs-need,.rs-photo-grid figure').forEach(element=>observer.observe(element));}
  }
 }

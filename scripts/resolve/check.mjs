@@ -6,11 +6,13 @@ import {resolve} from 'node:path';
 import {makeServer} from '../seo-technical/server.mjs';
 
 const base='92583ed7e5615c28aed7350897d80c4d6e297064';
-const allowed=['index.html','assets/idy-resolve.css','assets/idy-resolve.js','scripts/resolve/check.mjs','scripts/resolve/guide.test.mjs','.github/workflows/idy-resolve-preview.yml','IDY_RESOLVE_REVISAO.md'];
+const allowed=['index.html','assets/idy-resolve.css','assets/idy-resolve.js','scripts/resolve/check.mjs','scripts/resolve/guide.test.mjs','.github/workflows/idy-resolve-preview.yml','IDY_RESOLVE_REVISAO.md','assets/prensa-tipografica-referencia.jpg','assets/publicacoes-referencia-pexels.jpg'];
 const git=path=>execFileSync('git',['show',base+':'+path],{encoding:'utf8'});
 const changed=execFileSync('git',['diff','--name-only',base,'HEAD'],{encoding:'utf8'}).trim().split('\n');
 for(const file of changed)assert(allowed.includes(file),'Fora do escopo: '+file);
 const html=await readFile('index.html','utf8'),reference=git('index.html');
+const previous=execFileSync('git',['show','9bfed631e12816c3bc3210bc81df91e5bd6a9944:index.html'],{encoding:'utf8'});
+assert.equal(html.slice(html.indexOf('<section class="rs-start')).trimEnd(),previous.slice(previous.indexOf('<section class="rs-start')).trimEnd(),'Somente a abertura pode mudar em relação à PR #18 anterior');
 const part=(s,a,b)=>{assert(s.includes(a)&&s.includes(b),'Marcadores existentes');return s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a)));};
 assert.equal(html.slice(html.indexOf('<div class="store-layout">')).trimEnd(),reference.slice(reference.indexOf('<div class="store-layout">')).trimEnd(),'Catálogo, carrinho, rodapé e navegação institucional preservados');
 assert.equal(part(html,'<header','</header>'),part(reference,'<header','</header>'),'Cabeçalho, busca, logo, IA e WhatsApp preservados');
@@ -23,7 +25,7 @@ const css=await readFile('assets/idy-resolve.css','utf8'),js=await readFile('ass
 assert(css.includes('prefers-reduced-motion'));assert(!/infinite/.test(css));
 assert(!/fetch\(|XMLHttpRequest|localStorage|innerHTML|<iframe|OPENAI/.test(js),'Guia não cria backend, IA, armazenamento ou injeção HTML');
 const assetBytes={html:Buffer.byteLength(html),css:Buffer.byteLength(css),js:Buffer.byteLength(js)};
-assert(assetBytes.html<65000&&assetBytes.css<55000&&assetBytes.js<24000,'Componentes leves sem nova biblioteca em produção');
+assert(assetBytes.html<45000&&assetBytes.css<40000&&assetBytes.js<14000,'Componentes leves sem nova biblioteca em produção');
 await mkdir('.preview/resolve',{recursive:true});
 const require=createRequire(resolve('.preview-tools/package.json'));const {chromium}=require('playwright');
 const server=makeServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));
@@ -56,7 +58,7 @@ try{
    await ctx.route(/https:\/\/[^/]*netlify[^/]*\/.*(?:\.netlify\/cdp|netlify-cdp)/,r=>r.abort());
    const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
    assert.equal((await page.goto(origin+'/',{waitUntil:'domcontentloaded'})).status(),200);await settle(page);
-   assert.equal(await page.locator('h1').count(),1);assert.match(await page.locator('h1').innerText(),/VOCÊ IMAGINA\.[\s\S]*A IDY RESOLVE\./);
+   assert.equal(await page.locator('h1').count(),1);assert.match(await page.locator('h1').innerText(),/A impressão evoluiu\.[\s\S]*A gente também\./);
    assert.equal(await page.locator('.product').count(),8);assert.equal(await page.locator('[data-rs-mode]').count(),3);assert.equal(await page.locator('[data-rs-need]').count(),7);
    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app/');assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0);
    const ids=await page.locator('[id]').evaluateAll(es=>es.map(e=>e.id));assert.equal(ids.length,new Set(ids).size);
@@ -67,25 +69,16 @@ try{
    assert(!await page.locator('#rs-request').isVisible());assert.equal(await page.locator('.rs-mascot').evaluate(e=>getComputedStyle(e).animationName),'none','Respeitar movimento reduzido');await noOverflow(page);
    // Captura inicial limpa. Oculta apenas o iframe técnico da barra Netlify na captura; a aplicação não usa iframe.
    await page.bringToFront();await page.mouse.move(0,0);await page.screenshot({path:`.preview/resolve/idy-resolve-${origin===preview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled',style:'iframe{visibility:hidden!important}'});
-   // Cinco produtos levam ao mesmo guia, sem alterar o carrinho ou criar outra IA.
-   await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
-   const sceneRequests={menu:'cardápio',fachada:'fachada',livro:'livro',adesivo:'adesivos',personalizado:'personalizar'};
-   for(const [key,word] of Object.entries(sceneRequests)){
-    const tab=page.locator('[data-rv-tab="'+key+'"]');await tab.click();assert.equal(await tab.getAttribute('aria-selected'),'true');
-    const panel=page.locator('[data-rv-panel="'+key+'"]');assert(await panel.isVisible());assert.equal(await panel.getAttribute('aria-labelledby'),'rv-tab-'+key);assert.equal(await page.locator('[data-rv-panel]:visible').count(),1);
-    assert.match(await panel.locator('.rv-disclosure').innerText(),/ilustrativ/i);await noOverflow(page);
-    if(key==='fachada'){const slider=page.locator('#rv-facade-range');await slider.focus();await slider.press('Home');assert.equal(await slider.inputValue(),'0');assert.equal(await panel.locator('.rv-stage').evaluate(e=>e.style.getPropertyValue('--rv-reveal')),'0%');await slider.press('End');assert.equal(await slider.inputValue(),'100');}
-    if(key==='livro'){const open=page.locator('[data-rv-open]');await open.click();assert.equal(await open.getAttribute('aria-pressed'),'true');assert(await panel.evaluate(e=>e.classList.contains('is-open')));}
-    if(key==='personalizado'||key==='adesivo'){const apply=page.locator('[data-rv-apply="'+key+'"]');assert.equal(await apply.getAttribute('aria-pressed'),'true');await apply.click();assert.equal(await apply.getAttribute('aria-pressed'),'false');await apply.click();assert.equal(await apply.getAttribute('aria-pressed'),'true');}
-    const violations=await page.evaluate(async()=>{const r=await axe.run({include:[['.rs-vitrine']]},{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}});return r.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}));});assert.deepEqual(violations,[],'Acessibilidade da cena '+key);
-    if(origin===preview&&(width===1440||width===390))await page.locator('.rs-vitrine').screenshot({path:`.preview/resolve/vitrine-${key}-${width}.png`,animations:'disabled',style:'iframe{visibility:hidden!important}'});
-    const oldCart=await page.evaluate(()=>localStorage.getItem('loja-idy.cart.v1'));await panel.locator('.rv-stage').click();assert(await page.locator('#rs-request').isVisible());assert((await page.locator('#rs-product').inputValue()).toLowerCase().includes(word));assert.equal(await page.locator('#rs-art').inputValue(),'ideia');assert.equal(await page.evaluate(()=>localStorage.getItem('loja-idy.cart.v1')),oldCart);
-    await page.locator('#rs-product').fill('');
-   }
-   // Uma nova seleção conserva as informações que o cliente já digitou.
-   await page.locator('#rs-product').fill('Já expliquei minha ideia');await page.locator('#rs-quantity').fill('umas 50');await page.locator('[data-rv-tab="menu"]').click();await page.locator('[data-rv-panel="menu"] .rv-quote').click();assert.equal(await page.locator('#rs-product').inputValue(),'Já expliquei minha ideia');assert.equal(await page.locator('#rs-quantity').inputValue(),'umas 50');
-   await page.locator('[data-rv-tab="menu"]').focus();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('[data-rv-tab="fachada"]').getAttribute('aria-selected'),'true');await page.keyboard.press('End');assert.equal(await page.locator('[data-rv-tab="personalizado"]').getAttribute('aria-selected'),'true');await page.keyboard.press('Home');assert.equal(await page.locator('[data-rv-tab="menu"]').getAttribute('aria-selected'),'true');
-   assert.equal(await page.locator('.rv-menu-product').evaluate(e=>getComputedStyle(e).animationName),'none');
+   // A fotografia é o destaque; a chamada leva ao guia existente.
+   assert.equal(await page.locator('.rx-printer').getAttribute('fetchpriority'),'high');assert.equal(await page.locator('.rx-printer').getAttribute('loading'),'eager');
+   assert.equal(await page.locator('.rx-origin-intro').evaluate(e=>getComputedStyle(e).display),'none','Sem introdução animada com movimento reduzido');
+   assert.equal(await page.locator('.rx-printer').evaluate(e=>getComputedStyle(e).animationName),'none');
+   assert.equal(await page.locator('.rx-hero video,.rx-hero iframe,.rx-hero canvas,[data-rv-tab],[data-rs-example]').count(),0,'Sem simulações antigas, vídeos ou dependências externas');
+   assert.match(await page.locator('.rx-description').innerText(),/Impressões sob demanda, pequenas tiragens e soluções personalizadas/);
+   assert.equal(await page.locator('.rx-output-card').count(),3);assert.match(await page.locator('.rx-history').innerText(),/Referência histórica.*réplica/s);
+   for(const link of await page.locator('.rx-output-card').all()){const href=await link.getAttribute('href');assert.equal((await page.request.get(origin+href)).status(),200);}
+   await page.locator('.rx-image-notes summary').click();assert.match(await page.locator('.rx-image-notes').innerText(),/não um trabalho identificado da IDY/);await page.locator('.rx-image-notes summary').press('Enter');assert.equal(await page.locator('.rx-image-notes').getAttribute('open'),null);
+   const oldCart=await page.evaluate(()=>localStorage.getItem('loja-idy.cart.v1'));await page.locator('.rx-main-cta').click();assert.equal(new URL(page.url()).hash,'#comecar');assert(await page.locator('[data-rs-mode="arte"]').isVisible());assert.equal(await page.evaluate(()=>localStorage.getItem('loja-idy.cart.v1')),oldCart);
    await page.reload({waitUntil:'domcontentloaded'});await settle(page);
    await page.locator('[data-rs-mode="arte"]').click();assert(await page.locator('#rs-request').isVisible());assert.equal(await page.locator('#rs-art').inputValue(),'pronta');
    assert.equal(await page.locator('#rs-brief [required]').count(),1);assert.equal(await page.locator('#rs-brief [required]').getAttribute('id'),'rs-product');assert.equal(await page.locator('#rs-brief input[type="file"]').count(),0);
@@ -112,11 +105,18 @@ try{
    const cart=await page.evaluate(()=>localStorage.getItem('loja-idy.cart.v1'));await page.locator('[data-rs-free-start]').click();assert.equal(await page.evaluate(()=>localStorage.getItem('loja-idy.cart.v1')),cart);
    // Axe verifica os componentes novos; não modifica o documento nem funcionalidades antigas.
    await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const a11y=await page.evaluate(async()=>{const r=await axe.run({include:[['.rs-hero'],['#comecar'],['#solucoes'],['#rs-request'],['.rs-proof'],['#loja']]},{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}});return r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target)}));});assert.deepEqual(a11y,[],'Acessibilidade dos novos componentes');
-   assert.deepEqual(errors,[]);assert.deepEqual(posts,[],'Sem requisições de envio de dados');checks.push({origin:origin===preview?'Netlify':'local',width,needs:7,modes:3,visualExamples:5,allExamplesQuoteThroughExistingGuide:true,whatsappMocked:true,preservedCart:true,copyAndFallback:true,accessibilityViolations:a11y,javascriptErrors:errors});await ctx.close();
+   assert.deepEqual(errors,[]);assert.deepEqual(posts,[],'Sem requisições de envio de dados');checks.push({origin:origin===preview?'Netlify':'local',width,needs:7,modes:3,photographicOpening:true,originalXeroxPreserved:true,mainCtaOpensExistingGuide:true,whatsappMocked:true,preservedCart:true,copyAndFallback:true,accessibilityViolations:a11y,javascriptErrors:errors});await ctx.close();
   }
  }
- const fallback=await browser.newContext({viewport:{width:390,height:844},javaScriptEnabled:false});const p=await fallback.newPage();await p.goto(preview+'/',{waitUntil:'load'});assert.equal(await p.locator('.product').count(),8);assert(await p.locator('.rs-fallback').isVisible());assert(!await p.locator('[data-rs-controls]').isVisible());assert(!await p.locator('#rs-request').isVisible());for(const a of await p.locator('.rs-fallback a').all())assert.equal(new URL(await a.getAttribute('href')).pathname,'/5551981687562');assert.equal(await p.locator('[data-rs-need="livro"]').getAttribute('href'),'/livros-digitais');assert(await p.locator('.rv-fallback').isVisible());assert(!await p.locator('[data-rv-tabs]').isVisible());assert.equal(await p.locator('.rv-fallback a').count(),5);assert.equal(await p.locator('[data-rv-panel="menu"] .rv-stage').getAttribute('href'),'/impressos');await fallback.close();
- const motion=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'no-preference'});const mp=await motion.newPage();await mp.goto(preview+'/',{waitUntil:'load'});await mp.bringToFront();await mp.locator('[data-rv-tab="livro"]').click();await mp.waitForTimeout(1600);assert.equal(await mp.locator('[data-rv-tab="livro"]').getAttribute('aria-selected'),'true','Sem carrossel automático');assert.equal(await mp.locator('.rs-vitrine').evaluate(e=>e.getAnimations({subtree:true}).filter(a=>a.playState==='running').length),0,'Movimento termina sem loop');await motion.close();
+ const fallback=await browser.newContext({viewport:{width:390,height:844},javaScriptEnabled:false});const p=await fallback.newPage();await p.goto(preview+'/',{waitUntil:'load'});assert.equal(await p.locator('.product').count(),8);assert(await p.locator('.rs-fallback').isVisible());assert(!await p.locator('[data-rs-controls]').isVisible());assert(!await p.locator('#rs-request').isVisible());for(const a of await p.locator('.rs-fallback a').all())assert.equal(new URL(await a.getAttribute('href')).pathname,'/5551981687562');assert.equal(await p.locator('[data-rs-need="livro"]').getAttribute('href'),'/livros-digitais');assert.equal(await p.locator('.rx-main-cta').getAttribute('href'),'#comecar');assert.equal(await p.locator('.rx-printer').getAttribute('src'),'/assets/xerox-color-560-home.webp');await fallback.close();
+ const motion=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'no-preference'});const mp=await motion.newPage();await mp.goto(preview+'/',{waitUntil:'load'});await mp.bringToFront();await mp.waitForTimeout(2200);assert.equal(await mp.locator('.rx-origin-intro').evaluate(e=>getComputedStyle(e).visibility),'hidden');assert.equal(await mp.locator('.rx-printer').evaluate(e=>getComputedStyle(e).opacity),'1');assert.equal(await mp.locator('.rx-hero').evaluate(e=>e.getAnimations({subtree:true}).filter(a=>a.playState==='running').length),0,'Transição termina sem loop');await motion.close();
+ // Medição de carregamento em Chrome, com CPU 4x e rede de 1,6 Mbps / 150 ms.
+ const perfContext=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});const pp=await perfContext.newPage();
+ await perfContext.route(/https:\/\/(?:app\.netlify\.com|[^/]*\.bugsnag\.com)\//,r=>r.abort());await perfContext.route(/https:\/\/[^/]*netlify[^/]*\/.*(?:\.netlify\/cdp|netlify-cdp)/,r=>r.abort());
+ await pp.addInitScript(()=>{window.__rxPerf={lcp:0,cls:0};new PerformanceObserver(list=>{for(const e of list.getEntries())window.__rxPerf.lcp=e.startTime;}).observe({type:'largest-contentful-paint',buffered:true});new PerformanceObserver(list=>{for(const e of list.getEntries())if(!e.hadRecentInput)window.__rxPerf.cls+=e.value;}).observe({type:'layout-shift',buffered:true});});
+ const cdp=await perfContext.newCDPSession(pp);await cdp.send('Network.enable');await cdp.send('Network.emulateNetworkConditions',{offline:false,latency:150,downloadThroughput:1600000/8,uploadThroughput:750000/8});await cdp.send('Emulation.setCPUThrottlingRate',{rate:4});
+ await pp.goto(preview+'/',{waitUntil:'domcontentloaded',timeout:60000});await pp.locator('.rx-printer').evaluate(e=>e.decode());await pp.waitForTimeout(2500);
+ const performanceResult=await pp.evaluate(()=>({viewport:innerWidth,network:'1.6 Mbps / 150 ms',cpuSlowdown:4,firstContentfulPaintMs:performance.getEntriesByName('first-contentful-paint')[0]?.startTime,lcpMs:window.__rxPerf.lcp,cls:window.__rxPerf.cls,resources:performance.getEntriesByType('resource').map(e=>({url:e.name,bytes:e.transferSize,duration:e.duration})).filter(e=>e.url.startsWith(location.origin)),videoCount:document.querySelectorAll('video').length}));assert.equal(performanceResult.videoCount,0);await perfContext.close();
  const production=await get('https://idygrafica.netlify.app/');assert.equal(production.status,200);assert(!(await production.text()).includes('class="loja-page resolve-page"'),'Produção deve permanecer intocada');
- const report={verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,assetBytes,checks,noJavaScriptFallback:true,protectedSourcesUnchanged:true,pagesAccessible:12,canonicalAndIndexingPreserved:true,productionPublished:false,ai:{frontend:200,health:200,sourceAudited:true,automaticContextTransfer:false,backendModified:false,registrationOrUploadSubmitted:false},realWhatsAppMessagesSent:0};await writeFile('.preview/resolve/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+ const report={verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,assetBytes,performanceResult,checks,noJavaScriptFallback:true,protectedSourcesUnchanged:true,pagesAccessible:12,canonicalAndIndexingPreserved:true,productionPublished:false,ai:{frontend:200,health:200,sourceAudited:true,automaticContextTransfer:false,backendModified:false,registrationOrUploadSubmitted:false},realWhatsAppMessagesSent:0};await writeFile('.preview/resolve/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}

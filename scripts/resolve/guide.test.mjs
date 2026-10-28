@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildBrief,briefUrl,needs,examples} from '../../assets/idy-resolve.js';
+import {buildBrief,briefUrl,needs} from '../../assets/idy-resolve.js';
 const base={mode:'ideia',product:'Quero divulgar minha loja',art:'ideia'};
 test('começa só com a necessidade, sem quantidade ou medidas obrigatórias',()=>{const s=buildBrief(base);assert.match(s,/Quero divulgar minha loja/);assert(!s.includes('Quantidade aproximada:'));assert(!s.includes('Medidas:'));assert(!/R\$|desconto|prazo garantido/i.test(s));});
 test('arte pronta é descrita sem fingir envio ou anexo automático',()=>{const s=buildBrief({...base,mode:'arte',art:'pronta'});assert.match(s,/Já tenho minha arte/);assert.match(s,/Tenho um arquivo pronto/);assert(!/arquivo enviado|arquivo anexado|upload concluído/i.test(s));});
@@ -11,5 +11,3 @@ test('descrição vazia não gera mensagem',()=>{assert.throws(()=>buildBrief({.
 test('opções desconhecidas não viram destinos ou capacidades inventadas',()=>{assert.throws(()=>buildBrief({...base,mode:'auto-ia'}));assert.throws(()=>buildBrief({...base,art:'upload-enviado'}));assert.throws(()=>buildBrief({...base,need:'https://outro-destino.example'}));});
 test('limites não truncam silenciosamente a informação do cliente',()=>{assert.throws(()=>buildBrief({...base,product:'a'.repeat(601)}),RangeError);assert.throws(()=>buildBrief({...base,extra:'b'.repeat(501)}),RangeError);});
 test('texto com marcação permanece texto e não cria parâmetros no link',()=>{const data={...base,product:'<img src=x onerror=alert(1)> &text=outro'};const u=new URL(briefUrl(data));assert.equal(u.searchParams.size,1);assert(u.searchParams.get('text').includes(data.product));});
-
-test('cinco exemplos preparam pedidos para serviços existentes sem preços ou promessas inventadas',()=>{assert.equal(Object.keys(examples).length,5);for(const entry of Object.values(examples)){assert(Object.hasOwn(needs,entry.need));assert(entry.href.startsWith('/'));const data={mode:'ideia',art:'ideia',need:entry.need,product:entry.request};const message=new URL(briefUrl(data)).searchParams.get('text');assert(message.includes(entry.request));assert(message.includes(needs[entry.need].title));assert(!/R\$|entrega garantida|caixa de pizza|capa dura/i.test(message));}});

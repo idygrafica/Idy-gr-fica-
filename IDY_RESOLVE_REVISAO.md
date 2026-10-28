@@ -1,39 +1,36 @@
-# IDY Resolve — proposta para aprovação
+# IDY Resolve — abertura fotográfica para aprovação
 
-## Experiência
+A abertura apresenta “A impressão evoluiu. A gente também.” e a fotografia original da Xerox Color 560 como protagonista. O equipamento permanece inteiro e sem deformação. O botão “O QUE VOCÊ PRECISA IMPRIMIR?” leva à seção de atendimento que já existia na PR #18.
 
-Abertura “VOCÊ IMAGINA. A IDY RESOLVE.” com os arquivos oficiais do logotipo, mascote e Xerox, sem alterações nas imagens. Três maneiras de começar, sete situações do cliente e orientação com links para as páginas existentes. A compra direta permanece disponível pelo atalho “Ir direto para a loja”, pela busca no cabeçalho e pelo carrinho original.
+Uma transição única de 1,8 segundo faz uma breve referência às origens da impressão e termina na fotografia da Xerox. Não há animação de partes da máquina, folhas saindo, simulação de filmagem, vídeo, carrossel ou repetição. A preferência de movimento reduzido mostra diretamente a Xerox. O mascote oficial é mantido como apoio ao atendimento.
 
-O pedido só exige uma descrição. Quantidade aproximada, medidas, situação da arte e detalhes são opcionais. O guia funciona no navegador, sem nova IA, banco de dados, rastreamento ou upload. Prepara a mensagem para o cliente revisar e enviar no WhatsApp comercial. Arquivos são anexados na conversa, sem simular envio. O resumo pode ser copiado para o atendimento com IA existente.
+As simulações anteriores foram retiradas somente da abertura, junto do código que as controlava. O guia, suas três opções, sete necessidades, formulário, cópia do resumo e acesso à IA permanecem preservados. O resumo continua sendo revisado e enviado pelo próprio cliente no WhatsApp; arquivos são anexados na conversa. Não foi criada outra IA ou integração inexistente.
 
-## Integração existente, conferida antes de implementar
+## Fotografias e permissões
 
-Fonte de `atendimento-idy` auditada em `85406bda84db2e144e5e60a18199962a8bb11d8d`. Há cadastro e anexos (PDF, PNG e JPEG, limite de 8 MB), mas não há suporte a preenchimento do pedido por URL. Por isso, não se acrescenta um parâmetro de contexto que seria ignorado. O cliente abre o atendimento existente e cola o resumo; cadastro e anexos acontecem na aplicação atual. Nenhum arquivo ou função dessa aplicação foi alterado.
+- Xerox: `assets/xerox-color-560-home.webp`, fotografia original já aprovada, sem alteração. O repositório contém um vídeo de fachadas; não foi encontrada filmagem autêntica e autorizada da Xerox em operação.
+- Prensa histórica: `assets/prensa-tipografica-referencia.jpg`, cópia sem edição de **Creation Museum printing press.jpg**, de **Acdixon**, em **CC0**. Mostra uma réplica, identificada como referência histórica, sem atribuí-la à IDY. Fonte: https://commons.wikimedia.org/wiki/File:Creation_Museum_printing_press.jpg. Licença: https://creativecommons.org/publicdomain/zero/1.0/. Original: https://upload.wikimedia.org/wikipedia/commons/c/cb/Creation_Museum_printing_press.jpg. SHA-1 do arquivo: `ddf51af231553c8ca5a6e650b46256d79e9c8a28`.
+- Impressos e rótulos: `comandas-blocos-personalizados.webp` e `rotulos-etiquetas-personalizadas.webp`, fotografias já usadas no acervo do site, sem alteração.
+- Publicações: `assets/publicacoes-referencia-pexels.jpg`, cópia de 600 px da fotografia Pexels **4271613**, já usada na página Livros Digitais. Aparece como referência fotográfica, não como trabalho identificado da IDY. Fonte: https://images.pexels.com/photos/4271613/pexels-photo-4271613.jpeg?auto=compress&cs=tinysrgb&w=600. Uso em site permitido por https://www.pexels.com/license/. Créditos disponíveis no bloco “Sobre as fotografias”.
 
-Os testes só fazem GET na página e no endpoint público de saúde do atendimento. Não cadastram clientes, enviam conversas ou anexos, acionam atendentes nem geram notificações reais.
+Nenhuma imagem foi gerada. Não são anunciadas máquinas adicionais nem capacidades não confirmadas. Quantidade mínima, material, personalização e viabilidade continuam sujeitos ao produto e ao orçamento. Não se promete impressão unitária para todos os produtos.
 
-## Preservação
+## Escopo preservado
 
-Base: `92583ed7e5615c28aed7350897d80c4d6e297064` (PR #17 publicada). Catálogo pré-renderizado, imagens, oito produtos, preços, opções, carrinho, busca, categorias, cabeçalho e rodapé mantidos. O menu de categorias fica junto ao catálogo, acessível pelo atalho da abertura. Nenhum preço é calculado pelo guia.
+Produção: `92583ed7e5615c28aed7350897d80c4d6e297064`. Revisão anterior da PR #18: `9bfed631e12816c3bc3210bc81df91e5bd6a9944`. O teste exige igualdade do HTML a partir da seção de atendimento em relação à revisão anterior. Cabeçalho, busca, categorias, catálogo pré-renderizado com oito produtos, fotos e opções comerciais, carrinho e rodapé permanecem intactos. As onze páginas internas, sitemap, robots, canonical e redirecionamentos não mudam.
 
-A3 mantém R$ 3,00 por face e R$ 6,00 frente e verso, sem descontos. Canetas DTF UV mantêm os valores aprovados para 100, 500 e 1.000 unidades; demais quantidades seguem sob orçamento. As onze páginas internas, arquivos SEO e redirecionamentos permanecem iguais. A URL canônica e o sitemap oficial não mudam.
+A3 mantém R$ 3,00 por face e R$ 6,00 frente e verso, sem desconto automático. Canetas DTF UV preservam a tabela aprovada; demais quantidades e itens seguem sob orçamento. Não há alteração em `atendimento-idy` ou em suas funções.
 
-## Validação reproduzível
+## Validação
 
-Workflow `idy-resolve-preview.yml`: 25 testes comerciais existentes, dez testes do resumo/WhatsApp e destinos dos exemplos, pré-renderização do catálogo, verificação de fontes protegidas e navegação em Chrome local e no Netlify em 1440, 1024, 768, 390 e 320 px. Auditoria axe WCAG A/AA dos novos componentes; rótulos, teclado, validação, cópia e alternativa manual, ausência de JavaScript, redução de movimento e ausência de rolagem horizontal. Testes da loja original em seis larguras. Todas as mensagens WhatsApp são interceptadas e simuladas.
+Workflow `idy-resolve-preview.yml`: 25 testes comerciais e nove do guia, pré-renderização, verificação de fontes protegidas, Chrome local/Netlify em cinco larguras (1440, 1024, 768, 390 e 320 px), loja em seis larguras. Confere imagens, botão para IDY Resolve, links, teclado, auditoria automática axe WCAG A/AA, formulário, cópia, alternativa sem JavaScript, movimento reduzido e fim da transição sem loop.
 
-CSS e módulo JS próprios, sem bibliotecas novas no navegador. Imagens adicionais reutilizam fotografias existentes e carregam sob demanda. Movimento leve de entrada, uma única vez, com respeito à preferência de movimento reduzido.
+A auditoria registra uma medição em Chrome com viewport de 390 px, CPU 4x e rede de 1,6 Mbps / 150 ms: FCP, LCP e deslocamentos de layout. É uma medição de laboratório. HTML, CSS e JS têm orçamento de tamanho e foram reduzidos com a retirada da vitrine simulada. As imagens novas ficam no próprio site; a abertura não depende de bibliotecas ou serviços externos em tempo de execução.
 
-## Publicação
+WhatsApp é interceptado nos testes, sem mensagem real. A IA recebe somente GET na página e no endpoint público de saúde; não se cadastram clientes, enviam anexos ou acionam atendentes.
 
-Somente branch separada e Pull Request em rascunho, com Deploy Preview do Netlify. A proteção `noindex` da prévia é intencional. Não há merge nem atualização da produção antes da aprovação do usuário. Capturas e relatórios são anexados pelo workflow à PR.
+## Publicação e material adicional
 
-## Segunda proposta — produtos ganham vida
+Somente a branch e a PR #18, em rascunho, com Deploy Preview no Netlify existente. A proteção noindex da prévia é intencional. Sem merge ou publicação em produção antes da aprovação.
 
-A abertura ganha cinco cenas: cardápios/divulgação, fachada, publicação, adesivos e personalização. Os controles de produto são abas com navegação por teclado; tocar no exemplo ou na chamada abre o mesmo guia com descrição sugerida. Informações já digitadas são preservadas. Os oito produtos e o carrinho não se tornam demonstrações: continuam sendo a loja original.
-
-Origem das imagens: `el-patron.jpg`, `fachada-pai-filho.png` e `rotulos-etiquetas-personalizadas.webp`, já presentes na galeria do repositório. A montagem do material de gastronomia e dos rótulos é identificada como ilustrativa. A fachada compara um esboço ilustrativo com uma foto existente; não afirma mostrar o antes e depois de uma obra. Livro e camiseta são demonstrações ilustrativas desenhadas em CSS/SVG, sem cliente fictício, promessa de capa dura ou de técnica disponível. Materiais, acabamentos e viabilidade são confirmados no orçamento. Não se anuncia fabricação de caixas de pizza.
-
-A fotografia da fachada pode ser revelada com um controle deslizante. O livro pode ser aberto, a etiqueta aplicada e a estampa revelada. A arte de gastronomia entra em perspectiva como material impresso. Não há carrossel automático, animação em loop, vídeo, biblioteca extra nem solicitações a serviços de IA. Movimento reduzido troca os estados imediatamente. As imagens secundárias carregam sob demanda quando a cena é escolhida.
-
-A validação passa a conferir cinco cenas, as cinco entradas de orçamento, conservação do texto do cliente, abas por teclado, controle deslizante, abertura do livro, aplicação e remoção da estampa, acessibilidade em cada cena e alternativa sem JavaScript. As capturas incluem a abertura no computador e no celular e cada cena da vitrine. A barra técnica do Netlify é ocultada somente nas capturas da automação.
+Nenhum envio de material pelo usuário é necessário para avaliar esta proposta. Para incluir a Xerox trabalhando, será necessária uma filmagem autêntica com autorização de uso. Fotos reais de cartões, livros e outros trabalhos da IDY poderão ampliar os exemplos sem montagens.
