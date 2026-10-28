@@ -1,5 +1,5 @@
 /* Proposta IDY Resolve: somente componentes novos. A apresentação comercial da loja é preservada. */
-.resolve-page{--rs-blue:#073a78;--rs-green:#078447;--rs-dark:#092b51;--rs-gray:#536675;--rs-line:#dce6eb}
+.resolve-page{--rs-blue:#073a78;--rs-green:#06753e;--rs-dark:#092b51;--rs-gray:#536675;--rs-line:#dce6eb}
 .resolve-page .rs-hero{display:grid;grid-template-columns:1.06fr .94fr;gap:48px;align-items:center;padding:50px 34px 36px;margin-top:12px;background:linear-gradient(110deg,#fff 52%,#f2f8f5 52%);position:relative;overflow:hidden}
 .resolve-page .rs-eyebrow{font-size:11px;line-height:1.6;font-weight:800;letter-spacing:.12em;color:var(--rs-green);margin:0 0 17px}
 .resolve-page .rs-eyebrow>span{display:inline-block;width:22px;height:3px;background:currentColor;vertical-align:middle;margin-right:9px}
@@ -70,7 +70,7 @@
 .resolve-page .rs-brief{display:grid;grid-template-columns:1fr 1fr;gap:21px 18px;padding:29px;background:#f5f8fa;border:1px solid var(--rs-line);align-content:start}
 .resolve-page .rs-full{grid-column:1 / -1}
 .resolve-page .rs-form-field label{display:block;font-size:14px;font-weight:750;color:var(--rs-dark);margin-bottom:10px;line-height:1.4}
-.resolve-page .rs-form-field label small{font-size:11px;font-weight:400;color:#607781;display:inline;margin-left:4px}
+.resolve-page .rs-form-field label small{font-size:11px;font-weight:400;color:var(--rs-gray);display:inline;margin-left:4px}
 .resolve-page .rs-form-field input,.resolve-page .rs-form-field textarea,.resolve-page .rs-form-field select{display:block;width:100%;min-width:0;border:1px solid #bdced7;background:#fff;color:var(--rs-dark);padding:12px;font:inherit;font-size:15px;line-height:1.5;border-radius:0;min-height:48px}
 .resolve-page .rs-form-field textarea{resize:vertical;min-height:90px}
 .resolve-page .rs-form-field textarea:focus-visible{outline:3px solid #63bd22;outline-offset:3px}
