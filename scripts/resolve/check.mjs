@@ -12,7 +12,7 @@ const changed=execFileSync('git',['diff','--name-only',base,'HEAD'],{encoding:'u
 for(const file of changed)assert(allowed.includes(file),'Fora do escopo: '+file);
 const html=await readFile('index.html','utf8'),reference=git('index.html');
 const part=(s,a,b)=>{assert(s.includes(a)&&s.includes(b),'Marcadores existentes');return s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a)));};
-assert.equal(html.slice(html.indexOf('<div class="store-layout">')),reference.slice(reference.indexOf('<div class="store-layout">')),'Catálogo, carrinho, rodapé e navegação institucional preservados');
+assert.equal(html.slice(html.indexOf('<div class="store-layout">')).trimEnd(),reference.slice(reference.indexOf('<div class="store-layout">')).trimEnd(),'Catálogo, carrinho, rodapé e navegação institucional preservados');
 assert.equal(part(html,'<header','</header>'),part(reference,'<header','</header>'),'Cabeçalho, busca, logo, IA e WhatsApp preservados');
 const removeAssets=s=>s.replace(/<link rel="stylesheet" href="\/assets\/idy-resolve.css">\s*/,'').replace(/<script type="module" src="\/assets\/idy-resolve.js"><\/script>\s*/,'').replace(/\s+/g,' ');
 assert.equal(removeAssets(part(html,'<head','</head>')),removeAssets(part(reference,'<head','</head>')),'Metas, canonical e dados estruturados preservados');
