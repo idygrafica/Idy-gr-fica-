@@ -47,7 +47,10 @@ try{
   for(const width of [1440,1024,768,390,320]){
    console.log('Conferindo IDY Resolve',origin===preview?'Netlify':'local',width);
    const ctx=await browser.newContext({viewport:{width,height:width>700?1000:844},reducedMotion:'reduce'});
-   const posts=[];ctx.on('request',r=>{if(r.method()!=='GET')posts.push(r.method()+' '+r.url());});
+   // A barra de revisão injetada pelo Netlify é externa à aplicação; bloqueada no teste.
+   const toolbar=/https:\/\/(?:app\.netlify\.com|[^/]*\.bugsnag\.com)\//;
+   const posts=[];ctx.on('request',r=>{if(r.method()!=='GET'&&!toolbar.test(r.url()))posts.push(r.method()+' '+r.url());});
+   await ctx.route(toolbar,r=>r.abort());
    await ctx.route('https://wa.me/**',r=>r.fulfill({contentType:'text/html',body:'Teste isolado: nenhuma mensagem enviada.'}));
    await ctx.route('https://atendimento-idy.netlify.app/**',r=>r.abort());
    await ctx.route(/https:\/\/[^/]*netlify[^/]*\/.*(?:\.netlify\/cdp|netlify-cdp)/,r=>r.abort());
@@ -61,7 +64,7 @@ try{
    const graph=JSON.parse(await page.locator('#idy-catalog-schema').textContent())['@graph'];assert.equal(graph.find(x=>x['@type']==='ItemList').itemListElement.length,8);
    for(const [selector,path] of [['.brand img','/assets/logo-idy-grafica.png'],['.mascot','/assets/mascote-idy.png'],['.printer','/assets/xerox-color-560-home.webp']]){const image=page.locator(selector);assert.equal(await image.getAttribute('src'),path);assert(await image.evaluate(e=>e.naturalWidth>0));assert.equal(await image.evaluate(e=>getComputedStyle(e).objectFit),'contain');}
    assert.deepEqual(await page.locator('img').evaluateAll(es=>es.filter(e=>!e.complete||!e.naturalWidth).map(e=>e.src)),[]);
-   assert(!await page.locator('#rs-request').isVisible());await noOverflow(page);
+   assert(!await page.locator('#rs-request').isVisible());assert.equal(await page.locator('.rs-mascot').evaluate(e=>getComputedStyle(e).animationName),'none','Respeitar movimento reduzido');await noOverflow(page);
    // Captura inicial limpa, sem pedido, sem carrinho de demonstração e sem alterar produtos.
    await page.bringToFront();await page.mouse.move(0,0);await page.screenshot({path:`.preview/resolve/idy-resolve-${origin===preview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled'});
    await page.locator('[data-rs-mode="arte"]').click();assert(await page.locator('#rs-request').isVisible());assert.equal(await page.locator('#rs-art').inputValue(),'pronta');
