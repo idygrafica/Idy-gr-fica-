@@ -176,16 +176,16 @@
 @media(max-width:360px){.web-page .wb-devices{height:300px}.web-page .wb-tablet{top:140px;height:140px}.web-page .wb-phone{top:140px;height:157px}.web-page .wb-responsive-note{left:33%;bottom:0}.web-page .wb-responsive-note svg{display:none}.web-page .wb-responsive-note strong{font-size:9px}.web-page .wb-stage-note{font-size:7px}.web-page .wb-demo-tabs button{padding:9px 10px;font-size:11px}.web-page .wb-brand-browser{width:94%}.web-page .wb-brand-card{width:150px}.web-page .wb-hero-actions>.wb-button,.web-page .wb-final-action>.wb-button{font-size:10px;gap:8px}.web-page .wb-format-preview{height:195px}}
 /* Preserva a leitura da tela principal e mantém o contato flutuante discreto. */
 .web-page #wb-title span{white-space:nowrap}
-.web-page .wb-tablet{top:282px;height:205px}
+.web-page .wb-tablet{top:305px;height:182px}
 .web-page .wb-phone{top:248px;height:238px}
 .web-page .wb-responsive-note{bottom:0}
-.web-page .whats-widget{right:18px;bottom:18px}
-.web-page .whats-widget .whats-note,.web-page .whats-widget .whats-copy,.web-page .whats-widget .whats-arrow{display:none}
-.web-page .whats-widget .whats{width:54px;height:54px;min-width:0;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;gap:0}
-.web-page .whats-widget .whats-icon{width:30px;height:30px;flex:none;margin:0}
-.web-page .whats-widget .whats-icon svg{width:30px;height:30px}
+.web-page .whats-widget{right:18px!important;bottom:18px!important;top:auto!important}
+.web-page .whats-widget .whats-note,.web-page .whats-widget .whats-copy,.web-page .whats-widget .whats-arrow{display:none!important}
+.web-page .whats-widget .whats.whats-pro.whats-new{width:54px!important;height:54px!important;min-width:0!important;padding:0!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;background:var(--wb-green)!important}
+.web-page .whats-widget .whats-icon.whats-icon-clean{width:30px!important;height:30px!important;flex:0 0 30px!important;margin:0!important;background:transparent!important;color:#fff!important;box-shadow:none!important}
+.web-page .whats-widget .whats-icon.whats-icon-clean svg{width:30px!important;height:30px!important}
 @media(min-width:801px) and (max-width:1100px){.web-page .wb-tablet{top:260px;height:170px}.web-page .wb-phone{top:230px;height:210px}}
-@media(min-width:621px) and (max-width:800px){.web-page .wb-tablet{top:280px;height:175px}.web-page .wb-phone{top:240px;height:230px}}
-@media(max-width:620px){.web-page .wb-tablet{top:207px;height:115px}.web-page .wb-phone{top:186px;height:143px}.web-page .whats-widget{right:14px;bottom:14px}.web-page .whats-widget .whats{width:50px;height:50px}}
+@media(min-width:621px) and (max-width:800px){.web-page .wb-tablet{top:290px;height:165px}.web-page .wb-phone{top:240px;height:230px}}
+@media(max-width:620px){.web-page .wb-tablet{top:207px;height:115px}.web-page .wb-phone{top:186px;height:143px}.web-page .whats-widget{right:14px!important;bottom:14px!important}.web-page .whats-widget .whats.whats-pro.whats-new{width:50px!important;height:50px!important}}
 @media(max-width:360px){.web-page .wb-tablet{top:188px;height:100px}.web-page .wb-phone{top:175px;height:123px}}
 @media(prefers-reduced-motion:reduce){.web-page *,.web-page *:before,.web-page *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
