@@ -65,8 +65,8 @@ try{
    for(const [selector,path] of [['.brand img','/assets/logo-idy-grafica.png'],['.mascot','/assets/mascote-idy.png'],['.printer','/assets/xerox-color-560-home.webp']]){const image=page.locator(selector);assert.equal(await image.getAttribute('src'),path);assert(await image.evaluate(e=>e.naturalWidth>0));assert.equal(await image.evaluate(e=>getComputedStyle(e).objectFit),'contain');}
    assert.deepEqual(await page.locator('img').evaluateAll(es=>es.filter(e=>!e.complete||!e.naturalWidth).map(e=>e.src)),[]);
    assert(!await page.locator('#rs-request').isVisible());assert.equal(await page.locator('.rs-mascot').evaluate(e=>getComputedStyle(e).animationName),'none','Respeitar movimento reduzido');await noOverflow(page);
-   // Captura inicial limpa, sem pedido, sem carrinho de demonstração e sem alterar produtos.
-   await page.bringToFront();await page.mouse.move(0,0);await page.screenshot({path:`.preview/resolve/idy-resolve-${origin===preview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled'});
+   // Captura inicial limpa. Oculta apenas o iframe técnico da barra Netlify na captura; a aplicação não usa iframe.
+   await page.bringToFront();await page.mouse.move(0,0);await page.screenshot({path:`.preview/resolve/idy-resolve-${origin===preview?'netlify':'local'}-${width}.png`,fullPage:true,animations:'disabled',style:'iframe{visibility:hidden!important}'});
    await page.locator('[data-rs-mode="arte"]').click();assert(await page.locator('#rs-request').isVisible());assert.equal(await page.locator('#rs-art').inputValue(),'pronta');
    assert.equal(await page.locator('#rs-brief [required]').count(),1);assert.equal(await page.locator('#rs-brief [required]').getAttribute('id'),'rs-product');assert.equal(await page.locator('#rs-brief input[type="file"]').count(),0);
    await page.locator('#rs-product').fill('Cartões para minha empresa <b>referência</b>');await page.locator('#rs-quantity').fill('umas 100');await page.locator('#rs-extra').fill('Quero orientação, sem saber o papel.');
