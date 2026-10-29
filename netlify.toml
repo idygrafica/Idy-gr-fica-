@@ -81,3 +81,9 @@
   status = 301
   force = true
 
+
+[[redirects]]
+  from = "/dtf-personalizacao.html"
+  to = "/dtf-personalizacao"
+  status = 301
+  force = true
