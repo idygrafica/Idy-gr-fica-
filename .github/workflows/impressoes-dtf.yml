@@ -1,0 +1,63 @@
+name: Impressões Rápidas e DTF — prévia e qualidade
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - impressoes-rapidas.html
+      - dtf-personalizacao.html
+      - assets/impressoes-rapidas-v2.css
+      - assets/personalizacao/**
+      - scripts/impressoes-dtf/**
+      - .github/workflows/impressoes-dtf.yml
+      - IMPRESSOES_DTF_REVISAO.md
+  push:
+    branches: [main]
+    paths:
+      - impressoes-rapidas.html
+      - dtf-personalizacao.html
+      - assets/impressoes-rapidas-v2.css
+      - assets/personalizacao/**
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir os preços e o build preservados
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar navegador
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Verificar prévia local e Netlify antes da integração
+        if: github.event_name == 'pull_request'
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/impressoes-dtf/check.mjs
+      - name: Verificar a publicação autorizada no site oficial
+        if: github.event_name == 'push'
+        env:
+          VERIFY_ORIGIN: https://idygrafica.netlify.app
+        run: node scripts/impressoes-dtf/check.mjs
+      - name: Conferir categorias, busca e carrinho em seis larguras
+        run: node scripts/loja/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: impressoes-dtf-previas-e-testes
+          include-hidden-files: true
+          path: |
+            .preview/impressoes-dtf/
+            .preview/loja/browser-report.json
