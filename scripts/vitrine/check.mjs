@@ -7,7 +7,7 @@ import {makeServer} from '../seo-technical/server.mjs';
 import {products,categories} from '../../assets/loja/catalog.js';
 import {paperFilters,matchesProduct} from '../../assets/loja/showcase.js';
 const base='43139fea92c669dfa9a15a605a5db6ab487cd194';
-const allowed=new Set(['index.html','assets/loja/app.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/seo-technical/build-catalog.mjs','scripts/vitrine/check.mjs','.github/workflows/vitrine-preview.yml','VITRINE_IDY_REVISAO.md',...products.map(p=>'assets/loja/produtos/'+p.id+'.webp')]);
+const allowed=new Set(['index.html','assets/loja/app.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/seo-technical/build-catalog.mjs','scripts/vitrine/check.mjs','scripts/loja/public-browser.mjs','.github/workflows/vitrine-preview.yml','VITRINE_IDY_REVISAO.md',...products.map(p=>'assets/loja/produtos/'+p.id+'.webp')]);
 const diff=execFileSync('git',['diff','--name-only',base],{encoding:'utf8'}).trim().split('\n').filter(Boolean);for(const p of diff)assert(allowed.has(p),'Fora do escopo: '+p);
 const original=path=>execFileSync('git',['show',base+':'+path],{encoding:'utf8'});
 const files=execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n');let protectedFiles=0;
@@ -29,10 +29,13 @@ await mkdir('.preview/vitrine',{recursive:true});
 const require=createRequire(resolve('.preview-tools/package.json'));const {chromium}=require('playwright');
 const server=makeServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));const local='http://127.0.0.1:'+server.address().port;
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});
-const origins=[local,...(process.env.PREVIEW_ORIGIN?[process.env.PREVIEW_ORIGIN.replace(/\/$/,'')]:[])],checks=[];
+const production=process.env.VERIFY_ORIGIN?.replace(/\/$/,'');
+if(production)assert.equal(production,'https://idygrafica.netlify.app');
+const origins=production?[production]:[local,...(process.env.PREVIEW_ORIGIN?[process.env.PREVIEW_ORIGIN.replace(/\/$/,'')]:[])],checks=[];
 try{
  for(const origin of origins){
   if(origin!==local){let actual;for(let n=0;n<35;n++){const r=await fetch(origin,{signal:AbortSignal.timeout(20000)});actual=await r.text();if(r.ok&&actual.includes('class="showcase-photo"')&&actual.includes('id="paper-filter"'))break;await new Promise(r=>setTimeout(r,5000));}assert(actual.includes('class="showcase-photo"'));}
+  if(production){const response=await fetch(production);assert(!/noindex/i.test(response.headers.get('x-robots-tag')||''),'Produção bloqueada para indexação');}
   for(const width of [1440,1280,1024,768,520,390,320]){
    const ctx=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
    await ctx.route('https://wa.me/**',r=>r.fulfill({contentType:'text/html',body:'WhatsApp simulado; nenhuma mensagem enviada.'}));
@@ -43,8 +46,8 @@ try{
    const images=await page.locator('.showcase-photo img').evaluateAll(a=>a.map(i=>({src:i.src,width:i.naturalWidth,height:i.naturalHeight,renderWidth:i.getBoundingClientRect().width,loaded:i.complete&&i.naturalWidth>0})));
    assert.equal(images.length,8);for(const i of images){assert(i.loaded);assert(i.width>=1200&&i.height>=800,'Imagem pequena');assert(i.width>=i.renderWidth*2,'Imagem insuficiente para o tamanho de exibição');}
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Rolagem horizontal');
-   const showcaseBox=await page.locator('.catalog').boundingBox();await page.screenshot({path:'.preview/vitrine/vitrine-'+(origin===local?'local':'netlify')+'-'+width+'.png',fullPage:true,animations:'disabled'});
-   await page.locator('.catalog').screenshot({path:'.preview/vitrine/produtos-'+(origin===local?'local':'netlify')+'-'+width+'.png',animations:'disabled'});
+   const showcaseBox=await page.locator('.catalog').boundingBox();await page.screenshot({path:'.preview/vitrine/vitrine-'+(origin===local?'local':production?'producao':'netlify')+'-'+width+'.png',fullPage:true,animations:'disabled'});
+   await page.locator('.catalog').screenshot({path:'.preview/vitrine/produtos-'+(origin===local?'local':production?'producao':'netlify')+'-'+width+'.png',animations:'disabled'});
    // Detalhes nativos funcionam por teclado e não revelam informações inventadas.
    const first=page.locator('[data-product="cartoes"] .view-product');await first.focus();await page.keyboard.press('Enter');assert(await page.locator('[data-product="cartoes"] details').getAttribute('open')!==null);
    await page.locator('[data-product="a3"] .view-product').click();await page.waitForFunction(()=>document.querySelectorAll('.product-details[open]').length===1);assert.equal(await page.locator('.product-details[open]').count(),1);
@@ -73,5 +76,5 @@ try{
   const nojs=await browser.newContext({javaScriptEnabled:false});const p=await nojs.newPage();await p.goto(origin);assert.equal(await p.locator('.product').count(),8);await p.locator('[data-product="cartoes"] summary').click();assert(await p.locator('#option-cartoes').isVisible());await nojs.close();
   const xml=await readFile('sitemap.xml','utf8');for(const m of xml.matchAll(/<loc>(.*?)<\/loc>/g))assert.equal((await fetch(origin+new URL(m[1]).pathname)).status,200,m[1]);
  }
- await writeFile('.preview/vitrine/report.json',JSON.stringify({verified:true,base,protectedFiles,checks,originalPricesAndCalculationsPreserved:true,productionPublished:false,realMessagesSent:0},null,2));console.log(JSON.stringify({verified:true,cases:checks.length,protectedFiles,productionPublished:false}));
+ await writeFile('.preview/vitrine/report.json',JSON.stringify({verified:true,base,protectedFiles,checks,originalPricesAndCalculationsPreserved:true,productionPublished:Boolean(production),realMessagesSent:0},null,2));console.log(JSON.stringify({verified:true,cases:checks.length,protectedFiles,productionPublished:Boolean(production)}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}

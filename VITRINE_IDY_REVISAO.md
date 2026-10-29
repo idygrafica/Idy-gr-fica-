@@ -1,6 +1,6 @@
 # Nova apresentação dos oito produtos — prévia para avaliação
 
-**NÃO PUBLICAR EM PRODUÇÃO.** Pedido do responsável: desenvolver e testar a vitrine, apresentar prévia Netlify e aguardar aprovação. Base publicada `43139fea92c669dfa9a15a605a5db6ab487cd194`. Branch `codex/vitrine-produtos-idy`. As PRs independentes #18 e #19 permanecem intactas.
+**Publicação autorizada pelo responsável após a avaliação da prévia.** A apresentação aprovada permanece idêntica ao commit `b48a3161a6bd163172d2052124409a23c9965f03`; o complemento ajusta apenas verificações automáticas para abrir “VER PRODUTO” e conferir a produção. Base publicada `43139fea92c669dfa9a15a605a5db6ab487cd194`. Branch `codex/vitrine-produtos-idy`. As PRs independentes #18 e #19 permanecem intactas.
 
 ## Apresentação
 
@@ -14,7 +14,7 @@ Os oito produtos, nomes, descrições, opções e preços permanecem no catálog
 
 Oito imagens originais de apresentação geradas para esta proposta, identificadas na vitrine como **ilustrativas**. Não são fotos de encomendas reais entregues ou modelos/condições garantidos. Não há imagens, textos promocionais ou elementos gráficos copiados da ANS. A referência de organização comercial segue a descrição do responsável; as fotografias mencionadas da ANS não estavam anexadas nesta conversa.
 
-As imagens têm 1536 × 1024 px, sem ampliação, convertidas para WebP mantendo as dimensões e o enquadramento. Os oito arquivos somam aproximadamente 690 KiB; cada um é carregado sob demanda. Os PNG originais estão preservados nos artefatos locais de geração. Pasta publicada somente na prévia: `assets/loja/produtos/`. As imagens antigas não foram removidas; o carrinho continua usando as miniaturas originais.
+As imagens têm 1536 × 1024 px, sem ampliação, convertidas para WebP mantendo as dimensões e o enquadramento. Os oito arquivos somam aproximadamente 690 KiB; cada um é carregado sob demanda. Os PNG originais estão preservados nos artefatos locais de geração. Pasta das imagens: `assets/loja/produtos/`. As imagens antigas não foram removidas; o carrinho continua usando as miniaturas originais.
 
 ## Preservação
 
@@ -26,4 +26,4 @@ Oito produtos pré-renderizados no HTML inicial, com os mesmos IDs e âncoras. T
 
 Executar os dois arquivos de testes comerciais existentes e `node scripts/vitrine/check.mjs`. O workflow da proposta verifica a cópia local e a prévia real em 1440, 1280, 1024, 768, 520, 390 e 320 px: três/duas/uma coluna, imagens e resolução, detalhes por teclado, filtros combinados e limpeza, buscas, entradas contendo HTML, A3, três quantidades de canetas, quantidades não cadastradas, persistência, edição, remoção, pedido misto e WhatsApp simulado. Nenhuma mensagem ou conversa de IA é enviada.
 
-Relatórios e capturas no artefato `vitrine-idy-previas-e-testes`. A produção deve continuar servindo a base publicada durante toda a avaliação. Não fazer merge nem publicar em produção sem nova aprovação expressa do responsável.
+Relatórios e capturas no artefato `vitrine-idy-previas-e-testes`. A publicação foi autorizada expressamente pelo responsável na retomada. O workflow também confere o site oficial após a integração, sem enviar mensagens. Reversão: restaurar a base completa `43139fea92c669dfa9a15a605a5db6ab487cd194`, preservada na branch de segurança de publicação da vitrine. Os testes são o único complemento à apresentação aprovada.

@@ -18,6 +18,8 @@ try{
   assert.equal(await page.locator('.product').count(),8);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   for(const selector of ['.brand img','.mascot','.printer'])assert(await page.locator(selector).evaluate(el=>el.complete&&el.naturalWidth>0));
+  const details=page.locator('[data-product="a3"] .product-details');
+  if(await details.count()&&await details.getAttribute('open')===null)await details.locator('summary').click();
   await page.locator('#qty-a3').fill('3');await page.locator('[data-add="a3"]').click();
   if(width===390)await page.locator('.cart-toggle').click();
   assert.match(await page.locator('#cart-totals').innerText(),/9,00/);
