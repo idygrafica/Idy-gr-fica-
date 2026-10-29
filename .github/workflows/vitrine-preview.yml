@@ -1,0 +1,61 @@
+name: Vitrine IDY — conferência da prévia e publicação autorizada
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - index.html
+      - assets/loja/**
+      - scripts/vitrine/**
+      - scripts/loja/public-browser.mjs
+      - scripts/seo-technical/build-catalog.mjs
+      - .github/workflows/vitrine-preview.yml
+      - VITRINE_IDY_REVISAO.md
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - assets/loja/**
+      - scripts/vitrine/**
+      - scripts/loja/public-browser.mjs
+      - .github/workflows/vitrine-preview.yml
+permissions:
+  contents: read
+jobs:
+  preview:
+    if: github.head_ref == 'codex/vitrine-produtos-idy' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir os 25 testes comerciais existentes
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar Chrome para conferir a prévia
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Verificar vitrine, filtros, preços, carrinho e preservação
+        if: github.event_name == 'pull_request'
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/vitrine/check.mjs
+      - name: Conferir a vitrine publicada no site oficial
+        if: github.event_name == 'push'
+        env:
+          VERIFY_ORIGIN: https://idygrafica.netlify.app
+        run: node scripts/vitrine/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vitrine-idy-previas-e-testes
+          include-hidden-files: true
+          path: .preview/vitrine/
