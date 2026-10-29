@@ -2,6 +2,7 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {products} from '../../assets/loja/catalog.js';
 import {renderProductCard} from '../../assets/loja/product-card.js';
+import {renderShowcaseFilters} from '../../assets/loja/showcase.js';
 const origin='https://idygrafica.netlify.app/';
 const html=await readFile('index.html','utf8');
 const marker=/<!-- idy:catalog:start -->[\s\S]*?<!-- idy:catalog:end -->/;
@@ -17,5 +18,5 @@ const schema={
 };
 const json=JSON.stringify(schema).replace(/</g,'\\u003c');
 const next=html.replace(marker,'<!-- idy:catalog:start -->'+cards+'<!-- idy:catalog:end -->').replace(/(<script type="application\/ld\+json" id="idy-catalog-schema">)[\s\S]*?(<\/script>)/,'$1'+json+'$2');
-await writeFile('index.html',next);
+await writeFile('index.html',next.replace(/<!-- idy:filters:start -->[\s\S]*?<!-- idy:filters:end -->/,'<!-- idy:filters:start -->'+renderShowcaseFilters()+'<!-- idy:filters:end -->'));
 console.log('Catálogo inicial gerado com '+products.length+' produtos, usando o mesmo componente da loja.');
