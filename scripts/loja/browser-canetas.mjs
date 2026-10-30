@@ -35,7 +35,7 @@ try{
   assert.match((await card.locator('.price').innerText()).replace(/\s+/g,' '),/A partir de R\$ 3,60\/un\.\s*— para 1\.000 unidades/);
   assert.match(await card.locator('.product-description').innerText(),/DTF UV/);
   const hasShowcase=await card.locator('.showcase-photo img').count()>0;
-  if(hasShowcase){const image=card.locator('.showcase-photo img');await image.evaluate(i=>i.decode());assert(await image.evaluate(i=>i.naturalWidth>=1200&&i.src.endsWith('/produtos/canetas.webp')));}
+  if(hasShowcase){const image=card.locator('.showcase-photo img');await image.scrollIntoViewIfNeeded();await image.evaluate(i=>i.decode());assert(await image.evaluate(i=>i.naturalWidth>=1200&&i.src.endsWith('/produtos/canetas.webp')));}
   else assert(await card.locator('.product-photo').evaluate(el=>el.classList.contains('photo-7')));
   const reveal=async id=>{const details=page.locator('[data-product="'+id+'"] .product-details');if(await details.count()&&await details.getAttribute('open')===null)await details.locator('summary').click();};
   await reveal('canetas');
