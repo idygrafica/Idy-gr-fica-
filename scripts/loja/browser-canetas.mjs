@@ -23,7 +23,7 @@ if(published){
   assert(matched,'Código publicado desatualizado: '+path);
  }
 }else await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(4173,'127.0.0.1',resolve);});
-const browser=await chromium.launch();const report=[];
+const browser=await chromium.launch({...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{}),args:['--no-sandbox','--disable-dev-shm-usage']});const report=[];
 try{
  for(const width of [1440,768,390]){
   const context=await browser.newContext({viewport:{width,height:950}});const page=await context.newPage();const errors=[];
@@ -34,8 +34,12 @@ try{
   const card=page.locator('[data-product="canetas"]');
   assert.match((await card.locator('.price').innerText()).replace(/\s+/g,' '),/A partir de R\$ 3,60\/un\.\s*— para 1\.000 unidades/);
   assert.match(await card.locator('.product-description').innerText(),/DTF UV/);
-  assert(await card.locator('.product-photo').evaluate(el=>el.classList.contains('photo-7')));
-  if(!published){
+  const hasShowcase=await card.locator('.showcase-photo img').count()>0;
+  if(hasShowcase){const image=card.locator('.showcase-photo img');await image.evaluate(i=>i.decode());assert(await image.evaluate(i=>i.naturalWidth>=1200&&i.src.endsWith('/produtos/canetas.webp')));}
+  else assert(await card.locator('.product-photo').evaluate(el=>el.classList.contains('photo-7')));
+  const reveal=async id=>{const details=page.locator('[data-product="'+id+'"] .product-details');if(await details.count()&&await details.getAttribute('open')===null)await details.locator('summary').click();};
+  await reveal('canetas');
+  if(!published&&!hasShowcase){
    const previous=await context.newPage();
    await previous.route('**/assets/loja/*.js',r=>{
     const path=new URL(r.request().url()).pathname.slice(1);
@@ -68,9 +72,9 @@ try{
   assert.match(await page.locator('#cart-totals').innerText(),/3\.600,00/);
   await close();await page.reload();await open();assert.match(await page.locator('#cart-totals').innerText(),/3\.600,00/);
   await page.locator('#clear-cart').click();await close();
-  await page.locator('#option-canetas').selectOption('other');await page.locator('#qty-canetas').fill('250');
+  await reveal('canetas');await page.locator('#option-canetas').selectOption('other');await page.locator('#qty-canetas').fill('250');
   assert.equal(await page.locator('[data-add="canetas"]').innerText(),'Solicitar orçamento');
-  await page.locator('[data-add="canetas"]').click();await page.locator('#qty-a3').fill('3');await page.locator('[data-add="a3"]').click();await open();
+  await page.locator('[data-add="canetas"]').click();await reveal('a3');await page.locator('#qty-a3').fill('3');await page.locator('[data-add="a3"]').click();await open();
   assert.match(await page.locator('#cart-totals').innerText(),/9,00/);
   const pending=new URL(await page.locator('#checkout').getAttribute('href')).searchParams.get('text');
   assert.match(pending,/250 unidade/);assert.match(pending,/Preço a confirmar/);assert.doesNotMatch(pending,/5,20|4,00|3,60/);
@@ -81,7 +85,7 @@ try{
   await page.waitForTimeout(4300);await card.scrollIntoViewIfNeeded();
   await page.screenshot({path:`.preview/canetas/canetas-${width}.png`});
   assert.deepEqual(errors,[]);
-  report.push({width,url:origin,tableTotalsCents:[52000,200000,360000],unlistedQuantityQuoted:true,cartEditingRepriced:true,persistence:true,otherProductsDomPreserved:!published,whatsappClick:true,realMessagesSent:0,javascriptErrors:errors,published});
+  report.push({width,url:origin,tableTotalsCents:[52000,200000,360000],unlistedQuantityQuoted:true,cartEditingRepriced:true,persistence:true,otherProductsDomPreserved:!published&&!hasShowcase,whatsappClick:true,realMessagesSent:0,javascriptErrors:errors,published});
   await context.close();
  }
  await writeFile('.preview/canetas/browser-report.json',JSON.stringify({commit:process.env.GITHUB_SHA,checks:report},null,2));console.log(JSON.stringify(report));

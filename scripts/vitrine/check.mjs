@@ -7,7 +7,7 @@ import {makeServer} from '../seo-technical/server.mjs';
 import {products,categories} from '../../assets/loja/catalog.js';
 import {paperFilters,matchesProduct} from '../../assets/loja/showcase.js';
 const base='43139fea92c669dfa9a15a605a5db6ab487cd194';
-const allowed=new Set(['index.html','assets/loja/app.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/seo-technical/build-catalog.mjs','scripts/vitrine/check.mjs','scripts/loja/public-browser.mjs','.github/workflows/vitrine-preview.yml','VITRINE_IDY_REVISAO.md',...products.map(p=>'assets/loja/produtos/'+p.id+'.webp')]);
+const allowed=new Set(['index.html','assets/loja/app.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/seo-technical/build-catalog.mjs','scripts/vitrine/check.mjs','scripts/loja/public-browser.mjs','scripts/loja/browser-canetas.mjs','.github/workflows/vitrine-preview.yml','VITRINE_IDY_REVISAO.md',...products.map(p=>'assets/loja/produtos/'+p.id+'.webp')]);
 const diff=execFileSync('git',['diff','--name-only',base],{encoding:'utf8'}).trim().split('\n').filter(Boolean);for(const p of diff)assert(allowed.has(p),'Fora do escopo: '+p);
 const original=path=>execFileSync('git',['show',base+':'+path],{encoding:'utf8'});
 const files=execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n');let protectedFiles=0;
