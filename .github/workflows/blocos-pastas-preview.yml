@@ -1,0 +1,47 @@
+name: Blocos e pastas digitais — somente prévia
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - index.html
+      - assets/loja/**
+      - scripts/digital-products/**
+      - scripts/seo-technical/build-catalog.mjs
+      - BLOCOS_PASTAS_REVISAO.md
+      - .github/workflows/blocos-pastas-preview.yml
+permissions:
+  contents: read
+jobs:
+  preview:
+    if: github.head_ref == 'codex/blocos-pastas-digitais'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Testar preços existentes e configuração digital
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/digital-products/pricing.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar navegador isolado
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir opções, carrinho, SEO e a prévia pública
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/digital-products/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blocos-pastas-previas-testes
+          include-hidden-files: true
+          path: .preview/digital-products/

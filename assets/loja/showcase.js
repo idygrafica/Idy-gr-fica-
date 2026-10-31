@@ -1,3 +1,4 @@
+import {digitalProducts} from './digital-products.js';
 // Apresentação e filtros derivados do catálogo, sem acrescentar dados comerciais.
 import {products,categories} from './catalog.js';
 export const productPhotos=Object.fromEntries(products.map(p=>[p.id,{
@@ -16,7 +17,7 @@ export const normalizeSearch=value=>value.normalize('NFD').replace(/[\u0300-\u03
 export function matchesProduct(product,{category='todos',paper='todos',query=''}={}){
  if(category!=='todos'&&product.category!==category)return false;
  if(paper!=='todos'&&paperOf(product)!==paper)return false;
- const text=normalizeSearch([product.name,product.description,...product.options.map(o=>o.label)].join(' '));
+ const text=normalizeSearch([product.name,product.description,digitalProducts[product.id]?.name||'',digitalProducts[product.id]?.description||'',...product.options.map(o=>o.label)].join(' '));
  return normalizeSearch(query).split(' ').filter(Boolean).every(term=>text.includes(term));
 }
 export function renderShowcaseFilters(){return `<div class="showcase-tools"><div class="showcase-filter"><label for="category-filter">Categoria</label><select id="category-filter">${categories.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')}</select></div><div class="showcase-filter"><label for="paper-filter">Papel</label><select id="paper-filter"><option value="todos">Todos os papéis e materiais</option>${paperFilters.map(p=>`<option value="${p.id}">${p.label}</option>`).join('')}</select></div><p class="showcase-search-hint">Busque por produto, formato ou papel.<br><span>Filtros usam as informações cadastradas.</span></p></div>`;}

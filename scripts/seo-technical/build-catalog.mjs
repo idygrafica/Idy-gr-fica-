@@ -1,3 +1,4 @@
+import {digitalProducts} from '../../assets/loja/digital-products.js';
 // Pré-renderização idempotente. Preços/opções continuam vindo só do catálogo atual.
 import {readFile,writeFile} from 'node:fs/promises';
 import {products} from '../../assets/loja/catalog.js';
@@ -13,7 +14,7 @@ const schema={
  '@context':'https://schema.org',
  '@graph':[
   {'@type':'CollectionPage','@id':origin+'#webpage',url:origin,name:'Loja IDY Gráfica em Porto Alegre',inLanguage:'pt-BR',isPartOf:{'@id':origin+'#website'},mainEntity:{'@id':origin+'#catalogo'}},
-  {'@type':'ItemList','@id':origin+'#catalogo',name:'Produtos da IDY Gráfica',numberOfItems:products.length,itemListElement:products.map((p,index)=>({'@type':'ListItem',position:index+1,item:{'@type':'Thing','@id':origin+'#produto-'+p.id,name:p.name,description:p.description,url:origin+'#produto-'+p.id}}))}
+  {'@type':'ItemList','@id':origin+'#catalogo',name:'Produtos da IDY Gráfica',numberOfItems:products.length,itemListElement:products.map((p,index)=>({'@type':'ListItem',position:index+1,item:{'@type':'Thing','@id':origin+'#produto-'+p.id,name:digitalProducts[p.id]?.name||p.name,description:digitalProducts[p.id]?digitalProducts[p.id].description+' · Personalização em Porto Alegre; produção sob consulta.':p.description,url:origin+'#produto-'+p.id}}))}
  ]
 };
 const json=JSON.stringify(schema).replace(/</g,'\\u003c');

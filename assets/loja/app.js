@@ -1,3 +1,5 @@
+import {installDigitalForms} from './digital-form.js';
+import {escapeHtml,digitalProducts} from './digital-products.js';
 import {renderProductCard} from './product-card.js';
 import {matchesProduct,renderShowcaseFilters} from './showcase.js';
 import {products,categories} from './catalog.js';
@@ -45,8 +47,8 @@ function renderCart(){
  $('#cart-title').textContent=`Meu carrinho (${cart.length})`;
  $('#cart-count').textContent=cart.length;
  $('#clear-cart').disabled=cart.length===0;
- $('#cart-items').innerHTML=summary.items.length?summary.items.map((i,n)=>`<article class="cart-item"><div class="cart-product-photo product-photo photo-${i.product.photo}" aria-hidden="true"></div><div class="cart-item-copy"><h3>${i.product.name}</h3><p>${i.option.label}</p><strong>${i.totalCents===null?'Sob orçamento':money(i.totalCents)}</strong>${i.totalCents!==null?`<small>Unitário: ${money(i.option.priceCents)}</small>`:''}<div class="quantity-control"><button data-change="${n}" data-delta="-1" ${i.quantity===1?'disabled':''} aria-label="Diminuir quantidade de ${i.product.name}">−</button><input type="number" min="1" max="100000" step="1" value="${i.quantity}" data-quantity="${n}" aria-label="Quantidade no carrinho de ${i.product.name}" inputmode="numeric"><button data-change="${n}" data-delta="1" aria-label="Aumentar quantidade de ${i.product.name}">+</button><button class="remove" data-remove="${n}" aria-label="Remover ${i.product.name}">${icon('trash')}</button></div></div></article>`).join(''):'<div class="empty-cart">'+icon('cart')+'<b>Seu carrinho está vazio</b><p>Escolha os produtos para montar sua solicitação.</p></div>';
- $('#cart-totals').innerHTML=`<div><b>${summary.pending?'Subtotal calculado':'Subtotal'}</b><strong>${money(summary.knownTotalCents)}</strong></div>${summary.pending?`<p>${summary.pending} item(ns) sob orçamento, sem valor incluído no subtotal. O total final será informado pela equipe.</p>`:''}`;
+ $('#cart-items').innerHTML=summary.items.length?summary.items.map((i,n)=>`<article class="cart-item"><div class="cart-product-photo product-photo photo-${i.product.photo}" aria-hidden="true"></div><div class="cart-item-copy"><h3>${i.artwork?digitalProducts[i.product.id].name:i.product.name}</h3><p>${i.option.label}</p>${i.artwork?`<p>${i.artwork.mode==='create'?'Criação: '+escapeHtml(i.artwork.reference)+' · R$ 100,00 por arte no pedido':'Arte pronta · sem custo de criação'}</p>`:''}<strong>${i.totalCents===null?'Sob orçamento':money(i.totalCents)}</strong>${i.totalCents!==null?`<small>Unitário: ${money(i.option.priceCents)}</small>`:''}<div class="quantity-control"><button data-change="${n}" data-delta="-1" ${i.quantity===1?'disabled':''} aria-label="Diminuir quantidade de ${i.product.name}">−</button><input type="number" min="1" max="100000" step="1" value="${i.quantity}" data-quantity="${n}" aria-label="Quantidade no carrinho de ${i.product.name}" inputmode="numeric"><button data-change="${n}" data-delta="1" aria-label="Aumentar quantidade de ${i.product.name}">+</button><button class="remove" data-remove="${n}" aria-label="Remover ${i.product.name}">${icon('trash')}</button></div></div></article>`).join(''):'<div class="empty-cart">'+icon('cart')+'<b>Seu carrinho está vazio</b><p>Escolha os produtos para montar sua solicitação.</p></div>';
+ $('#cart-totals').innerHTML=`${summary.items.some(i=>i.artwork)?`<div><span>Produtos com preço aprovado</span><strong>${money(summary.productionTotalCents)}</strong></div><div><span>Criação · ${summary.artworks.length} arte(s)</span><strong>${money(summary.artworkTotalCents)}</strong></div>`:''}<div><b>${summary.pending?'Subtotal calculado':'Subtotal'}</b><strong>${money(summary.knownTotalCents)}</strong></div>${summary.pending?`<p>${summary.pending} item(ns) sob orçamento, sem valor incluído no subtotal. O total final será informado pela equipe.</p>`:''}`;
  const checkout=$('#checkout');
  if(cart.length){checkout.href=whatsappUrl(cart);checkout.setAttribute('aria-disabled','false');}else{checkout.removeAttribute('href');checkout.setAttribute('aria-disabled','true');}
 }
@@ -108,6 +110,7 @@ document.addEventListener('keydown',e=>{
 });
 matchMedia('(min-width: 1101px)').addEventListener('change',e=>{if(e.matches&&document.body.classList.contains('cart-open'))closeCart();});
 window.addEventListener('storage',e=>{if(e.key===CART_KEY||e.key===null){cart=restoreCart(e.newValue);renderCart();}});
+installDigitalForms({add:({id,optionId,quantity:amount,artwork})=>{cart=addItem(cart,id,optionId,amount,artwork);save();},getCheckout:()=>whatsappUrl(cart),notify:toast});
 $('#showcase-filter-slot').innerHTML=renderShowcaseFilters();
 $('#category-filter').addEventListener('change',e=>{category=e.target.value;renderCategories();renderProducts();});
 $('#paper-filter').addEventListener('change',e=>{paper=e.target.value;renderProducts();});
