@@ -87,3 +87,16 @@
   to = "/dtf-personalizacao"
   status = 301
   force = true
+
+# Páginas dos produtos configuráveis: uma URL canônica por produto.
+[[redirects]]
+  from = "/blocos-personalizados.html"
+  to = "/blocos-personalizados"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/pastas-digitais-simples.html"
+  to = "/pastas-digitais-simples"
+  status = 301
+  force = true

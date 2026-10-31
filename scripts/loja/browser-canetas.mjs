@@ -30,7 +30,7 @@ try{
   page.on('pageerror',e=>errors.push(e.message));
   await context.route('https://wa.me/**',r=>r.fulfill({contentType:'text/html',body:'Link verificado sem envio de mensagem.'}));
   await page.goto(origin,{waitUntil:'networkidle'});await page.waitForSelector('[data-product="canetas"]');
-  assert.equal(await page.locator('.product').count(),8);
+  assert.equal(await page.locator('.product').count(),10);
   const card=page.locator('[data-product="canetas"]');
   assert.match((await card.locator('.price').innerText()).replace(/\s+/g,' '),/A partir de R\$ 3,60\/un\.\s*— para 1\.000 unidades/);
   assert.match(await card.locator('.product-description').innerText(),/DTF UV/);
