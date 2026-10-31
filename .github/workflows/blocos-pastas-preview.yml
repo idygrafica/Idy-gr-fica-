@@ -4,6 +4,10 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - index.html
+      - blocos-personalizados.html
+      - pastas-digitais-simples.html
+      - sitemap.xml
+      - netlify.toml
       - assets/loja/**
       - scripts/digital-products/**
       - scripts/seo-technical/build-catalog.mjs

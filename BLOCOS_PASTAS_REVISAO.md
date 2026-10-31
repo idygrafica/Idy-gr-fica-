@@ -11,7 +11,6 @@ Todos os valores de produção a seguir são referências fornecidas pelo usuár
 | Produto de referência | Quantidade | Total concorrente/referência | Unitário derivado, arredondado | Preço de produção aprovado IDY |
 |---|---:|---:|---:|---|
 | Bloco A5 | 5 | R$ 170,00 | R$ 34,00 | Nenhum — sob consulta |
-| Bloco A5 | 10 | R$ 374,60 | R$ 37,46 | Nenhum — sob consulta |
 | Bloco A5 | 20 | R$ 413,20 | R$ 20,66 | Nenhum — sob consulta |
 | Bloco A5 | 50 | R$ 529,00 | R$ 10,58 | Nenhum — sob consulta |
 | Bloco A5 | 100 | R$ 722,00 | R$ 7,22 | Nenhum — sob consulta |
@@ -22,7 +21,7 @@ Todos os valores de produção a seguir são referências fornecidas pelo usuár
 | Criação simples da arte IDY | 1 arte | — | R$ 100,00 | Aprovado: uma vez por arte |
 | Arte já pronta | — | — | R$ 0,00 de criação | Aprovado: sem adicional de criação |
 
-Inconsistência A5: a referência de 10 blocos custa R$ 37,46/un., 10,18% mais que R$ 34,00/un. para 5 blocos. Precisa conferir a foto/tabela original e se a especificação é a mesma; não foi corrigida por suposição nem recomendada como tabela comercial.
+A seleção principal usa as quatro tiragens atuais: 5, 20, 50 e 100 blocos. A referência anterior de 10 blocos foi retirada da seleção, sem invalidar solicitações antigas sob consulta. Inconsistência histórica A5: a referência de 10 blocos custa R$ 37,46/un., 10,18% mais que R$ 34,00/un. para 5 blocos. Precisa conferir a foto/tabela original e se a especificação é a mesma; não foi corrigida por suposição nem recomendada como tabela comercial.
 
 A4 e A6: sem referência e sem preço aprovado. Pasta simples IDY: sem preço aprovado em nenhuma tiragem. A tabela `approvedDigitalTotals` permanece vazia, com campos por produto/formato para totais em centavos de tiragens exatas; sem extrapolação. A IDY deverá aprovar os valores antes de preencher esses campos.
 
@@ -43,14 +42,15 @@ O subtotal de produção e o subtotal de criação são separados. O total final
 
 Mantém branco, azul e verde, layout geral, seis outras fichas, fotos oficiais, logo, mascote e Xerox. Blocos reutilizam a imagem ilustrativa existente de 1536×1024. A fotografia real disponível mostra blocos preto e branco em caixa e não corresponde à configuração colorida proposta; foi preservada sem troca. Para a pasta simples, uma nova imagem ilustrativa de estúdio foi gerada, 1536×1024, sem bolsa e sem copiar concorrentes; não é fotografia de trabalho entregue. Original preservado no workspace; WebP para a loja.
 
-Mantém URLs/âncoras/canonical, títulos e descrição gerais, sitemap, robots e configurações Netlify. Os dados estruturados das duas fichas descrevem blocos e pastas digitais em Porto Alegre, sem ofertas fictícias, URLs novas ou produtos duplicados. Projeto independente de atendimento com IA permanece intocado.
+Mantém todas as URLs/âncoras, canonical, títulos e descrição gerais e robots existentes. Acrescenta somente duas páginas canônicas: `/blocos-personalizados` e `/pastas-digitais-simples`, com títulos, descrições, Open Graph, Product sem ofertas fictícias e breadcrumbs. As páginas reutilizam cabeçalho, rodapé, formulário e carrinho da loja; nomes, fotografias e links das duas fichas levam às páginas. O sitemap conserva todas as entradas anteriores e ganha somente essas duas URLs; o Netlify conserva as regras anteriores e acrescenta os dois aliases `.html` com 301. Os oito produtos não são duplicados; as páginas e a coleção referenciam o mesmo ID de produto nos dados estruturados. Projeto independente de atendimento com IA permanece intocado.
 
 ## Validação
 
 - 16 testes comerciais originais e 9 testes de canetas, inalterados.
-- 26 testes adicionais de opções, valores não aprovados, criação por arte, tiragem, consolidação, remoção, restauração, pedido misto, WhatsApp, preços injetados e preços futuros exatos.
+- 24 testes adicionais de opções, valores não aprovados, criação por arte, tiragem, consolidação, remoção, restauração, pedido misto, WhatsApp, preços injetados e preços futuros exatos.
 - Navegador: desktop 1440, tablet 768, celulares 390 e 320; opções, zero/preço de arte, preço final incompleto, criação compartilhada, edição/restauração/remoção, nome malicioso escapado, WhatsApp interceptado, preços A3/canetas, busca/categoria, imagens nítidas, sem rolagem lateral, fallback sem JavaScript, URLs do sitemap e ausência de erros JavaScript.
 - Preservação por hash dos arquivos originais fora do escopo, HTML das outras seis fichas, cabeçalho/hero/rodapé/carrinho inicial e metadata; build idempotente.
+- Páginas próprias: 1440/768/390/320, canonical/metadata/schema sem ofertas, aliases 301, um produto por página, compartilhamento do carrinho entre loja/blocos/pastas, cobrança de criação única entre páginas, pesquisa e categorias levando à loja, envio ao WhatsApp interceptado e fallback sem JavaScript.
 - Relatório e capturas gerados em `.preview/digital-products/`, anexados pelo workflow da PR.
 
 Pendente comercial: tabela final da produção e capacidade. Pendente aprovação: revisão da prévia e autorização explícita de publicação. Nenhum merge é realizado nesta entrega.

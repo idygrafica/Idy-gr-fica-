@@ -1,7 +1,7 @@
 // Tabelas comerciais vazias: referências de terceiros nunca são preços de venda.
 export const digitalProducts={
- blocos:{name:'Blocos personalizados',description:'A4, A5 e A6 · offset 90 g · 50 folhas · colorido na frente (4×0)',quantities:[5,10,20,50,100],formats:['A5','A4','A6'],photo:'/assets/loja/produtos/blocos.webp',note:'Preto e branco, outro papel, quantidade de folhas ou acabamento: orçamento específico.'},
- pastas:{name:'Pastas digitais simples',description:'Impressão digital e vinco · acabamento simples, sem bolsa',quantities:[100,200,500,1000],formats:['Simples'],photo:'/assets/loja/produtos/pastas-simples.webp',note:'Papel, formato, montagem e viabilidade serão confirmados no orçamento. Bolsa, recorte, laminação e verniz UV não estão incluídos.'}
+ blocos:{url:'/blocos-personalizados',name:'Blocos personalizados',description:'A4, A5 e A6 · offset 90 g · 50 folhas · colorido na frente (4×0)',quantities:[5,20,50,100],formats:['A5','A4','A6'],photo:'/assets/loja/produtos/blocos.webp',note:'Preto e branco, outro papel, quantidade de folhas ou acabamento: orçamento específico.'},
+ pastas:{url:'/pastas-digitais-simples',name:'Pastas digitais simples',description:'Impressão digital e vinco · acabamento simples, sem bolsa',quantities:[100,200,500,1000],formats:['Simples'],photo:'/assets/loja/produtos/pastas-simples.webp',note:'Papel, formato, montagem e viabilidade serão confirmados no orçamento. Bolsa, recorte, laminação e verniz UV não estão incluídos.'}
 };
 export const approvedDigitalTotals={blocos:{A4:{},A5:{},A6:{}},pastas:{Simples:{}}};
 export const ARTWORK_PRICE_CENTS=10000;

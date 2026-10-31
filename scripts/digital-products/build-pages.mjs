@@ -1,0 +1,36 @@
+// Páginas comerciais geradas a partir do mesmo cabeçalho, formulário e carrinho da loja.
+import {writeFile} from 'node:fs/promises';
+import {products,categories} from '../../assets/loja/catalog.js';
+import {digitalProducts,escapeHtml} from '../../assets/loja/digital-products.js';
+import {renderProductCard} from '../../assets/loja/product-card.js';
+const origin='https://idygrafica.netlify.app';
+const content={
+ blocos:{title:'Blocos Personalizados A4, A5 e A6 em Porto Alegre | IDY Gráfica',description:'Blocos personalizados em Porto Alegre: formatos A4, A5 e A6, offset 90 g, 50 folhas e impressão colorida na frente. Configure a quantidade e solicite orçamento.',lead:'Sua marca no papel, na quantidade que você precisa. Escolha o formato, a tiragem e como deseja preparar a arte.',questions:[['Como são os blocos personalizados?','A configuração inicial utiliza papel offset 90 g, 50 folhas por bloco e impressão colorida somente na frente (4×0). Escolha A4, A5 ou A6 e solicite a confirmação da produção.'],['Quais quantidades posso escolher?','A seleção inicial oferece 5, 20, 50 e 100 blocos. Para outras tiragens ou especificações, fale com a equipe pelo WhatsApp.'],['Posso pedir preto e branco ou outro acabamento?','Sim, você pode solicitar orçamento específico para preto e branco, outros papéis, quantidade de folhas e acabamentos. Essas variações não têm preço de venda confirmado.']]},
+ pastas:{title:'Pastas Digitais Simples em Porto Alegre | IDY Gráfica',description:'Pastas digitais simples em Porto Alegre, com impressão e vinco, sem bolsa. Configure 100, 200, 500 ou 1.000 unidades e solicite orçamento à IDY Gráfica.',lead:'Uma apresentação simples para a sua marca. Escolha a tiragem e a arte; confirmamos as especificações da pasta antes da produção.',questions:[['O que está previsto na pasta digital simples?','O modelo proposto utiliza impressão digital e vinco, com acabamento simples e sem bolsa. Papel, formato aberto e fechado, montagem e capacidade produtiva serão confirmados pela IDY no orçamento.'],['Quais tiragens estão disponíveis para orçamento?','Você pode solicitar 100, 200, 500 ou 1.000 pastas. O preço de cada tiragem depende da validação dos custos e das especificações.'],['Posso pedir bolsa, laminação ou recortes?','Pastas com bolsa, recorte, laminação, verniz UV ou montagem mais elaborada exigem orçamento personalizado. Esses acabamentos não fazem parte do modelo simples.']]}
+};
+function region(html,start,end){const a=html.indexOf(start),b=html.indexOf(end,a);if(a<0||b<0)throw Error('Região compartilhada ausente: '+start);return html.slice(a,b+end.length);}
+export async function buildDigitalPages(html){
+ const sharedHeader=region(html,'<header','</header>').replace('<form class="search" role="search">','<form class="search" role="search" action="/" method="get">').replace('id="search" type="search"','id="search" name="q" type="search"');
+ const sharedCart=region(html,'<aside class="cart"','</aside>');
+ const sharedFooter=region(html,'<footer','</footer>').replace(' aria-current="page"','');
+ const sharedTail=html.slice(html.indexOf('<div class="backdrop"'));
+ for(const [id,c] of Object.entries(digitalProducts)){
+  const copy=content[id],url=origin+c.url,p=products.find(p=>p.id===id),other=id==='blocos'?'pastas':'blocos';
+  let head=html.slice(0,html.indexOf('</head>')).replace(/<title>.*?<\/title>/,`<title>${copy.title}</title>`).replace(/<meta name="description"[^>]*>/,`<meta name="description" content="${escapeHtml(copy.description)}">`).replace(/<link rel="canonical"[^>]*>/,`<link rel="canonical" href="${url}">`).replace(/<script type="application\/ld\+json" id="idy-catalog-schema">[\s\S]*?<\/script>/,'');
+  for(const [property,value] of Object.entries({'og:title':copy.title,'og:description':copy.description,'og:url':url,'og:image':origin+c.photo,'og:image:alt':c.name+' — apresentação ilustrativa'}))head=head.replace(new RegExp('<meta property="'+property+'"[^>]*>'),`<meta property="${property}" content="${escapeHtml(value)}">`);
+  const schema={'@context':'https://schema.org','@graph':[
+   {'@type':'WebPage','@id':url+'#pagina',url,name:copy.title,description:copy.description,inLanguage:'pt-BR',isPartOf:{'@id':origin+'/#website'},mainEntity:{'@id':origin+'/#produto-'+id}},
+   {'@type':'Product','@id':origin+'/#produto-'+id,url,name:c.name,description:c.description+' · Produção sob consulta em Porto Alegre.',image:origin+c.photo,brand:{'@type':'Brand',name:'IDY Gráfica'}},
+   {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Loja IDY Gráfica',item:origin+'/'},{'@type':'ListItem',position:2,name:c.name,item:url}]}
+  ]};
+  const faq=[...copy.questions,['Posso enviar minha arte ou contratar a criação?','Arte pronta não tem adicional de criação. Para criação simples, o serviço custa R$ 100,00 uma única vez por arte identificada no pedido, sem multiplicação pela tiragem. Alterações complexas ou projetos especiais dependem de orçamento. Envie arquivos pelo atendimento no WhatsApp.'],['Por que o valor de produção aparece sob consulta?','Os preços finais da IDY ainda precisam ser aprovados. Enquanto não houver tabela validada, não apresentamos estimativas como preço de venda. Sua solicitação vai para a equipe com as opções escolhidas e o serviço de arte separado.']];
+  const page=`${head}<link rel="stylesheet" href="/assets/loja/digital-pages.css"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json" id="idy-product-schema">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script></head>
+<body class="loja-page digital-product-page" data-product-page="${id}"><a class="skip" href="#produtos">Ir para a configuração do produto</a>${sharedHeader}
+<nav class="category-bar" aria-label="Categorias de produtos"><div class="wrap categories" id="categories">${categories.map(c=>`<a href="/?categoria=${c.id}#produtos"><span data-icon="${c.icon}"></span>${c.label}</a>`).join('')}</div></nav>
+<main class="wrap"><nav class="product-breadcrumb" aria-label="Localização"><a href="/">Loja IDY Gráfica</a><span aria-hidden="true">/</span><span aria-current="page">${c.name}</span></nav>
+<header class="product-page-intro"><p class="eyebrow">PEQUENAS TIRAGENS · PORTO ALEGRE</p><h1>${c.name}</h1><p>${copy.lead}</p></header>
+<div class="store-layout"><section class="catalog" id="produtos" aria-label="Configuração de ${c.name}"><div class="products" id="product-grid">${renderProductCard(p,{detail:true})}</div><p class="showcase-photo-note">Imagem ilustrativa de apresentação. A produção e o prazo dependem da confirmação da equipe.</p></section>${sharedCart}</div>
+<section class="product-information" aria-labelledby="product-questions"><h2 id="product-questions">Detalhes para escolher com confiança</h2>${faq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</section><nav class="product-related" aria-label="Continue na loja"><a href="/">← Ver todos os produtos</a><a href="${digitalProducts[other].url}">Conhecer ${digitalProducts[other].name.toLowerCase()} →</a><a href="https://wa.me/5551981687562" target="_blank" rel="noopener noreferrer">Outras especificações? Fale com a IDY</a></nav></main>${sharedFooter}${sharedTail}`;
+  await writeFile(c.url.slice(1)+'.html',page);
+ }
+}
