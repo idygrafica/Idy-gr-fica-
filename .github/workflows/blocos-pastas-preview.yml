@@ -1,4 +1,4 @@
-name: Blocos e pastas digitais — somente prévia
+name: Dez produtos IDY — prévia e publicação autorizada
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -13,11 +13,20 @@ on:
       - scripts/seo-technical/build-catalog.mjs
       - BLOCOS_PASTAS_REVISAO.md
       - .github/workflows/blocos-pastas-preview.yml
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - assets/loja/**
+      - blocos-personalizados.html
+      - pastas-digitais-simples.html
+      - scripts/digital-products/**
+      - .github/workflows/blocos-pastas-preview.yml
 permissions:
   contents: read
 jobs:
   preview:
-    if: github.head_ref == 'codex/blocos-pastas-digitais'
+    if: github.head_ref == 'codex/blocos-pastas-digitais' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -25,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -40,8 +49,14 @@ jobs:
       - name: Preparar navegador isolado
         run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
       - name: Conferir opções, carrinho, SEO e a prévia pública
+        if: github.event_name == 'pull_request'
         env:
           PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/digital-products/browser.mjs
+      - name: Conferir dez produtos e páginas na produção autorizada
+        if: github.event_name == 'push'
+        env:
+          VERIFY_ORIGIN: https://idygrafica.netlify.app
         run: node scripts/digital-products/browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()

@@ -1,8 +1,8 @@
-# Blocos e pastas digitais — prévia para aprovação
+# Blocos e pastas digitais — dez produtos e publicação autorizada
 
-Base: main `7c50aee196b4c0b0e9969812f5b6a2d64b69856f`. Branch isolada `codex/blocos-pastas-digitais`. Não fazer merge nem publicar em produção sem nova autorização.
+Base: main `7c50aee196b4c0b0e9969812f5b6a2d64b69856f`. Branch isolada `codex/blocos-pastas-digitais`. O usuário autorizou explicitamente publicar a correção com dez produtos. Backup anterior: `backup/antes-dez-produtos-20261031`, em `7c50aee196b4c0b0e9969812f5b6a2d64b69856f`.
 
-Adapta apenas as duas fichas da vitrine, mantendo os oito IDs/produtos, catálogo e preços originais intactos. Opções antigas A7/A6/A5 e pastas com bolso 4×0/4×4 permanecem na seção “Outras opções já disponíveis”. Não altera as PRs #18 e #19. Usa o carrinho e o WhatsApp existentes; não há segundo checkout ou upload automático.
+Mantém os oito produtos originais e acrescenta DOIS produtos separados: `blocos-personalizados` e `pastas-digitais-simples`, totalizando dez. Dados, HTML das oito fichas, preços e opções anteriores (inclusive A7/A6/A5 e pastas com bolso 4×0/4×4) permanecem intactos. As configurações digitais da prévia anterior são migradas para os IDs novos ao restaurar o carrinho, sem confundir os produtos originais. Não altera as PRs #18 e #19. Usa o carrinho e o WhatsApp existentes; não há segundo checkout ou upload automático.
 
 ## Preços recebidos e aprovação
 
@@ -40,17 +40,17 @@ O subtotal de produção e o subtotal de criação são separados. O total final
 
 ## Visual, imagens e SEO
 
-Mantém branco, azul e verde, layout geral, seis outras fichas, fotos oficiais, logo, mascote e Xerox. Blocos reutilizam a imagem ilustrativa existente de 1536×1024. A fotografia real disponível mostra blocos preto e branco em caixa e não corresponde à configuração colorida proposta; foi preservada sem troca. Para a pasta simples, uma nova imagem ilustrativa de estúdio foi gerada, 1536×1024, sem bolsa e sem copiar concorrentes; não é fotografia de trabalho entregue. Original preservado no workspace; WebP para a loja.
+Mantém branco, azul e verde, layout geral, oito fichas originais, fotos oficiais, logo, mascote e Xerox. Blocos reutilizam a imagem ilustrativa existente de 1536×1024. A fotografia real disponível mostra blocos preto e branco em caixa e não corresponde à configuração colorida proposta; foi preservada sem troca. Para a pasta simples, uma nova imagem ilustrativa de estúdio foi gerada, 1536×1024, sem bolsa e sem copiar concorrentes; não é fotografia de trabalho entregue. Original preservado no workspace; WebP para a loja.
 
-Mantém todas as URLs/âncoras, canonical, títulos e descrição gerais e robots existentes. Acrescenta somente duas páginas canônicas: `/blocos-personalizados` e `/pastas-digitais-simples`, com títulos, descrições, Open Graph, Product sem ofertas fictícias e breadcrumbs. As páginas reutilizam cabeçalho, rodapé, formulário e carrinho da loja; nomes, fotografias e links das duas fichas levam às páginas. O sitemap conserva todas as entradas anteriores e ganha somente essas duas URLs; o Netlify conserva as regras anteriores e acrescenta os dois aliases `.html` com 301. Os oito produtos não são duplicados; as páginas e a coleção referenciam o mesmo ID de produto nos dados estruturados. Projeto independente de atendimento com IA permanece intocado.
+Mantém todas as URLs/âncoras, canonical, títulos e descrição gerais e robots existentes. Acrescenta somente duas páginas canônicas: `/blocos-personalizados` e `/pastas-digitais-simples`, com títulos, descrições, Open Graph, Product sem ofertas fictícias e breadcrumbs. As páginas reutilizam cabeçalho, rodapé, formulário e carrinho da loja; nomes, fotografias e links das duas fichas levam às páginas. O sitemap conserva todas as entradas anteriores e ganha somente essas duas URLs; o Netlify conserva as regras anteriores e acrescenta os dois aliases `.html` com 301. Os oito produtos originais continuam independentes dos dois novos produtos; as páginas e a coleção referenciam o mesmo ID de produto nos dados estruturados. Projeto independente de atendimento com IA permanece intocado.
 
 ## Validação
 
-- 16 testes comerciais originais e 9 testes de canetas, inalterados.
-- 24 testes adicionais de opções, valores não aprovados, criação por arte, tiragem, consolidação, remoção, restauração, pedido misto, WhatsApp, preços injetados e preços futuros exatos.
+- 16 testes comerciais e 9 testes de canetas: preservam cenários existentes e ajustam somente a quantidade esperada para dez produtos.
+- 25 testes adicionais de opções, valores não aprovados, criação por arte, tiragem, consolidação, remoção, restauração, pedido misto, WhatsApp, preços injetados e preços futuros exatos.
 - Navegador: desktop 1440, tablet 768, celulares 390 e 320; opções, zero/preço de arte, preço final incompleto, criação compartilhada, edição/restauração/remoção, nome malicioso escapado, WhatsApp interceptado, preços A3/canetas, busca/categoria, imagens nítidas, sem rolagem lateral, fallback sem JavaScript, URLs do sitemap e ausência de erros JavaScript.
-- Preservação por hash dos arquivos originais fora do escopo, HTML das outras seis fichas, cabeçalho/hero/rodapé/carrinho inicial e metadata; build idempotente.
+- Preservação por hash dos arquivos originais fora do escopo, HTML das oito fichas originais, cabeçalho/hero/rodapé/carrinho inicial e metadata; build idempotente.
 - Páginas próprias: 1440/768/390/320, canonical/metadata/schema sem ofertas, aliases 301, um produto por página, compartilhamento do carrinho entre loja/blocos/pastas, cobrança de criação única entre páginas, pesquisa e categorias levando à loja, envio ao WhatsApp interceptado e fallback sem JavaScript.
 - Relatório e capturas gerados em `.preview/digital-products/`, anexados pelo workflow da PR.
 
-Pendente comercial: tabela final da produção e capacidade. Pendente aprovação: revisão da prévia e autorização explícita de publicação. Nenhum merge é realizado nesta entrega.
+Pendente comercial: tabela final da produção e capacidade. A publicação autorizada mantém esses valores sob consulta e a criação aprovada em R$ 100,00 por arte. Validar a prévia antes do merge e confirmar os dez produtos em produção após o deploy. Reversão: usar o backup para recuperar a versão anterior ou reverter o merge da PR #23, preservando alterações futuras.

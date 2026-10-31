@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {products} from '../../assets/loja/catalog.js';
 import {addItem,itemDetails,restoreCart,summarize,whatsappUrl,quantity,money} from '../../assets/loja/cart.js';
-test('os oito produtos previstos estão cadastrados e os IDs são únicos',()=>{
- assert.equal(products.length,8);assert.equal(new Set(products.map(p=>p.id)).size,8);
+test('os oito produtos originais e dois novos estão cadastrados com IDs únicos',()=>{
+ assert.equal(products.length,10);assert.equal(new Set(products.map(p=>p.id)).size,10);
 });
 test('preço fixo por folha permanece exclusivo da A3; demais opções não recebem valores inventados',()=>{
  for(const p of products)for(const o of p.options)assert.equal(o.priceCents,p.id==='a3'?(o.id==='frente'?300:600):null);

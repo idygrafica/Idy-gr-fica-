@@ -2,7 +2,7 @@ import {digitalProducts} from './digital-products.js';
 // Apresentação e filtros derivados do catálogo, sem acrescentar dados comerciais.
 import {products,categories} from './catalog.js';
 export const productPhotos=Object.fromEntries(products.map(p=>[p.id,{
- src:`/assets/loja/produtos/${p.id}.webp`,
+ src:digitalProducts[p.id]?.photo||`/assets/loja/produtos/${p.id}.webp`,
  alt:`${p.name}: apresentação ilustrativa do produto`
 }]));
 export function paperOf(product){

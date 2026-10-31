@@ -1,4 +1,4 @@
-import {digitalProducts,isDigitalOption,digitalOption,normalizeArtwork,digitalPrice,artworkKey,ARTWORK_PRICE_CENTS} from './digital-products.js';
+import {digitalProductId,digitalProducts,isDigitalOption,digitalOption,normalizeArtwork,digitalPrice,artworkKey,ARTWORK_PRICE_CENTS} from './digital-products.js';
 import { products } from './catalog.js';
 export const CART_KEY = 'loja-idy.cart.v1';
 export const money = cents => new Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'}).format(cents/100);
@@ -8,7 +8,8 @@ export function quantity(value) {
   return n;
 }
 export function itemDetails(item) {
-  const product = products.find(p=>p.id===item.productId);
+  const productId=isDigitalOption(item.optionId)?digitalProductId(item.productId):item.productId;
+  const product = products.find(p=>p.id===productId);
   const digital=isDigitalOption(item.optionId);
   const option = digital?digitalOption(product?.id,item.optionId):product?.options.find(o=>o.id===item.optionId);
   if (!option) throw new Error('Produto ou opção indisponível.');
@@ -30,6 +31,7 @@ export function restoreCart(raw) {
 }
 export function addItem(cart, productId, optionId, amount, artwork) {
   const details=itemDetails({productId,optionId,quantity:amount,artwork});
+  productId=details.product.id;
   artwork=isDigitalOption(optionId)?details.artwork:undefined;
   const next = cart.map(i=>({...i}));
   const item = next.find(i=>i.productId===productId && i.optionId===optionId && (!isDigitalOption(optionId)||(i.artwork?.mode===artwork.mode&&artworkKey(i.artwork)===artworkKey(artwork))));

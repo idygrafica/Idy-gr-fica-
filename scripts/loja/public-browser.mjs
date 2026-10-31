@@ -15,7 +15,7 @@ try{
   // Apenas simular a abertura do WhatsApp: nenhum pedido é enviado.
   await context.route('https://wa.me/**',r=>r.fulfill({contentType:'text/html',body:'Link verificado. Nenhuma mensagem enviada.'}));
   await page.goto(origin,{waitUntil:'networkidle'});await page.waitForSelector('[data-product="a3"]');
-  assert.equal(await page.locator('.product').count(),8);
+  assert.equal(await page.locator('.product').count(),10);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   for(const selector of ['.brand img','.mascot','.printer'])assert(await page.locator(selector).evaluate(el=>el.complete&&el.naturalWidth>0));
   const details=page.locator('[data-product="a3"] .product-details');
@@ -28,7 +28,7 @@ try{
   await page.locator('#clear-cart').click();if(width===390)await page.keyboard.press('Escape');
   await page.locator('#option-a3').selectOption('duplex');await page.locator('#qty-a3').fill('100');await page.locator('[data-add="a3"]').click();
   if(width===390)await page.locator('.cart-toggle').click();assert.match(await page.locator('#cart-totals').innerText(),/600,00/);
-  assert.deepEqual(errors,[]);report.push({width,publicUrl:origin,products:8,front3Cents:900,duplex100Cents:60000,whatsappClickVerified:true,realMessagesSent:0,javascriptErrors:errors});
+  assert.deepEqual(errors,[]);report.push({width,publicUrl:origin,products:10,front3Cents:900,duplex100Cents:60000,whatsappClickVerified:true,realMessagesSent:0,javascriptErrors:errors});
   await context.close();
  }
  await writeFile('.preview/loja/public-browser.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));

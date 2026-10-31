@@ -1,4 +1,5 @@
 import {money} from './cart.js';
+import {digitalProducts} from './digital-products.js';
 import {renderDigitalCard} from './digital-card.js';
 import {productPhotos} from './showcase.js';
 
@@ -11,4 +12,4 @@ function renderStandardCard(p){return `<article class="product" data-product="${
  <div class="product-action"><label for="qty-${p.id}">${p.id==='cartoes'?'Lotes':'Qtd.'}</label><input id="qty-${p.id}" type="number" min="1" max="100000" step="1" value="${p.defaultQuantity||1}" inputmode="numeric" aria-label="Quantidade de ${p.id==='cartoes'?'lotes de ':''}${p.name}"></div>
  <button class="add-product" data-add="${p.id}">${p.id==='a3'||p.quantityPrices?'Adicionar ao carrinho':'Solicitar orçamento'}</button><p class="configuration-note">Personalização e disponibilidade confirmadas pela equipe.</p></div></details></div></article>`;}
 
-export function renderProductCard(p,options={}){const standard=renderStandardCard(p);return renderDigitalCard(p,standard,options.detail===true)||standard;}
+export function renderProductCard(p,options={}){return digitalProducts[p.id]?renderDigitalCard(p,options.detail===true):renderStandardCard(p);}
