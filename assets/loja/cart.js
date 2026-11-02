@@ -15,8 +15,11 @@ export function itemDetails(item) {
   if (!option) throw new Error('Produto ou opção indisponível.');
   const amount=quantity(item.quantity);
   if(digital){const artwork=normalizeArtwork(item.artwork),price=digitalPrice(product.id,item.optionId,amount);return {productId:product.id,optionId:option.id,quantity:amount,artwork,product,option:{...option,priceCents:price?.unitCents??null},totalCents:price?.totalCents??null};}
+  const artwork=option.allowsArtwork?normalizeArtwork(item.artwork||{mode:'ready'}):undefined;
+  const {artwork:ignoredArtwork,...fields}=item;
+  if(option.quantityTotals){const total=Object.hasOwn(option.quantityTotals,amount)?option.quantityTotals[amount]:null;return {...fields,quantity:amount,...(artwork?{artwork}:{}),product,option:{...option,priceCents:total===null?null:total/amount},totalCents:total};}
   const priceCents=product.quantityPrices ? (Object.hasOwn(product.quantityPrices,amount)?product.quantityPrices[amount]:null) : option.priceCents;
-  return {...item, quantity:amount, product, option:{...option,priceCents}, totalCents:priceCents===null ? null : priceCents*amount};
+  return {...fields, quantity:amount, product, option:{...option,priceCents}, totalCents:priceCents===null ? null : priceCents*amount};
 }
 export function restoreCart(raw) {
   try {
@@ -32,9 +35,9 @@ export function restoreCart(raw) {
 export function addItem(cart, productId, optionId, amount, artwork) {
   const details=itemDetails({productId,optionId,quantity:amount,artwork});
   productId=details.product.id;
-  artwork=isDigitalOption(optionId)?details.artwork:undefined;
+  artwork=details.artwork;
   const next = cart.map(i=>({...i}));
-  const item = next.find(i=>i.productId===productId && i.optionId===optionId && (!isDigitalOption(optionId)||(i.artwork?.mode===artwork.mode&&artworkKey(i.artwork)===artworkKey(artwork))));
+  const item = next.find(i=>i.productId===productId && i.optionId===optionId && (!artwork?!i.artwork:(i.artwork?.mode===artwork.mode&&artworkKey(i.artwork)===artworkKey(artwork))));
   if (item) item.quantity=quantity(item.quantity+quantity(amount));
   else next.push({productId,optionId,quantity:quantity(amount),...(artwork?{artwork}: {})});
   return next;
@@ -49,9 +52,9 @@ export function whatsappUrl(cart) {
   if (!cart.length) throw new Error('Adicione um produto antes de continuar.');
   const {items,knownTotalCents,pending,artworks,artworkTotalCents}=summarize(cart);
   const lines=['Olá! Vim pela loja virtual da IDY Gráfica e gostaria de atendimento para estes itens:', ...items.map(i=>[
-    `• ${i.artwork?digitalProducts[i.product.id].name:i.product.name} — ${i.option.label}`,
+    `• ${i.artwork?(digitalProducts[i.product.id]?.name||i.product.name):i.product.name} — ${i.option.label}`,
     ...(i.artwork?[i.artwork.mode==='create'?`Criação solicitada: ${i.artwork.reference}.`:'Arte pronta: sem custo adicional de criação.']:[]),
-    `Quantidade: ${i.quantity}${i.product.id==='a3'?' folha(s)':i.product.id==='cartoes'?' lote(s)':' unidade(s)'}.`,
+    `Quantidade: ${i.quantity}${i.product.id==='a3'?' folha(s)':i.product.id==='cartoes'?' lote(s)':i.option.quantityTotals?' bloco(s)':' unidade(s)'}.`,
     i.totalCents===null ? 'Preço a confirmar: solicito orçamento.' : `Unitário: ${money(i.option.priceCents)}. Total: ${money(i.totalCents)}.`
   ].join('\n'))];
   if(artworks.length)lines.push('Criação da arte (uma vez por arte, não por unidade):',...artworks.map(a=>`${a.reference}: ${money(a.priceCents)}.`),`Subtotal de criação: ${money(artworkTotalCents)}. Criação complexa sob orçamento.`);

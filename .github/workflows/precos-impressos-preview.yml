@@ -1,0 +1,53 @@
+name: Preços aprovados — impressões e receituários em prévia
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - index.html
+      - assets/loja/**
+      - scripts/approved-prices/**
+      - scripts/digital-products/browser.mjs
+      - scripts/loja/cart.test.mjs
+      - PRECOS_IMPRESSOS_REVISAO.md
+      - .github/workflows/precos-impressos-preview.yml
+permissions:
+  contents: read
+jobs:
+  preview:
+    if: github.head_ref == 'codex/precos-impressos-receituarios'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir 82 cenários de cálculo e regressões
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/digital-products/pricing.test.mjs
+          node scripts/approved-prices/pricing.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar navegador isolado
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir preços, criação, carrinho e WhatsApp na prévia
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/approved-prices/browser.mjs
+      - name: Conferir os produtos digitais e páginas existentes
+        run: node scripts/digital-products/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: precos-impressos-previas-e-testes
+          include-hidden-files: true
+          path: |
+            .preview/approved-prices/
+            .preview/digital-products/report.json
