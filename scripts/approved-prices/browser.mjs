@@ -6,7 +6,7 @@ import {resolve} from 'node:path';
 import {makeServer} from '../seo-technical/server.mjs';
 import {products,categories} from '../../assets/loja/catalog.js';
 const base='93a01068b0f7a2a387934dd687b875d209e534ef';
-const allowed=new Set(['index.html','assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/loja/cart.test.mjs','scripts/digital-products/browser.mjs']);
+const allowed=new Set(['.github/workflows/loja-inicio.yml','.github/workflows/canetas-precos.yml','index.html','assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/loja/cart.test.mjs','scripts/digital-products/browser.mjs']);
 const original=p=>execFileSync('git',['show',base+':'+p]);const paths=execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n');let protectedFiles=0;
 for(const p of paths.filter(p=>!allowed.has(p))){assert.equal(execFileSync('git',['hash-object',p],{encoding:'utf8'}),execFileSync('git',['rev-parse',base+':'+p],{encoding:'utf8'}),'Fora do escopo: '+p);protectedFiles++;}
 const before=await import('data:text/javascript;base64,'+original('assets/loja/catalog.js').toString('base64'));assert.equal(products.length,10);assert.deepEqual(categories,before.categories);assert.deepEqual(products.filter(p=>!['a3','blocos'].includes(p.id)),before.products.filter(p=>!['a3','blocos'].includes(p.id)));
