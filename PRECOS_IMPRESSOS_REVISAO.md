@@ -1,6 +1,6 @@
-# Impressões e receituários — preços aprovados, somente prévia
+# Impressões e receituários — publicação autorizada
 
-Base: main `93a01068b0f7a2a387934dd687b875d209e534ef`. Branch isolada `codex/precos-impressos-receituarios`. Abrir PR para validação; não fazer merge nem publicar em produção nesta etapa.
+Base: main `93a01068b0f7a2a387934dd687b875d209e534ef`. Branch isolada `codex/precos-impressos-receituarios`. O usuário aprovou explicitamente a PR #24 e a aplicação do commit `eed1e03` para publicação. Backup anterior: `backup/antes-precos-impressos-20261102`, em `93a01068b0f7a2a387934dd687b875d209e534ef`. As alterações posteriores à aprovação são somente de documentação e verificação em produção.
 
 Mantém os dez produtos e o layout geral. A ficha existente `a3` passa a se chamar “Impressões A4 e A3 coloridas” e recebe três opções, sem remover as opções A3 sulfite comum frente e frente/verso. A ficha existente `blocos` (“Receituários e blocos”) recebe a opção “Receituário A5 · 75 g · 50 folhas · colorido frente (4×0)”; as opções anteriores A7/A6/A5 permanecem sob consulta. O produto separado de blocos personalizados em offset 90 g permanece sob consulta e não recebe o preço de receituário em papel 75 g.
 
@@ -28,4 +28,4 @@ Pastas com bolsa e digitais simples continuam sob consulta. Canetas, cartões, c
 - Proteção dos arquivos fora do escopo por hash, oito fichas fora da alteração preservadas em HTML, dez IDs/categorias, metadados e regiões gerais da home preservados; build idempotente.
 - Regressões de blocos/pastas digitais, navegação entre páginas, carrinho compartilhado, SEO e aliases mantidas. Relatórios/capturas no artifact da PR.
 
-Pendente: validação da prévia pelo usuário. Nenhum preço novo é publicado em produção nesta entrega; pastas continuam aguardando tabela de venda aprovada.
+Publicar após os checks da PR e confirmar os novos preços no site, carrinho e WhatsApp. Pastas e cartões permanecem aguardando definição comercial, sem alterações de preço. Para reverter, recuperar o backup ou reverter o merge da PR #24, preservando mudanças futuras.

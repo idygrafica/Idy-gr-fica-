@@ -1,4 +1,4 @@
-name: Preços aprovados — impressões e receituários em prévia
+name: Preços aprovados — prévia e publicação autorizada
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -10,11 +10,18 @@ on:
       - scripts/loja/cart.test.mjs
       - PRECOS_IMPRESSOS_REVISAO.md
       - .github/workflows/precos-impressos-preview.yml
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - assets/loja/**
+      - scripts/approved-prices/**
+      - .github/workflows/precos-impressos-preview.yml
 permissions:
   contents: read
 jobs:
   preview:
-    if: github.head_ref == 'codex/precos-impressos-receituarios'
+    if: github.head_ref == 'codex/precos-impressos-receituarios' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -22,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -38,10 +45,18 @@ jobs:
       - name: Preparar navegador isolado
         run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
       - name: Conferir preços, criação, carrinho e WhatsApp na prévia
+        if: github.event_name == 'pull_request'
         env:
           PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
         run: node scripts/approved-prices/browser.mjs
+      - name: Conferir preços aprovados no site oficial
+        if: github.event_name == 'push'
+        env:
+          VERIFY_ORIGIN: https://idygrafica.netlify.app
+        run: node scripts/approved-prices/browser.mjs
       - name: Conferir os produtos digitais e páginas existentes
+        env:
+          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.netlify.app' || '' }}
         run: node scripts/digital-products/browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
