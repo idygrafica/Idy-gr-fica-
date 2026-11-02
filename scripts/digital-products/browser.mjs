@@ -4,8 +4,8 @@ import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {resolve} from 'node:path';
 import {makeServer} from '../seo-technical/server.mjs';
-const base='7c50aee196b4c0b0e9969812f5b6a2d64b69856f';
-const allowed=new Set(['index.html','assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/seo-technical/build-catalog.mjs','sitemap.xml','netlify.toml','scripts/loja/cart.test.mjs','scripts/loja/public-browser.mjs','scripts/loja/browser-canetas.mjs','.github/workflows/vitrine-preview.yml']);
+const base='93a01068b0f7a2a387934dd687b875d209e534ef';
+const allowed=new Set(['index.html','assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/seo-technical/build-catalog.mjs','sitemap.xml','netlify.toml','scripts/loja/cart.test.mjs','scripts/loja/public-browser.mjs','scripts/loja/browser-canetas.mjs','.github/workflows/vitrine-preview.yml','scripts/digital-products/browser.mjs']);
 const original=p=>execFileSync('git',['show',base+':'+p]);
 const files=execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n');let protectedFiles=0;
 for(const p of files.filter(p=>!allowed.has(p))){assert.equal(execFileSync('git',['hash-object',p],{encoding:'utf8'}),execFileSync('git',['rev-parse',base+':'+p],{encoding:'utf8'}),'Alterado fora do escopo: '+p);protectedFiles++;}
@@ -13,13 +13,13 @@ const before=original('index.html').toString(),html=await readFile('index.html',
 const part=(s,a,b)=>s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a))+b.length);
 for(const [a,b]of [['<header','</header>'],['<section class="hero"','</section>'],['<aside class="cart"','</aside>'],['<footer','</footer>']])assert.equal(part(html,a,b),part(before,a,b));
 for(const re of [/<title>.*?<\/title>/,/<meta name="description"[^>]+>/,/<link rel="canonical"[^>]+>/])assert.equal(html.match(re)[0],before.match(re)[0]);
-// Os oito cartões originais devem manter exatamente o HTML pré-renderizado.
-for(const id of ['cartoes','a3','pastas','blocos','comandas','adesivos','brindes','canetas'])assert.equal(part(html,`<article class="product" data-product="${id}"`,'</article>'),part(before,`<article class="product" data-product="${id}"`,'</article>'));
+// Preserva as oito fichas fora da atualização aprovada de impressões e receituários.
+for(const id of ['cartoes','pastas','comandas','adesivos','brindes','canetas','blocos-personalizados','pastas-digitais-simples'])assert.equal(part(html,`<article class="product${id.includes('-')?' digital-product':''}" data-product="${id}"`,'</article>'),part(before,`<article class="product${id.includes('-')?' digital-product':''}" data-product="${id}"`,'</article>'));
 assert(!/637,44|374,60|1\.979,40/.test(html),'Preço de concorrente na loja');
 const schema=JSON.parse(html.match(/id="idy-catalog-schema">([\s\S]*?)<\/script>/)[1]);assert(!JSON.stringify(schema).includes('Offer'));assert.match(JSON.stringify(schema),/Pastas digitais simples/);
-const baseUrls=[...original('sitemap.xml').toString().matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);const nowUrls=[...(await readFile('sitemap.xml','utf8')).matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);assert.equal(nowUrls.length,baseUrls.length+2);assert.equal(new Set(nowUrls).size,nowUrls.length);assert(baseUrls.every(u=>nowUrls.includes(u)));assert((await readFile('netlify.toml','utf8')).startsWith(original('netlify.toml').toString()));
+const baseUrls=[...original('sitemap.xml').toString().matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);const nowUrls=[...(await readFile('sitemap.xml','utf8')).matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);assert.equal(nowUrls.length,baseUrls.length);assert.equal(new Set(nowUrls).size,nowUrls.length);assert(baseUrls.every(u=>nowUrls.includes(u)));assert((await readFile('netlify.toml','utf8')).startsWith(original('netlify.toml').toString()));
 const generated=await Promise.all(['blocos-personalizados.html','pastas-digitais-simples.html'].map(p=>readFile(p,'utf8')));
-const originalCatalog=await import('data:text/javascript;base64,'+original('assets/loja/catalog.js').toString('base64'));const currentCatalog=await import('../../assets/loja/catalog.js');assert.deepEqual(currentCatalog.products.slice(0,8),originalCatalog.products);assert.deepEqual(currentCatalog.categories,originalCatalog.categories);
+const originalCatalog=await import('data:text/javascript;base64,'+original('assets/loja/catalog.js').toString('base64'));const currentCatalog=await import('../../assets/loja/catalog.js');assert.deepEqual(currentCatalog.products.filter(p=>!['a3','blocos'].includes(p.id)),originalCatalog.products.filter(p=>!['a3','blocos'].includes(p.id)));assert.deepEqual(currentCatalog.categories,originalCatalog.categories);
 const initial=html;execFileSync('node',['scripts/seo-technical/build-catalog.mjs']);assert.equal(await readFile('index.html','utf8'),initial);for(const [i,p]of ['blocos-personalizados.html','pastas-digitais-simples.html'].entries())assert.equal(await readFile(p,'utf8'),generated[i],'Página não idempotente: '+p);
 const require=createRequire(resolve('.preview-tools/package.json'));const {chromium}=require('playwright');
 await mkdir('.preview/digital-products',{recursive:true});const server=makeServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));
