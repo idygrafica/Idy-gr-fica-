@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Busca no ChatGPT; a política de GPTBot permanece sob a regra geral existente.
+User-agent: OAI-SearchBot
+Allow: /
+
 Sitemap: https://idygrafica.netlify.app/sitemap.xml

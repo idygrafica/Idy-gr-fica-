@@ -1,0 +1,51 @@
+name: Auditoria Google e ChatGPT — somente prévia
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '*.html'
+      - robots.txt
+      - assets/search-visibility.css
+      - scripts/search-visibility/**
+      - AUDITORIA_BUSCA_IDY_20261103.md
+      - .github/workflows/search-visibility-preview.yml
+permissions:
+  contents: read
+jobs:
+  preview:
+    if: github.head_ref == 'codex/auditoria-seo-busca'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir os 100 testes comerciais preservados
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/digital-products/pricing.test.mjs
+          node scripts/approved-prices/pricing.test.mjs
+          node scripts/pastas-prices/pricing.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Auditar produção sem modificações
+        run: python scripts/search-visibility/audit.py
+      - name: Preparar navegador isolado
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir prévia, SEO, dados confirmados e preservação da loja
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/search-visibility/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: auditoria-google-chatgpt-previa
+          include-hidden-files: true
+          path: .preview/search-visibility/
