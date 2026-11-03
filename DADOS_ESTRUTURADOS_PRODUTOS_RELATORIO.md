@@ -46,3 +46,10 @@ Depois de eventual autorização e publicação, será necessário inspecionar a
 - [Google — introdução aos dados de produto](https://developers.google.com/search/docs/appearance/structured-data/product): os requisitos variam conforme o uso; não há garantia de exibição de resultados avançados.
 
 **Produção permanece sem alterações. PR em rascunho, sujeita à aprovação do responsável.**
+
+## Resultados já obtidos
+
+- Leitura atual da produção em **03/11/2026 às 19:43 UTC**: as três URLs responderam HTTP 200 e ainda continham as quatro marcações incompletas. O problema persiste no HTML publicado, independentemente do rastreamento de 1º de novembro.
+- Prévia: https://deploy-preview-29--idygrafica.netlify.app/. PR #29 em rascunho.
+- 100 testes comerciais aprovados; oito cenários de navegador aprovados (local e Netlify, em quatro larguras); schemas das 15 páginas conferidos. 171 arquivos existentes fora do reparo foram preservados por hash e os três HTML mantêm conteúdo visual idêntico à base.
+- A primeira tentativa no teste oficial do Google não chegou a enviar o código porque a seleção da aba CODE não reconheceu o ícone junto do texto. Esse resultado foi registrado como **não validado**. A automação foi corrigida e a nova tentativa será registrada separadamente; isso não é falha dos dados da prévia nem aprovação do Google.
