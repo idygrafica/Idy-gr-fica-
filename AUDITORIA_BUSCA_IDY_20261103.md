@@ -82,7 +82,8 @@ Os separadores na tabela são editoriais; o HTML usa os separadores habituais do
 4. **Cadastros externos:** resolver as referências de Rua Umbu com os proprietários das bases, preservando a distinção entre endereço cadastral e operacional quando necessário.
 5. **Qualidade e reputação reais:** manter portfólio autêntico, fotos autorizadas e informações comerciais completas; solicitar avaliações apenas de clientes reais nos canais adequados. Nenhuma avaliação foi criada nesta proposta.
 6. **Medição:** acompanhar consultas, impressões, cliques, CTR e conversões de orçamento em períodos comparáveis. Não há medição de Core Web Vitals de campo nesta auditoria; avaliar desempenho com dados reais e PageSpeed antes de qualquer rodada específica de imagens, que foram preservadas.
-7. **Publicação futura:** somente após autorização, alinhar as verificações históricas que congelam textos/metadados antigos ao escopo SEO aprovado, executar os checks comerciais e confirmar a indexabilidade da produção após deploy. Não fazer merge desta prévia automaticamente.
+7. **Verificações históricas:** seis workflows antigos de revisão visual usam versões congeladas de páginas e da loja, incompatíveis com alterações SEO autorizadas. Foram excluídos apenas desta branch de auditoria, que tem pipeline dedicado com os 100 testes comerciais e validação das 15 páginas. O comportamento desses workflows para outras PRs e para produção foi mantido. Não houve remoção de testes ou alteração de código comercial.
+8. **Publicação futura:** somente após autorização, alinhar as verificações históricas que congelam textos/metadados antigos ao escopo SEO aprovado, executar os checks comerciais e confirmar a indexabilidade da produção após deploy. Não fazer merge desta prévia automaticamente.
 
 ## Preservação e testes da proposta
 

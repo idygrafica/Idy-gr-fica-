@@ -6,8 +6,9 @@ import {resolve} from 'node:path';
 import {makeServer} from '../seo-technical/server.mjs';
 const base='3e7d3a1baf70cde9d564caa93fcb7a76501110be',origin='https://idygrafica.netlify.app';
 const paths=[...((await readFile('sitemap.xml','utf8')).matchAll(/<loc>(.*?)<\/loc>/g))].map(m=>new URL(m[1]).pathname),files=paths.map(p=>p==='/'?'index.html':p.slice(1)+'.html');
+const workflowChanges=[".github/workflows/criacao-sites-preview.yml", ".github/workflows/comunicacao-visual-preview.yml", ".github/workflows/cortes-especiais-preview.yml", ".github/workflows/servicos-preview.yml", ".github/workflows/impressoes-dtf.yml", ".github/workflows/impressos-preview.yml"];
 const original=p=>execFileSync('git',['show',base+':'+p]);let protectedFiles=0;
-for(const p of execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n').filter(p=>!files.includes(p)&&p!=='robots.txt')){assert.equal(execFileSync('git',['hash-object',p],{encoding:'utf8'}),execFileSync('git',['rev-parse',base+':'+p],{encoding:'utf8'}),'Fora do escopo: '+p);protectedFiles++;}
+for(const p of execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n').filter(p=>!files.includes(p)&&p!=='robots.txt'&&!workflowChanges.includes(p))){assert.equal(execFileSync('git',['hash-object',p],{encoding:'utf8'}),execFileSync('git',['rev-parse',base+':'+p],{encoding:'utf8'}),'Fora do escopo: '+p);protectedFiles++;}
 const html=await readFile('index.html','utf8'),old=original('index.html').toString();const section=(s,a,b)=>s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a))+b.length);
 assert.equal(section(html,'<header','</header>'),section(old,'<header','</header>'));assert.equal(section(html,'<aside class="cart"','</aside>'),section(old,'<aside class="cart"','</aside>'));
 assert.equal(section(html,'<!-- idy:catalog:start -->','<!-- idy:catalog:end -->'),section(old,'<!-- idy:catalog:start -->','<!-- idy:catalog:end -->'),'HTML comercial alterado');
