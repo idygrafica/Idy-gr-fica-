@@ -53,8 +53,10 @@ jobs:
         env:
           VERIFY_ORIGIN: https://idygrafica.netlify.app
         run: node scripts/impressoes-dtf/check.mjs
-      - name: Conferir categorias, busca e carrinho em seis larguras
-        run: node scripts/loja/browser.mjs
+      - name: Conferir dez produtos, categorias e carrinho atuais
+        env:
+          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.netlify.app' || '' }}
+        run: node scripts/digital-products/browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -62,4 +64,4 @@ jobs:
           include-hidden-files: true
           path: |
             .preview/impressoes-dtf/
-            .preview/loja/browser-report.json
+            .preview/digital-products/report.json
