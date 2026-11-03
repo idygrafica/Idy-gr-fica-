@@ -1,7 +1,7 @@
-name: Auditoria Google e ChatGPT — somente prévia
+name: Visibilidade Google e ChatGPT — prévia e publicação autorizada
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - '*.html'
       - robots.txt
@@ -9,11 +9,19 @@ on:
       - scripts/search-visibility/**
       - AUDITORIA_BUSCA_IDY_20261103.md
       - .github/workflows/search-visibility-preview.yml
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - robots.txt
+      - assets/search-visibility.css
+      - scripts/search-visibility/**
+      - .github/workflows/search-visibility-preview.yml
 permissions:
   contents: read
 jobs:
   preview:
-    if: github.head_ref == 'codex/auditoria-seo-busca'
+    if: github.head_ref == 'codex/auditoria-seo-busca' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -21,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -40,8 +48,14 @@ jobs:
       - name: Preparar navegador isolado
         run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
       - name: Conferir prévia, SEO, dados confirmados e preservação da loja
+        if: github.event_name == 'pull_request'
         env:
           PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/search-visibility/check.mjs
+      - name: Conferir produção autorizada no computador e celular
+        if: github.event_name == 'push'
+        env:
+          VERIFY_ORIGIN: https://idygrafica.netlify.app
         run: node scripts/search-visibility/check.mjs
       - uses: actions/upload-artifact@v4
         if: always()

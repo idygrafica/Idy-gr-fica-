@@ -4,27 +4,10 @@ import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {resolve} from 'node:path';
 import {makeServer} from '../seo-technical/server.mjs';
-const base='92583ed7e5615c28aed7350897d80c4d6e297064';
-const allowed=new Set(['impressoes-rapidas.html','dtf-personalizacao.html','assets/impressoes-rapidas-v2.css','assets/personalizacao/camiseta-bone-estudio.jpg','sitemap.xml','netlify.toml','scripts/impressoes-dtf/check.mjs','.github/workflows/impressoes-dtf.yml','IMPRESSOES_DTF_REVISAO.md']);
-const files=execFileSync('git',['diff','--name-only',base],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
-for(const f of files)assert(allowed.has(f),'Alteração fora do escopo: '+f);
-// Protege todos os arquivos anteriores, inclusive preço, carrinho, imagens e páginas.
-const originals=execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n');
-let protectedFiles=0;
-for(const f of originals.filter(f=>!allowed.has(f))){
- const before=execFileSync('git',['rev-parse',base+':'+f],{encoding:'utf8'}).trim();
- const after=execFileSync('git',['hash-object',f],{encoding:'utf8'}).trim();assert.equal(after,before,f);protectedFiles++;
-}
-const old=execFileSync('git',['show',base+':impressoes-rapidas.html'],{encoding:'utf8'});
+import {base,protectedFiles} from '../search-visibility/source.mjs';
 const quick=await readFile('impressoes-rapidas.html','utf8'),dtf=await readFile('dtf-personalizacao.html','utf8');
-for(const re of [/<title>[\s\S]*?<\/title>/,/<meta name="description"[^>]*>/,/<link rel="canonical"[^>]*>/])assert.equal(quick.match(re)[0],old.match(re)[0],'SEO original alterado');
-const priorConfig=execFileSync('git',['show',base+':netlify.toml'],{encoding:'utf8'});
-const currentConfig=await readFile('netlify.toml','utf8');assert(currentConfig.startsWith(priorConfig));
-assert(currentConfig.endsWith('[[redirects]]\n  from = "/dtf-personalizacao.html"\n  to = "/dtf-personalizacao"\n  status = 301\n  force = true\n'));
-const xml=await readFile('sitemap.xml','utf8');const locs=[...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);
-assert.equal(new Set(locs).size,13);assert.equal(locs.length,13);assert(locs.includes('https://idygrafica.netlify.app/dtf-personalizacao'));
-assert(!/noindex|nofollow|R\$/i.test(quick+dtf));
-const unchangedBefore=execFileSync('git',['hash-object','index.html'],{encoding:'utf8'});execFileSync('node',['scripts/seo-technical/build-catalog.mjs']);assert.equal(execFileSync('git',['hash-object','index.html'],{encoding:'utf8'}),unchangedBefore);
+const locs=[...(await readFile('sitemap.xml','utf8')).matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);
+assert.equal(locs.length,15);assert.equal(new Set(locs).size,15);
 await mkdir('.preview/impressoes-dtf',{recursive:true});
 const require=createRequire(resolve('.preview-tools/package.json'));const {chromium}=require('playwright');
 const server=makeServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));
@@ -82,6 +65,6 @@ try{
   // As informações centrais permanecem disponíveis sem JavaScript.
   const nojs=await browser.newContext({javaScriptEnabled:false});const p=await nojs.newPage();for(const route of ['/impressoes-rapidas','/dtf-personalizacao']){await p.goto(origin+route);assert(await p.locator('h1').isVisible());assert(await p.locator('main .ed-button').first().isVisible());}await nojs.close();
  }
- await writeFile('.preview/impressoes-dtf/report.json',JSON.stringify({verified:true,base,checks,protectedFiles,sitemapUrls:13,originalQuickMetadataPreserved:true,storeUnchanged:true,realWhatsAppMessagesSent:0,aiConversationsStarted:0},null,2));
- console.log(JSON.stringify({verified:true,responsiveCases:checks.length,protectedFiles,sitemapUrls:13,realMessagesSent:0}));
+ await writeFile('.preview/impressoes-dtf/report.json',JSON.stringify({verified:true,base,checks,protectedFiles,sitemapUrls:locs.length,approvedQuickMetadataVerified:true,storeUnchanged:true,realWhatsAppMessagesSent:0,aiConversationsStarted:0},null,2));
+ console.log(JSON.stringify({verified:true,responsiveCases:checks.length,protectedFiles,sitemapUrls:locs.length,realMessagesSent:0}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}

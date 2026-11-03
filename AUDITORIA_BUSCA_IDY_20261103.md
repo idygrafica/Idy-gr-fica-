@@ -1,6 +1,6 @@
 # Auditoria de visibilidade da IDY Gráfica — Google e ChatGPT
 
-Data: 03/11/2026. Base examinada: `3e7d3a1baf70cde9d564caa93fcb7a76501110be`. Site: https://idygrafica.netlify.app/. Esta entrega é uma proposta em branch separada, sem merge ou publicação em produção.
+Data: 03/11/2026. Base examinada: `3e7d3a1baf70cde9d564caa93fcb7a76501110be`. Site: https://idygrafica.netlify.app/. Relatório da proposta SEO em branch separada. Após a entrega da prévia, o responsável autorizou expressamente a integração e a publicação da PR #27. A execução será registrada na PR e nos artifacts de produção.
 
 ## Resultado principal
 
@@ -83,7 +83,7 @@ Os separadores na tabela são editoriais; o HTML usa os separadores habituais do
 5. **Qualidade e reputação reais:** manter portfólio autêntico, fotos autorizadas e informações comerciais completas; solicitar avaliações apenas de clientes reais nos canais adequados. Nenhuma avaliação foi criada nesta proposta.
 6. **Medição:** acompanhar consultas, impressões, cliques, CTR e conversões de orçamento em períodos comparáveis. Não há medição de Core Web Vitals de campo nesta auditoria; avaliar desempenho com dados reais e PageSpeed antes de qualquer rodada específica de imagens, que foram preservadas.
 7. **Verificações históricas:** seis workflows antigos de revisão visual usam versões congeladas de páginas e da loja, incompatíveis com alterações SEO autorizadas. Foram excluídos apenas desta branch de auditoria, que tem pipeline dedicado com os 100 testes comerciais e validação das 15 páginas. O comportamento desses workflows para outras PRs e para produção foi mantido. Não houve remoção de testes ou alteração de código comercial.
-8. **Publicação futura:** somente após autorização, alinhar as verificações históricas que congelam textos/metadados antigos ao escopo SEO aprovado, executar os checks comerciais e confirmar a indexabilidade da produção após deploy. Não fazer merge desta prévia automaticamente.
+8. **Publicação autorizada:** aprovação expressa do responsável para integrar a PR #27 e publicar. As verificações de produção de produtos digitais, preços, pastas, DTF e livros reutilizam agora a proteção de fontes da base comercial `3e7d3a1`, preservando seus cenários funcionais existentes. Comparações históricas de títulos, rodapés e contagem de URLs foram alinhadas à proposta SEO aprovada e às 15 URLs atuais. O workflow de visibilidade também verifica a produção sem `noindex`, em cinco larguras. Nenhum dado comercial ou código da aplicação foi alterado nessa preparação.
 
 ## Preservação e testes da proposta
 
@@ -92,7 +92,7 @@ Os separadores na tabela são editoriais; o HTML usa os separadores habituais do
 - Sitemap, URLs, canonical, redirecionamentos, arquivos de verificação e política atual de GPTBot preservados.
 - 100 testes de cálculo existentes, mais conferência da proposta nas 15 páginas: títulos únicos, uma H1 por página, canonical, JSON-LD válido, endereço confirmado, ausência de horários/avaliações inventados, links/fragmentos, leitura sem JavaScript e bot user-agents.
 - Navegador em 1440, 1024, 768, 390 e 320: dez produtos, carrinho, criação única, consolidação, persistência, WhatsApp interceptado sem envio real, IA, links de serviços e ausência de rolagem lateral/erros JavaScript.
-- Capturas de computador/celular e relatórios anexados ao workflow da PR. Prévia com `noindex` do Netlify e canonical da produção; a produção continua sem alterações desta auditoria.
+- Capturas de computador/celular e relatórios anexados ao workflow da PR. Prévia com `noindex` do Netlify e canonical da produção; após o deploy autorizado, a verificação de produção exige ausência de `noindex`.
 
 ## Referências técnicas consultadas
 
@@ -102,3 +102,7 @@ Os separadores na tabela são editoriais; o HTML usa os separadores habituais do
 - [Google — elegibilidade do Perfil da Empresa](https://support.google.com/business/answer/13763036?hl=en): verificar os critérios do modelo real de atendimento antes de reivindicar/criar perfil.
 
 A proposta melhora clareza, consistência e acesso técnico. Não garante primeira posição, indexação imediata ou inclusão entre as primeiras recomendações do Google ou do ChatGPT.
+
+## Reversão da publicação autorizada
+
+A branch `backup/antes-seo-pr27-20261103` preserva o commit anterior de produção `3e7d3a1baf70cde9d564caa93fcb7a76501110be`. Em caso de regressão, criar um commit de reversão da integração da PR #27, preservando o histórico, e aguardar o redeploy do Netlify. Não é necessário alterar preços, recuperar arquivos manualmente ou tocar no projeto independente de IA. Cadastros externos continuam fora do escopo.

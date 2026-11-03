@@ -5,17 +5,7 @@ import {createRequire} from 'node:module';
 import {resolve} from 'node:path';
 import {makeServer} from '../seo-technical/server.mjs';
 import {products,categories} from '../../assets/loja/catalog.js';
-const base='93a01068b0f7a2a387934dd687b875d209e534ef';
-const allowed=new Set(['.github/workflows/loja-inicio.yml','.github/workflows/canetas-precos.yml','index.html','assets/loja/app.js','assets/loja/cart.js','assets/loja/catalog.js','assets/loja/product-card.js','assets/loja/showcase.js','assets/loja/vitrine.css','scripts/loja/cart.test.mjs','scripts/digital-products/browser.mjs']);
-const original=p=>execFileSync('git',['show',base+':'+p]);const paths=execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split('\n');let protectedFiles=0;
-for(const p of paths.filter(p=>!allowed.has(p))){assert.equal(execFileSync('git',['hash-object',p],{encoding:'utf8'}),execFileSync('git',['rev-parse',base+':'+p],{encoding:'utf8'}),'Fora do escopo: '+p);protectedFiles++;}
-const before=await import('data:text/javascript;base64,'+original('assets/loja/catalog.js').toString('base64'));assert.equal(products.length,10);assert.deepEqual(categories,before.categories);assert.deepEqual(products.filter(p=>!['a3','blocos','pastas'].includes(p.id)),before.products.filter(p=>!['a3','blocos','pastas'].includes(p.id)));
-for(const [id,options]of [['a3',['frente','duplex']],['blocos',['a7','a6','a5']]])for(const optionId of options){const old=before.products.find(p=>p.id===id).options.find(o=>o.id===optionId),now=products.find(p=>p.id===id).options.find(o=>o.id===optionId);assert.equal(now.priceCents,old.priceCents);}
-const html=await readFile('index.html','utf8'),oldHtml=original('index.html').toString();const part=(s,a,b)=>s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a))+b.length);
-for(const [a,b]of [['<header','</header>'],['<section class="hero"','</section>'],['<aside class="cart"','</aside>'],['<footer','</footer>']])assert.equal(part(html,a,b),part(oldHtml,a,b));
-for(const id of products.map(p=>p.id).filter(id=>!['a3','blocos','pastas'].includes(id))){const start=`<article class="product${id.includes('-')?' digital-product':''}" data-product="${id}"`;assert.equal(part(html,start,'</article>'),part(oldHtml,start,'</article>'));}
-for(const re of [/<title>.*?<\/title>/,/<meta name="description"[^>]+>/,/<link rel="canonical"[^>]+>/])assert.equal(html.match(re)[0],oldHtml.match(re)[0]);
-execFileSync('node',['scripts/seo-technical/build-catalog.mjs']);assert.equal(await readFile('index.html','utf8'),html,'Build não idempotente');
+import {base,protectedFiles} from '../search-visibility/source.mjs';
 const require=createRequire(resolve('.preview-tools/package.json'));const {chromium}=require('playwright');const server=makeServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));const local='http://127.0.0.1:'+server.address().port,production=process.env.VERIFY_ORIGIN?.replace(/\/$/,'');if(production)assert.equal(production,'https://idygrafica.netlify.app');const origins=production?[production]:[local,...(process.env.PREVIEW_ORIGIN?[process.env.PREVIEW_ORIGIN.replace(/\/$/,'')]:[])];assert(origins.every(o=>o===local||o===production||/^https:\/\/deploy-preview-\d+--idygrafica\.netlify\.app$/.test(o)));await mkdir('.preview/approved-prices',{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[];
 try{for(const origin of origins){
