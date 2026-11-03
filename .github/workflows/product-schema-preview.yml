@@ -1,0 +1,78 @@
+name: Produtos sob consulta — schema e prévia sem publicação
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - index.html
+      - blocos-personalizados.html
+      - pastas-digitais-simples.html
+      - scripts/seo-technical/build-catalog.mjs
+      - scripts/digital-products/build-pages.mjs
+      - scripts/product-schema/**
+      - DADOS_ESTRUTURADOS_PRODUTOS_RELATORIO.md
+      - .github/workflows/product-schema-preview.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: github.head_ref == 'codex/corrige-schema-produtos'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir o problema na produção atual sem alterá-la
+        run: python scripts/product-schema/audit-public.py
+      - name: Executar os 100 testes comerciais preservados e o build
+        run: |
+          node scripts/loja/cart.test.mjs
+          node scripts/loja/canetas.test.mjs
+          node scripts/digital-products/pricing.test.mjs
+          node scripts/approved-prices/pricing.test.mjs
+          node scripts/pastas-prices/pricing.test.mjs
+          node scripts/seo-technical/build-catalog.mjs
+      - name: Preparar navegador isolado
+        run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Conferir schema, preservação, loja e prévia no computador e celular
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
+        run: node scripts/product-schema/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: produtos-schema-previa-e-testes
+          include-hidden-files: true
+          path: .preview/product-schema/
+  google:
+    # Dependência externa: registra a tentativa; pedido de login não é falha da loja.
+    continue-on-error: true
+    if: github.head_ref == 'codex/corrige-schema-produtos'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      CHROMIUM_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix .preview-tools --ignore-scripts --no-package-lock --no-audit --no-fund playwright@1.55.0
+      - name: Testar o código corrigido na ferramenta oficial de resultados avançados
+        run: node scripts/product-schema/google-rich-results.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: google-resultados-avancados
+          include-hidden-files: true
+          path: .preview/product-schema/google/
