@@ -1,0 +1,53 @@
+{
+  "base": "a4ae9e6a97726ffaf839c15a8048efbfab119de0",
+  "pagesAudited": 15,
+  "affected": [
+    {
+      "url": "https://idygrafica.netlify.app/",
+      "products": [
+        {
+          "path": "$.@graph[1].itemListElement[8].item",
+          "name": "Blocos personalizados",
+          "id": "https://idygrafica.netlify.app/#produto-blocos-personalizados",
+          "hasOffers": false,
+          "hasReview": false,
+          "hasAggregateRating": false
+        },
+        {
+          "path": "$.@graph[1].itemListElement[9].item",
+          "name": "Pastas digitais simples",
+          "id": "https://idygrafica.netlify.app/#produto-pastas-digitais-simples",
+          "hasOffers": false,
+          "hasReview": false,
+          "hasAggregateRating": false
+        }
+      ]
+    },
+    {
+      "url": "https://idygrafica.netlify.app/blocos-personalizados",
+      "products": [
+        {
+          "path": "$.@graph[1]",
+          "name": "Blocos personalizados",
+          "id": "https://idygrafica.netlify.app/#produto-blocos-personalizados",
+          "hasOffers": false,
+          "hasReview": false,
+          "hasAggregateRating": false
+        }
+      ]
+    },
+    {
+      "url": "https://idygrafica.netlify.app/pastas-digitais-simples",
+      "products": [
+        {
+          "path": "$.@graph[1]",
+          "name": "Pastas digitais simples",
+          "id": "https://idygrafica.netlify.app/#produto-pastas-digitais-simples",
+          "hasOffers": false,
+          "hasReview": false,
+          "hasAggregateRating": false
+        }
+      ]
+    }
+  ]
+}

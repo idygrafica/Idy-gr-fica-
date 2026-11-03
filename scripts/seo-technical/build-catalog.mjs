@@ -10,12 +10,12 @@ const html=await readFile('index.html','utf8');
 const marker=/<!-- idy:catalog:start -->[\s\S]*?<!-- idy:catalog:end -->/;
 if(!marker.test(html))throw new Error('Marcadores do catálogo ausentes. Não sobrescrever o HTML.');
 const cards=products.map(renderProductCard).join('');
-// A loja é uma coleção. Sem ofertas ou avaliações fictícias; páginas próprias usam o mesmo produto.
+// A vitrine é uma coleção. Itens sem oferta não devem gerar Product incompleto.
 const schema={
  '@context':'https://schema.org',
  '@graph':[
   {'@type':'CollectionPage','@id':origin+'#webpage',url:origin,name:'Loja IDY Gráfica em Porto Alegre',inLanguage:'pt-BR',isPartOf:{'@id':origin+'#website'},mainEntity:{'@id':origin+'#catalogo'}},
-  {'@type':'ItemList','@id':origin+'#catalogo',name:'Produtos da IDY Gráfica',numberOfItems:products.length,itemListElement:products.map((p,index)=>({'@type':'ListItem',position:index+1,item:{'@type':digitalProducts[p.id]?'Product':'Thing','@id':origin+'#produto-'+p.id,name:digitalProducts[p.id]?.name||p.name,description:digitalProducts[p.id]?digitalProducts[p.id].description+' · Personalização em Porto Alegre; produção sob consulta.':p.description,url:digitalProducts[p.id]?origin.slice(0,-1)+digitalProducts[p.id].url:origin+'#produto-'+p.id}}))}
+  {'@type':'ItemList','@id':origin+'#catalogo',name:'Produtos da IDY Gráfica',numberOfItems:products.length,itemListElement:products.map((p,index)=>({'@type':'ListItem',position:index+1,item:{'@type':'Thing','@id':origin+'#produto-'+p.id,name:digitalProducts[p.id]?.name||p.name,description:digitalProducts[p.id]?digitalProducts[p.id].description+' · Personalização em Porto Alegre; produção sob consulta.':p.description,url:digitalProducts[p.id]?origin.slice(0,-1)+digitalProducts[p.id].url:origin+'#produto-'+p.id}}))}
  ]
 };
 const json=JSON.stringify(schema).replace(/</g,'\\u003c');
