@@ -16,7 +16,7 @@ await Promise.all([server,previous].map(s=>new Promise(r=>s.listen(0,'127.0.0.1'
 const local='http://127.0.0.1:'+server.address().port,oldOrigin='http://127.0.0.1:'+previous.address().port;
 const preview=process.env.PREVIEW_ORIGIN?.replace(/\/$/,'');
 const published=process.env.PUBLICATION==='true';
-const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[];
+const browser=await chromium.launch({...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{}),args:['--no-sandbox','--disable-dev-shm-usage']});const checks=[];
 const waitImages=async p=>{await p.evaluate(()=>document.fonts.ready);await p.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});};
 const pages=JSON.parse(await readFile('scripts/seo-technical/pages.json','utf8'));
 try{
