@@ -15,11 +15,10 @@ try{
    await page.locator('.CodeMirror').first().waitFor({timeout:20000});const source=await readFile(file,'utf8');
    await page.locator('.CodeMirror').first().evaluate((el,source)=>{if(!el.CodeMirror)throw Error('Editor oficial indisponível');el.CodeMirror.setValue(source);},source);
    await page.getByRole('button',{name:/^test code$/i}).click();
-   await page.waitForURL(/\/test\/rich-results\/result/,{timeout:90000});
-   await page.waitForFunction(()=>/valid items?|No items detected|Test failed|items? detected|Some items are invalid/i.test(document.body.innerText),{timeout:60000});
+   await page.waitForFunction(()=>/valid items?|No items detected|Test failed|items? detected|Some items are invalid|Log in and try again/i.test(document.body.innerText),undefined,{timeout:90000});
    result.url=page.url();result.text=await page.locator('body').innerText();result.status='completed';
    result.missingProductRequirement=/Either ['“"]?offers|Specify ['“"]?offers|Especifique.*offers/i.test(result.text);
-   if(result.missingProductRequirement)result.status='product-error';else if(/Test failed|\b[1-9]\d* invalid items?/i.test(result.text))result.status='other-schema-issues';
+   if(/Log in and try again/i.test(result.text))result.status='authentication-required';else if(result.missingProductRequirement)result.status='product-error';else if(/Test failed|\b[1-9]\d* invalid items?/i.test(result.text))result.status='other-schema-issues';
   }catch(error){result.status='not-validated';result.error=error.message;result.url=page.url();result.text=await page.locator('body').innerText().catch(()=> '');await writeFile('.preview/product-schema/google/'+file.replace('.html','-debug.html'),await page.content()).catch(()=>{});}
   await page.screenshot({path:'.preview/product-schema/google/'+file.replace('.html','.png'),fullPage:true}).catch(()=>{});results.push(result);await page.close();
  }

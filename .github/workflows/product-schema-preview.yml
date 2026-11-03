@@ -52,6 +52,8 @@ jobs:
           include-hidden-files: true
           path: .preview/product-schema/
   google:
+    # Dependência externa: registra a tentativa; pedido de login não é falha da loja.
+    continue-on-error: true
     if: github.head_ref == 'codex/corrige-schema-produtos'
     runs-on: ubuntu-24.04
     timeout-minutes: 8
