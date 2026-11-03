@@ -1,0 +1,524 @@
+{
+  "dateUTC": "2026-11-03T01:11:01.956883+00:00",
+  "origin": "https://idygrafica.netlify.app",
+  "sitemapUrls": [
+    "https://idygrafica.netlify.app/",
+    "https://idygrafica.netlify.app/servicos",
+    "https://idygrafica.netlify.app/impressos",
+    "https://idygrafica.netlify.app/comunicacao-visual",
+    "https://idygrafica.netlify.app/cortes-especiais",
+    "https://idygrafica.netlify.app/livros-digitais",
+    "https://idygrafica.netlify.app/criacao-sites",
+    "https://idygrafica.netlify.app/portfolio",
+    "https://idygrafica.netlify.app/sobre",
+    "https://idygrafica.netlify.app/contato",
+    "https://idygrafica.netlify.app/impressoes-rapidas",
+    "https://idygrafica.netlify.app/impressoes-do-dia-a-dia",
+    "https://idygrafica.netlify.app/dtf-personalizacao",
+    "https://idygrafica.netlify.app/blocos-personalizados",
+    "https://idygrafica.netlify.app/pastas-digitais-simples"
+  ],
+  "robotsText": "User-agent: *\nAllow: /\n\nSitemap: https://idygrafica.netlify.app/sitemap.xml\n",
+  "internalLinks": 341,
+  "brokenInternalLinks": [],
+  "unknownPageStatus": 404,
+  "limitations": [
+    "Os user-agents foram enviados do ambiente de auditoria, sem IP autenticado dos robôs.",
+    "HTTP e robots não comprovam indexação, visitas reais dos robôs ou posicionamento.",
+    "Search Console, Perfil da Empresa e logs/WAF do Netlify não estão conectados."
+  ],
+  "probes": [
+    {
+      "url": "https://idygrafica.netlify.app/",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "3465209aa1f141d20329ab70b1f94952f69da7968458d5aa1461926cc3fafd3a"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "3465209aa1f141d20329ab70b1f94952f69da7968458d5aa1461926cc3fafd3a"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "3465209aa1f141d20329ab70b1f94952f69da7968458d5aa1461926cc3fafd3a"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/servicos",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "c9a7c0076dde23e2c6d6c6cad58bcd99c92ed1f572f5365104b44c332d45ff12"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/servicos",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "c9a7c0076dde23e2c6d6c6cad58bcd99c92ed1f572f5365104b44c332d45ff12"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/servicos",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "c9a7c0076dde23e2c6d6c6cad58bcd99c92ed1f572f5365104b44c332d45ff12"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressos",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "e68ec62a96ded48ebf6b4b4ed3dd416c1b78b3138d9965f1c35f50d0adeae820"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressos",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "e68ec62a96ded48ebf6b4b4ed3dd416c1b78b3138d9965f1c35f50d0adeae820"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressos",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "e68ec62a96ded48ebf6b4b4ed3dd416c1b78b3138d9965f1c35f50d0adeae820"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/comunicacao-visual",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "54e24679c9e43bac8363326d45bb9f8e83ae11739e3fbd71fc8dc37255c3bce3"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/comunicacao-visual",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "54e24679c9e43bac8363326d45bb9f8e83ae11739e3fbd71fc8dc37255c3bce3"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/comunicacao-visual",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "54e24679c9e43bac8363326d45bb9f8e83ae11739e3fbd71fc8dc37255c3bce3"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/cortes-especiais",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "66189d6c58a9609d46804ccef8ca8298b04ceb2a6eedb74d8fb4a4054d4e10be"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/cortes-especiais",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "66189d6c58a9609d46804ccef8ca8298b04ceb2a6eedb74d8fb4a4054d4e10be"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/cortes-especiais",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "66189d6c58a9609d46804ccef8ca8298b04ceb2a6eedb74d8fb4a4054d4e10be"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/livros-digitais",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "46cf80b6884cab6bd0f53f508b8a87e92a24a8e3de9849171b5f4a7621b44f7e"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/livros-digitais",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "46cf80b6884cab6bd0f53f508b8a87e92a24a8e3de9849171b5f4a7621b44f7e"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/livros-digitais",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "46cf80b6884cab6bd0f53f508b8a87e92a24a8e3de9849171b5f4a7621b44f7e"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/criacao-sites",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "da68b0bd68dc390252f233045acc6d210a88a7c84fd5e27d36c5a89c50c3845e"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/criacao-sites",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "da68b0bd68dc390252f233045acc6d210a88a7c84fd5e27d36c5a89c50c3845e"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/criacao-sites",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "da68b0bd68dc390252f233045acc6d210a88a7c84fd5e27d36c5a89c50c3845e"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/portfolio",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "08d81e20121425918a768f1b11cecd19bfad7a40523a8c6f7182301f939ce470"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/portfolio",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "08d81e20121425918a768f1b11cecd19bfad7a40523a8c6f7182301f939ce470"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/portfolio",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "08d81e20121425918a768f1b11cecd19bfad7a40523a8c6f7182301f939ce470"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/sobre",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "51740de5e3913115a9710df8c5d9635140fe1d6a6755ef20f9a5889d18fcf8e4"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/sobre",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "51740de5e3913115a9710df8c5d9635140fe1d6a6755ef20f9a5889d18fcf8e4"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/sobre",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "51740de5e3913115a9710df8c5d9635140fe1d6a6755ef20f9a5889d18fcf8e4"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/contato",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "25d1cbc727b22080c6c714004642165e587fd8942368d31c2dc1a2bb2fb0d007"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/contato",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "25d1cbc727b22080c6c714004642165e587fd8942368d31c2dc1a2bb2fb0d007"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/contato",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "25d1cbc727b22080c6c714004642165e587fd8942368d31c2dc1a2bb2fb0d007"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressoes-rapidas",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "e291e9b00c4cdf0742b4c54838ffe1a81efa1ee5bf7f7148d47c689f443c7ca6"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressoes-rapidas",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "e291e9b00c4cdf0742b4c54838ffe1a81efa1ee5bf7f7148d47c689f443c7ca6"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressoes-rapidas",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "e291e9b00c4cdf0742b4c54838ffe1a81efa1ee5bf7f7148d47c689f443c7ca6"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressoes-do-dia-a-dia",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "6e125c7d52a8c143681a426e4c8227f9c052066fa4bd5265b096d4a729c5ae2b"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressoes-do-dia-a-dia",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "6e125c7d52a8c143681a426e4c8227f9c052066fa4bd5265b096d4a729c5ae2b"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/impressoes-do-dia-a-dia",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "6e125c7d52a8c143681a426e4c8227f9c052066fa4bd5265b096d4a729c5ae2b"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/dtf-personalizacao",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "3d051c5e2b90223b25a0f864cf29eb4f2bd88709906e03431aeb309b2c78a75c"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/dtf-personalizacao",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "3d051c5e2b90223b25a0f864cf29eb4f2bd88709906e03431aeb309b2c78a75c"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/dtf-personalizacao",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "3d051c5e2b90223b25a0f864cf29eb4f2bd88709906e03431aeb309b2c78a75c"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/blocos-personalizados",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "349db1bb19a530b81ed6a24d7982959a02ae88ff53c0721300adfd6f543b8460"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/blocos-personalizados",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "349db1bb19a530b81ed6a24d7982959a02ae88ff53c0721300adfd6f543b8460"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/blocos-personalizados",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "349db1bb19a530b81ed6a24d7982959a02ae88ff53c0721300adfd6f543b8460"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/pastas-digitais-simples",
+      "agent": "normal",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "bca3bfbd80d613544a836480b2474a9d2c15deac8db0c3aeb6b947ecd88674f0"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/pastas-digitais-simples",
+      "agent": "Googlebot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "bca3bfbd80d613544a836480b2474a9d2c15deac8db0c3aeb6b947ecd88674f0"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/pastas-digitais-simples",
+      "agent": "OAI-SearchBot",
+      "status": 200,
+      "robotsAllowed": true,
+      "xRobotsTag": null,
+      "metaRobots": null,
+      "sourceSha256": "bca3bfbd80d613544a836480b2474a9d2c15deac8db0c3aeb6b947ecd88674f0"
+    }
+  ],
+  "resources": [
+    {
+      "url": "https://idygrafica.netlify.app/assets/app.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/comunicacao-visual.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/cortes-especiais.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/criacao-sites.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/criacao-sites.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/impressoes-do-dia-a-dia.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/impressoes-rapidas-v2.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/impressos.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/livros-digitais.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/loja/app.js",
+      "status": 200,
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/loja/digital-pages.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/loja/styles.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/loja/vitrine.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/mobile-phone-reference.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/navegacao.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/servicos.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "url": "https://idygrafica.netlify.app/assets/style.css",
+      "status": 200,
+      "contentType": "text/css; charset=UTF-8"
+    }
+  ]
+}

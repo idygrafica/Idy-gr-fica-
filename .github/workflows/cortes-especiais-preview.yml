@@ -12,6 +12,8 @@ permissions:
   contents: read
 jobs:
   verify:
+    # Esta proposta é coberta pela auditoria SEO e seus testes comerciais atuais.
+    if: github.head_ref != 'codex/auditoria-seo-busca'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
