@@ -56,7 +56,7 @@ try{for(const host of [local,...(preview?[preview]:[])]){
   await page.keyboard.press('Tab');assert.equal(await page.locator(':focus').getAttribute('href'),'#conteudo');
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.equal(await page.locator('main details').count(),6);
   const faq=page.locator('main details').first();await faq.locator('summary').click();assert(await faq.getAttribute('open')!==null);await faq.locator('summary').click();
-  if(width<=980){const menu=page.getByRole('button',{name:'Abrir menu',exact:true});await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');}
+  if(width<=980){const menu=page.locator('.mobile-menu-toggle');assert.equal(await menu.getAttribute('aria-label'),'Abrir menu');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');}
   const cta=page.locator('.ap-quote-button').first(),u=new URL(await cta.getAttribute('href'));assert.equal(u.pathname,'/5551981687562');assert.equal(u.searchParams.get('text'),message);
   const [popup]=await Promise.all([context.waitForEvent('page'),cta.click()]);await popup.waitForURL('https://wa.me/**');await popup.close();
   for(const a of await page.locator('main a[href^="#"]').all()){const id=(await a.getAttribute('href')).slice(1);assert.equal(await page.locator('[id="'+id+'"]').count(),1);}
