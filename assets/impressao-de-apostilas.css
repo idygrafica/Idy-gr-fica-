@@ -1,0 +1,35 @@
+/* Complementos exclusivos da página; a identidade editorial compartilhada é preservada. */
+.apostilas-page .ed-hero-grid{grid-template-columns:1.12fr 1fr;gap:48px}
+.apostilas-page h1{font-size:clamp(38px,4.3vw,58px);max-width:620px}
+.apostilas-page h1 span{display:block}
+.apostilas-page .ed-lead{font-size:22px;max-width:550px}
+.apostilas-page .ap-machine .ed-hero-image{background:#fff;padding:22px}
+.apostilas-page .ap-machine .ed-hero-image>img{height:405px;object-fit:contain;width:100%}
+.apostilas-page .ap-machine figcaption small{font-size:12px}
+.apostilas-page .ap-quote-button{background:#08743f;border-color:#08743f;font-size:13px}
+.apostilas-page .ap-quote-button:hover{background:#065e34;border-color:#065e34}
+.apostilas-page .ap-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.apostilas-page .ap-options article{border:1px solid #dce5ed;border-top:3px solid var(--ed-blue);padding:30px}
+.apostilas-page .ap-card-label{font-size:11px;font-weight:800;letter-spacing:.12em;color:#08743f;margin:0}
+.apostilas-page .ap-options h3{font-size:26px;margin:12px 0}
+.apostilas-page .ap-options p:not(.ap-card-label){font-size:16px;color:var(--ed-gray);margin:12px 0 0}
+.apostilas-page .ap-options .ap-dimensions{font-size:18px!important;color:var(--ed-blue)!important;font-weight:750}
+.apostilas-page .ap-file{display:grid;grid-template-columns:1fr 1fr;gap:76px;align-items:start}
+.apostilas-page .ap-file>div>p:not(.ed-label){font-size:17px;color:var(--ed-gray)}
+.apostilas-page .ap-file .ed-text-link{overflow-wrap:anywhere}
+.apostilas-page .ap-file-steps{list-style:none;padding:0;margin:0}
+.apostilas-page .ap-file-steps li{display:flex;gap:22px;border-bottom:1px solid #dce5ed;padding:22px 0}
+.apostilas-page .ap-file-steps li:first-child{padding-top:0}
+.apostilas-page .ap-file-steps li>span{color:#08743f;font-size:14px;font-weight:800;padding-top:4px}
+.apostilas-page .ap-file-steps h3{font-size:21px;margin:0 0 8px}
+.apostilas-page .ap-file-steps p{font-size:16px;color:var(--ed-gray);margin:0}
+.apostilas-page .ap-quote-section{background:#f5f9fc;border-top:1px solid #dce5ed;border-bottom:1px solid #dce5ed;scroll-margin-top:120px}
+.apostilas-page .ap-quote-note{font-size:14px!important}
+.apostilas-page .ed-quote .ap-quote-button{font-size:13px}
+.apostilas-page .ed-faq summary{min-height:60px}
+.apostilas-page .whats-note{display:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(max-width:620px){.apostilas-page .whats-widget .whats.whats-pro.whats-new{width:54px!important;height:54px!important;padding:9px!important;gap:0!important;justify-content:center!important}.apostilas-page .whats-widget .whats-copy,.apostilas-page .whats-widget .whats-arrow{display:none!important}}
+@media(max-width:1000px){.apostilas-page .ed-hero-grid{gap:30px}.apostilas-page .ap-file{gap:36px}.apostilas-page .ap-machine .ed-hero-image{padding:12px}.apostilas-page .ap-machine .ed-hero-image>img{height:350px}.apostilas-page .ed-material-nav{grid-template-columns:1fr;gap:12px}.apostilas-page .ed-material-nav>span{margin-bottom:4px}}
+@media(max-width:760px){.apostilas-page .ed-hero-grid,.apostilas-page .ap-file{grid-template-columns:1fr}.apostilas-page .ap-options{gap:16px}.apostilas-page .ap-options article{padding:24px}.apostilas-page .ap-machine .ed-hero-image>img{height:360px}.apostilas-page h1{font-size:clamp(37px,6.8vw,50px)}.apostilas-page .ed-lead{font-size:21px}}
+@media(max-width:520px){.apostilas-page .ap-options{grid-template-columns:1fr}.apostilas-page .ap-options article{padding:22px}.apostilas-page .ap-machine .ed-hero-image>img{height:290px}.apostilas-page .ap-quote-button{width:100%;font-size:12px!important;text-align:left;gap:12px}.apostilas-page .ap-file{gap:28px}.apostilas-page h1{font-size:clamp(34px,9vw,43px)}.apostilas-page .ed-lead{font-size:20px}.apostilas-page .ed-intro>p:not(.ed-label):not(.ed-lead){font-size:16px}}
