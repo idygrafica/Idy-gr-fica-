@@ -27,6 +27,9 @@
 .apostilas-page .ap-quote-note{font-size:14px!important}
 .apostilas-page .ed-quote .ap-quote-button{font-size:13px}
 .apostilas-page .ed-faq summary{min-height:60px}
+.apostilas-page .whats-note{display:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(max-width:620px){.apostilas-page .whats-widget .whats.whats-pro.whats-new{width:54px!important;height:54px!important;padding:9px!important;gap:0!important;justify-content:center!important}.apostilas-page .whats-widget .whats-copy,.apostilas-page .whats-widget .whats-arrow{display:none!important}}
 @media(max-width:1000px){.apostilas-page .ed-hero-grid{gap:30px}.apostilas-page .ap-file{gap:36px}.apostilas-page .ap-machine .ed-hero-image{padding:12px}.apostilas-page .ap-machine .ed-hero-image>img{height:350px}.apostilas-page .ed-material-nav{grid-template-columns:1fr;gap:12px}.apostilas-page .ed-material-nav>span{margin-bottom:4px}}
 @media(max-width:760px){.apostilas-page .ed-hero-grid,.apostilas-page .ap-file{grid-template-columns:1fr}.apostilas-page .ap-options{gap:16px}.apostilas-page .ap-options article{padding:24px}.apostilas-page .ap-machine .ed-hero-image>img{height:360px}.apostilas-page h1{font-size:clamp(37px,6.8vw,50px)}.apostilas-page .ed-lead{font-size:21px}}
 @media(max-width:520px){.apostilas-page .ap-options{grid-template-columns:1fr}.apostilas-page .ap-options article{padding:22px}.apostilas-page .ap-machine .ed-hero-image>img{height:290px}.apostilas-page .ap-quote-button{width:100%;font-size:12px!important;text-align:left;gap:12px}.apostilas-page .ap-file{gap:28px}.apostilas-page h1{font-size:clamp(34px,9vw,43px)}.apostilas-page .ed-lead{font-size:20px}.apostilas-page .ed-intro>p:not(.ed-label):not(.ed-lead){font-size:16px}}

@@ -12,7 +12,7 @@ O título é “Impressão de Apostilas em Porto Alegre | IDY Gráfica”, com H
 
 ## Identidade e imagens
 
-A página reutiliza a navegação, o rodapé e o padrão branco, azul e verde de Livros Digitais. O CSS adicional atua apenas em `.apostilas-page`; as folhas compartilhadas não foram alteradas. A fotografia real da Xerox Color 560 já existente é reutilizada sem cortes ou deformação. Não foi criada ou utilizada imagem artificial de apostilas como se fosse trabalho da IDY. Não foram adicionados servidores de imagens externos, bibliotecas de interface ou um novo sistema de atendimento.
+A página reutiliza a navegação, o rodapé e o padrão branco, azul e verde de Livros Digitais. O CSS adicional é carregado apenas na nova página; as folhas compartilhadas não foram alteradas. O atalho flutuante do WhatsApp fica compacto no celular para reduzir a cobertura do conteúdo, mantendo o mesmo link e nome acessível. A fotografia real da Xerox Color 560 já existente é reutilizada sem cortes ou deformação. Não foi criada ou utilizada imagem artificial de apostilas como se fosse trabalho da IDY. Não foram adicionados servidores de imagens externos, bibliotecas de interface ou um novo sistema de atendimento.
 
 Não foi encontrada no acervo analisado uma fotografia de apostilas produzidas pela IDY com origem confirmada. A página funciona com a fotografia do equipamento disponível; uma foto autêntica de apostilas poderá ser considerada em outra etapa, se o responsável desejar.
 
