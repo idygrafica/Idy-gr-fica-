@@ -100,3 +100,10 @@
   to = "/pastas-digitais-simples"
   status = 301
   force = true
+
+# Alias do arquivo estático da página de apostilas aponta à URL canônica.
+[[redirects]]
+  from = "/impressao-de-apostilas.html"
+  to = "/impressao-de-apostilas"
+  status = 301
+  force = true
