@@ -51,11 +51,11 @@ jobs:
       - name: Verificar a publicação autorizada no site oficial
         if: github.event_name == 'push'
         env:
-          VERIFY_ORIGIN: https://idygrafica.netlify.app
+          VERIFY_ORIGIN: https://idygrafica.com.br
         run: node scripts/impressoes-dtf/check.mjs
       - name: Conferir dez produtos, categorias e carrinho atuais
         env:
-          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.netlify.app' || '' }}
+          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.com.br' || '' }}
         run: node scripts/digital-products/browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()

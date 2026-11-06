@@ -1,6 +1,6 @@
 // Auditoria somente GET. Não publica, envia pedidos ou usa credenciais.
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
-const origin='https://idygrafica.netlify.app';
+const origin='https://idygrafica.com.br';
 const sitemap=await readFile('sitemap.xml','utf8');
 const pages=[...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>new URL(m[1]).pathname);
 const urls=['/robots.txt','/sitemap.xml',...pages,'/index','/index.html','/index/','/?utm_source=seo-audit','/nao-existe-auditoria-seo-20261025',...pages.filter(p=>p!=='/').flatMap(p=>[p+'.html',p+'/'])];

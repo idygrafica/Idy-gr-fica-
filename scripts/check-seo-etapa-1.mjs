@@ -6,7 +6,7 @@ import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
 const base='9cbb3068bcdfe31f19426658496579898694abdd',root=process.cwd(),width=Number(process.env.SEO_WIDTH||390);
 const names=['index','servicos','impressos','impressoes-rapidas','comunicacao-visual','cortes-especiais','criacao-sites','livros-digitais','portfolio','contato','sobre'];
-const canonical=n=>'https://idygrafica.netlify.app'+(n==='index'?'/':'/'+n);
+const canonical=n=>'https://idygrafica.com.br'+(n==='index'?'/':'/'+n);
 const route=n=>n==='index'?'/':'/'+n;
 const require=createRequire(path.join(root,'.preview-tools/package.json')),{chromium}=require('playwright');
 const out='.preview/seo-etapa-1/'+width;fs.mkdirSync(out,{recursive:true});
@@ -20,7 +20,7 @@ assert.equal(app.split('// No mobile')[1],original('assets/app.js').toString().s
 const sitemap=fs.readFileSync('sitemap.xml','utf8'),locs=[...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);
 assert.deepEqual([...locs].sort(),names.map(canonical).sort());assert.equal(new Set(locs).size,11);
 assert(!/Disallow:\s*\/\s*$/im.test(fs.readFileSync('robots.txt','utf8')));
-assert(fs.readFileSync('robots.txt','utf8').includes('Sitemap: https://idygrafica.netlify.app/sitemap.xml'));
+assert(fs.readFileSync('robots.txt','utf8').includes('Sitemap: https://idygrafica.com.br/sitemap.xml'));
 const printer=fs.readFileSync('impressoes-rapidas.html','utf8').match(/class="quick-printer" src="([^"]+)"/)[1].replaceAll('&amp;','&');
 let photo;for(let i=0;i<3;i++){try{const r=await fetch(printer,{signal:AbortSignal.timeout(20000)});assert(r.ok);photo=Buffer.from(await r.arrayBuffer());break;}catch(e){if(i===2)throw e;}}
 const types={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.mp4':'video/mp4'};

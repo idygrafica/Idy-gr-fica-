@@ -17,7 +17,7 @@ try{
  for(const p of pages){
   const r=await get(p.path);assert.equal(r.status,200,p.path);const text=await r.text();
   assert(text.includes('<title>'+p.title+'</title>'),'Título incorreto: '+p.path);
-  assert(text.includes('href="https://idygrafica.netlify.app'+p.path+'"'),'Canonical incorreto: '+p.path);
+  assert(text.includes('href="https://idygrafica.com.br'+p.path+'"'),'Canonical incorreto: '+p.path);
   report.pages.push({path:p.path,status:r.status,robotsHeader:r.headers.get('x-robots-tag'),metadataCorrect:true});
   for(const alias of [p.path==='/'?'/index.html':p.path+'.html',...(p.path==='/'?[]:[p.path+'/'])]){
    const first=await get(alias,'manual');assert.equal(first.status,301,'Alias não consolidado: '+alias);

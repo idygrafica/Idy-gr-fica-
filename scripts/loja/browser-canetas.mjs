@@ -8,7 +8,7 @@ import {server} from './server.mjs';
 const require=createRequire(resolve('.preview-tools/package.json'));
 const {chromium}=require('playwright');
 const published=process.env.PUBLICATION==='true';
-const origin=published?'https://idygrafica.netlify.app/':'http://127.0.0.1:4173/';
+const origin=published?'https://idygrafica.com.br/':'http://127.0.0.1:4173/';
 await mkdir('.preview/canetas',{recursive:true});
 const baseline=JSON.parse(await readFile('scripts/loja/canetas-baseline.json','utf8'));
 const hash=b=>createHash('sha1').update(Buffer.from(`blob ${b.length}\0`)).update(b).digest('hex');

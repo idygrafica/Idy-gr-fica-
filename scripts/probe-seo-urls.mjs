@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-const origin='https://idygrafica.netlify.app';
+const origin='https://idygrafica.com.br';
 const names=['index','servicos','impressos','impressoes-rapidas','comunicacao-visual','cortes-especiais','criacao-sites','livros-digitais','portfolio','contato','sobre'];
 const queue=names.flatMap(name=>(name==='index'?['/','/index.html','/index/']:['/'+name,'/'+name+'.html','/'+name+'/']).map(path=>({name,path})));
 const results=[];let next=0;

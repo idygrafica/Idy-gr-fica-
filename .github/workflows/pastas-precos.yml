@@ -53,11 +53,11 @@ jobs:
       - name: Conferir pastas em produção
         if: github.event_name == 'push'
         env:
-          VERIFY_ORIGIN: https://idygrafica.netlify.app
+          VERIFY_ORIGIN: https://idygrafica.com.br
         run: node scripts/pastas-prices/browser.mjs
       - name: Conferir demais preços e produtos digitais
         env:
-          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.netlify.app' || '' }}
+          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.com.br' || '' }}
         run: |
           node scripts/approved-prices/browser.mjs
           node scripts/digital-products/browser.mjs

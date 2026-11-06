@@ -5,7 +5,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 const require=createRequire(resolve('.preview-tools/package.json'));
 const {chromium}=require('playwright');
 const origin=process.env.LOJA_PUBLIC_URL||'https://deploy-preview-9--idygrafica.netlify.app/';
-assert(['deploy-preview-9--idygrafica.netlify.app','idygrafica.netlify.app'].includes(new URL(origin).hostname));
+assert(['deploy-preview-9--idygrafica.netlify.app','idygrafica.netlify.app','idygrafica.com.br'].includes(new URL(origin).hostname));
 await mkdir('.preview/loja',{recursive:true});
 const browser=await chromium.launch();const report=[];
 try{

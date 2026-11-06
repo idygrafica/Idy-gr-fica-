@@ -6,7 +6,7 @@ import {resolve} from 'node:path';
 import {makeServer} from '../seo-technical/server.mjs';
 
 const base='f7f37913811abfc953260faa136eefbd24b4657d';
-const origin='https://idygrafica.netlify.app',path='/impressao-de-apostilas';
+const origin='https://idygrafica.com.br',path='/impressao-de-apostilas';
 const title='Impressão de Apostilas em Porto Alegre | IDY Gráfica';
 const message='Olá! Gostaria de solicitar um orçamento de impressão de apostilas na IDY Gráfica.';
 const oldChanges=['impressos.html','livros-digitais.html','sitemap.xml','netlify.toml'];
@@ -36,7 +36,7 @@ const schemas=[...source.matchAll(/<script type="application\/ld\+json">([\s\S]*
 const service=schemas.flatMap(s=>s['@graph']||[s]).find(n=>n['@type']==='Service');assert(service);assert.equal(service.url,origin+path);assert.equal(service.areaServed.name,'Porto Alegre');assert.equal(service.provider['@id'],origin+'/#business');
 const pageFiles=urls.map(u=>new URL(u).pathname).map(p=>p==='/'?'index.html':p.slice(1)+'.html');
 const hashes=pageFiles.map(fileHash);execFileSync('node',['scripts/seo-technical/build-catalog.mjs']);assert.deepEqual(pageFiles.map(fileHash),hashes,'Build altera páginas indevidamente');
-const robotPolicy=execFileSync('python3',['-c',"import urllib.robotparser,json;p=urllib.robotparser.RobotFileParser();p.parse(open('robots.txt').read().splitlines());print(json.dumps([p.can_fetch(a,'https://idygrafica.netlify.app/impressao-de-apostilas')for a in ['Googlebot','OAI-SearchBot']]))"],{encoding:'utf8'});assert.deepEqual(JSON.parse(robotPolicy),[true,true]);
+const robotPolicy=execFileSync('python3',['-c',"import urllib.robotparser,json;p=urllib.robotparser.RobotFileParser();p.parse(open('robots.txt').read().splitlines());print(json.dumps([p.can_fetch(a,'https://idygrafica.com.br/impressao-de-apostilas')for a in ['Googlebot','OAI-SearchBot']]))"],{encoding:'utf8'});assert.deepEqual(JSON.parse(robotPolicy),[true,true]);
 await mkdir('.preview/apostilas',{recursive:true});
 const require=createRequire(resolve('.preview-tools/package.json'));const {chromium}=require('playwright');
 const server=makeServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));

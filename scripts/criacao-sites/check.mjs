@@ -52,7 +52,7 @@ try{
    assert.equal((await page.goto(origin+'/criacao-sites',{waitUntil:'domcontentloaded'})).status(),200);await settle(page);
    assert.equal(await page.locator('h1').count(),1);assert.match(await page.locator('h1').innerText(),/Sua empresa merece um site[\s\S]*à altura/);
    assert.match(await page.title(),/Criação de Sites Profissionais em Porto Alegre/);
-   assert.equal(await page.locator('link[rel="canonical"]').count(),1);assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app/criacao-sites');
+   assert.equal(await page.locator('link[rel="canonical"]').count(),1);assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.com.br/criacao-sites');
    assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0);
    const headings=await page.locator('main h1,main h2,main h3').evaluateAll(es=>es.map(e=>Number(e.tagName.slice(1))));assert.equal(headings[0],1);for(let i=1;i<headings.length;i++)assert(headings[i]<=headings[i-1]+1,'Salto na hierarquia');
    const ids=await page.locator('[id]').evaluateAll(es=>es.map(e=>e.id));assert.equal(ids.length,new Set(ids).size);
@@ -91,7 +91,7 @@ try{
  }
  const fallback=await browser.newContext({viewport:{width:390,height:844},javaScriptEnabled:false});const page=await fallback.newPage();await page.goto(local+'/criacao-sites',{waitUntil:'load'});
  assert.equal(await page.locator('[data-demo-screen]>.demo-institucional').count(),3);assert(!await page.locator('[data-demo-tabs]').isVisible());assert(await page.locator('.wb-hero-actions .wb-button').isVisible());await page.locator('.wb-faq summary').first().click();assert(await page.locator('.wb-faq details').first().locator('p').isVisible());await fallback.close();
- const prod=await fetch('https://idygrafica.netlify.app/criacao-sites');assert.equal(prod.status,200);assert(!(await prod.text()).includes('id="wb-title"'),'Não publicar em produção antes da aprovação');
+ const prod=await fetch('https://idygrafica.com.br/criacao-sites');assert.equal(prod.status,200);assert(!(await prod.text()).includes('id="wb-title"'),'Não publicar em produção antes da aprovação');
  const report={verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,assetBytes,checks,noJavaScriptFallback:true,protectedSourcesUnchanged:true,importantPagesAccessible:12,canonicalAndIndexingPreserved:true,productionPublished:false,realWhatsAppMessagesSent:0};
  await writeFile('.preview/criacao-sites/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}

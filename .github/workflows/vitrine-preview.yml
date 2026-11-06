@@ -52,7 +52,7 @@ jobs:
       - name: Conferir a vitrine publicada no site oficial
         if: github.event_name == 'push'
         env:
-          VERIFY_ORIGIN: https://idygrafica.netlify.app
+          VERIFY_ORIGIN: https://idygrafica.com.br
         run: node scripts/digital-products/browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()

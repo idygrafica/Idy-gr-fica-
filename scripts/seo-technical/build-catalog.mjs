@@ -5,7 +5,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {products} from '../../assets/loja/catalog.js';
 import {renderProductCard} from '../../assets/loja/product-card.js';
 import {renderShowcaseFilters} from '../../assets/loja/showcase.js';
-const origin='https://idygrafica.netlify.app/';
+const origin='https://idygrafica.com.br/';
 const html=await readFile('index.html','utf8');
 const marker=/<!-- idy:catalog:start -->[\s\S]*?<!-- idy:catalog:end -->/;
 if(!marker.test(html))throw new Error('Marcadores do catálogo ausentes. Não sobrescrever o HTML.');

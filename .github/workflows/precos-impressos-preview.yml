@@ -52,11 +52,11 @@ jobs:
       - name: Conferir preços aprovados no site oficial
         if: github.event_name == 'push'
         env:
-          VERIFY_ORIGIN: https://idygrafica.netlify.app
+          VERIFY_ORIGIN: https://idygrafica.com.br
         run: node scripts/approved-prices/browser.mjs
       - name: Conferir os produtos digitais e páginas existentes
         env:
-          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.netlify.app' || '' }}
+          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.com.br' || '' }}
         run: node scripts/digital-products/browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
