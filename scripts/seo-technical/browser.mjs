@@ -31,7 +31,7 @@ try{
    assert.equal(await page.title(),item.title);
    assert.equal(await page.locator('meta[name="description"]').getAttribute('content'),item.description);
    assert.equal(await page.locator('link[rel="canonical"]').count(),1);
-   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app'+item.path);
+   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.com.br'+item.path);
    assert.equal(await page.locator('h1').count(),1);
    assert.equal(await page.locator('html').getAttribute('lang'),'pt-BR');
    assert.equal(await page.locator('meta[name="robots"],meta[name="googlebot"]').count(),0);

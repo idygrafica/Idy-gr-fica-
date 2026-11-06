@@ -46,7 +46,7 @@ const robotsText=await robotsResponse.text();
 assert.match(robotsText,/User-agent: \*/);
 assert.match(robotsText,/Allow: \//);
 assert(!/^Disallow:\s*\/\s*$/im.test(robotsText),'robots.txt bloqueia o site');
-assert(robotsText.includes('Sitemap: https://idygrafica.netlify.app/sitemap.xml'));
+assert(robotsText.includes('Sitemap: https://idygrafica.com.br/sitemap.xml'));
 const trailingSlash=await fetch(origin+'/impressoes-rapidas/',{redirect:'manual'});
 assert.equal(trailingSlash.status,301);assert.equal(trailingSlash.headers.get('location'),'/impressoes-rapidas');
 const browser=await chromium.launch({headless:true});
@@ -63,7 +63,7 @@ try{
   await page.goto(origin+'/impressoes-rapidas',{waitUntil:'networkidle'});
   await page.evaluate(()=>document.fonts.ready);
   assert.equal(await page.title(),'Impressões Rápidas A3 e A4 em Porto Alegre | IDY Gráfica');
-  assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://idygrafica.netlify.app/impressoes-rapidas');
+  assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://idygrafica.com.br/impressoes-rapidas');
   const description=await page.locator('meta[name=description]').getAttribute('content');
   for(const term of ['A3','A4','currículos','Gráfica rápida','Porto Alegre'])assert(description.includes(term),'Termo ausente no SEO: '+term);
   const robotsMeta=await page.locator('meta[name=robots],meta[name=googlebot]').evaluateAll(tags=>tags.map(tag=>tag.content).join(','));

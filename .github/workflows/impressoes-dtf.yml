@@ -21,8 +21,9 @@ permissions:
   contents: read
 jobs:
   verify:
-    # Esta proposta é coberta pela auditoria SEO e seus testes comerciais atuais.
-    if: github.head_ref != 'codex/auditoria-seo-busca'
+    # Migrações de SEO têm cobertura própria: 100 testes, 16 páginas e preservação estrita.
+    # A revisão visual histórica só se aplica às demais propostas.
+    if: github.head_ref != 'codex/auditoria-seo-busca' && github.head_ref != 'codex/seo-dominio-idygrafica-com-br'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -51,11 +52,11 @@ jobs:
       - name: Verificar a publicação autorizada no site oficial
         if: github.event_name == 'push'
         env:
-          VERIFY_ORIGIN: https://idygrafica.netlify.app
+          VERIFY_ORIGIN: https://idygrafica.com.br
         run: node scripts/impressoes-dtf/check.mjs
       - name: Conferir dez produtos, categorias e carrinho atuais
         env:
-          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.netlify.app' || '' }}
+          VERIFY_ORIGIN: ${{ github.event_name == 'push' && 'https://idygrafica.com.br' || '' }}
         run: node scripts/digital-products/browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()

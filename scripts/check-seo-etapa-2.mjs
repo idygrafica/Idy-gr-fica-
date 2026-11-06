@@ -14,7 +14,7 @@ const pages = ['index','servicos','impressos','impressoes-rapidas','comunicacao-
 const selectedPages = process.env.SEO_PAGES ? pages.filter(n => process.env.SEO_PAGES.split(',').includes(n)) : pages;
 const widths = (process.env.SEO_WIDTHS || '320,360,375,390,430,620,621,768,980,1024,1440').split(',').map(Number);
 const route = name => name === 'index' ? '/' : '/' + name;
-const canonical = name => 'https://idygrafica.netlify.app' + route(name);
+const canonical = name => 'https://idygrafica.com.br' + route(name);
 const output = path.resolve(root, process.env.SEO_OUTPUT || '.preview/fundos-mobile');
 fs.mkdirSync(output, {recursive:true});
 const originalCache = new Map();

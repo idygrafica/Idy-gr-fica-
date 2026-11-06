@@ -20,7 +20,7 @@ const browser=await chromium.launch({...(process.env.CHROMIUM_PATH?{executablePa
 const waitImages=async p=>{await p.evaluate(()=>document.fonts.ready);await p.locator('img').evaluateAll(async imgs=>{for(const img of imgs)img.loading='eager';await Promise.all(imgs.map(i=>i.decode().catch(()=>{})));});};
 const pages=JSON.parse(await readFile('scripts/seo-technical/pages.json','utf8'));
 try{
- for(const origin of published?['https://idygrafica.netlify.app']:[local,...(preview?[preview]:[])]){
+ for(const origin of published?['https://idygrafica.com.br']:[local,...(preview?[preview]:[])]){
   const isPreview=origin===preview,isProduction=published;
   const mode=isProduction?'producao':isPreview?'netlify':'local';
   if(isPreview||isProduction){
@@ -31,7 +31,7 @@ try{
    if(isPreview)assert.match(response.headers.get('x-robots-tag')||'',/noindex/i,'Proteção da prévia');
    if(isProduction)assert(!/noindex/i.test(response.headers.get('x-robots-tag')||''),'Produção bloqueada');
    const sitemapResponse=await fetch(origin+'/sitemap.xml');assert.equal(sitemapResponse.status,200);assert.equal((await sitemapResponse.text()).match(/<loc>/g).length,15);
-   const robotsResponse=await fetch(origin+'/robots.txt');assert.equal(robotsResponse.status,200);const robots=await robotsResponse.text();assert(!/^Disallow:\s*\/\s*$/mi.test(robots));assert(robots.includes('https://idygrafica.netlify.app/sitemap.xml'));
+   const robotsResponse=await fetch(origin+'/robots.txt');assert.equal(robotsResponse.status,200);const robots=await robotsResponse.text();assert(!/^Disallow:\s*\/\s*$/mi.test(robots));assert(robots.includes('https://idygrafica.com.br/sitemap.xml'));
    assert(!/<meta[^>]+(?:name="robots"|name="googlebot")[^>]+noindex/i.test(body));
    const alias=await fetch(origin+'/livros-digitais.html',{redirect:'manual'});assert.equal(alias.status,301);assert.equal(new URL(alias.headers.get('location'),origin).pathname,'/livros-digitais');
    const slash=await fetch(origin+'/livros-digitais/',{redirect:'manual'});assert.equal(slash.status,301);
@@ -47,7 +47,7 @@ try{
    const response=await page.goto(origin+'/livros-digitais',{waitUntil:'domcontentloaded'});assert.equal(response.status(),200);
    await waitImages(page);
    assert.equal(await page.locator('h1').count(),1);assert.match(await page.locator('h1').innerText(),/Impressão de livros/);
-   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app/livros-digitais');
+   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.com.br/livros-digitais');
    assert.match(await page.title(),/Impressão de Livros e Apostilas em Porto Alegre/);
    assert((await page.locator('meta[name="description"]').getAttribute('content')).includes('catálogos'));
    assert.equal(await page.locator('.ed-service').count(),3);
@@ -81,7 +81,7 @@ try{
    assert.deepEqual(errors,[]);checks.push({origin:isProduction?'produção':isPreview?'Netlify':'local',width,brokenImages:images.filter(x=>!x.ok),horizontalOverflow:false,whatsappClickVerified:true,javascriptErrors:errors});await context.close();
   }
  }
- const production=await fetch('https://idygrafica.netlify.app/livros-digitais',{signal:AbortSignal.timeout(30000)});assert.equal(production.status,200);const productionBody=await production.text();if(published)assert(productionBody.includes(section(html,'<main','</main>')),'Produção desatualizada');else assert(productionBody.includes('<section class="service-hero">'),'A produção deve continuar com a versão anterior antes do merge');
+ const production=await fetch('https://idygrafica.com.br/livros-digitais',{signal:AbortSignal.timeout(30000)});assert.equal(production.status,200);const productionBody=await production.text();if(published)assert(productionBody.includes(section(html,'<main','</main>')),'Produção desatualizada');else assert(productionBody.includes('<section class="service-hero">'),'A produção deve continuar com a versão anterior antes do merge');
  await writeFile('.preview/livros/report.json',JSON.stringify({verified:true,base,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,checks,unchangedHomeVisualWidths:published?[]:[1440,768,390],allOtherSourcesPreserved:true,realMessagesSent:0,productionPublished:published,previewNoindexIsExpected:true},null,2));
  console.log(JSON.stringify({verified:true,checks:checks.length,realMessagesSent:0,productionPublished:published}));
 }finally{await browser.close();await Promise.all([server,previous].map(s=>new Promise(r=>s.close(r))));}

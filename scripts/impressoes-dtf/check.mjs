@@ -28,7 +28,7 @@ try{
    }
    assert.equal(status,200);assert(body.includes(main),'Página não corresponde à versão testada: '+origin+path);
    if(origin.includes('deploy-preview-'))assert.match(head.get('x-robots-tag')||'',/noindex/);
-   if(origin==='https://idygrafica.netlify.app')assert(!/noindex/i.test(head.get('x-robots-tag')||''));
+   if(origin==='https://idygrafica.com.br')assert(!/noindex/i.test(head.get('x-robots-tag')||''));
    for(const width of [1440,1024,768,390,320]){
     const ctx=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});
     await ctx.route('https://wa.me/**',r=>r.fulfill({contentType:'text/html',body:'Destino verificado. Nenhuma mensagem enviada.'}));
@@ -44,7 +44,7 @@ try{
     const photo=page.locator('img[src*="camiseta-bone-estudio"]');assert.equal(await photo.count(),1);
     const quality=await photo.evaluate(i=>({naturalWidth:i.naturalWidth,naturalHeight:i.naturalHeight,displayWidth:i.getBoundingClientRect().width}));
     assert(quality.naturalWidth>=1800&&quality.naturalHeight>=1200);assert(quality.naturalWidth>=quality.displayWidth*2,'Fotografia insuficiente para retina');
-    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app'+path);
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.com.br'+path);
     assert((await page.locator('meta[name="description"]').getAttribute('content')).length>80);
     for(const s of await page.locator('script[type="application/ld+json"]').allTextContents()){const data=JSON.parse(s);assert(data['@graph'].some(x=>x['@type']==='Service'));assert(data['@graph'].some(x=>x['@type']==='BreadcrumbList'));}
     for(const a of await page.locator('main a[href*="wa.me"]').all()){const u=new URL(await a.getAttribute('href'));assert.equal(u.pathname,'/5551981687562');assert(u.searchParams.get('text')?.includes('orçamento'));assert.equal(await a.getAttribute('target'),'_blank');}

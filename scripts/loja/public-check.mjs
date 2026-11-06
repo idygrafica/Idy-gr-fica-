@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 const origin=new URL(process.env.LOJA_PUBLIC_URL||'https://deploy-preview-9--idygrafica.netlify.app/');
-assert(['deploy-preview-9--idygrafica.netlify.app','idygrafica.netlify.app'].includes(origin.hostname));
+assert(['deploy-preview-9--idygrafica.netlify.app','idygrafica.netlify.app','idygrafica.com.br'].includes(origin.hostname));
 const hash=data=>createHash('sha1').update(Buffer.from(`blob ${data.length}\0`)).update(data).digest('hex');
 const report={url:origin.href,commit:process.env.GITHUB_SHA,checkedAt:new Date().toISOString(),verified:false,realWhatsAppMessagesSent:0,checks:[]};
 // A prévia adiciona este bloco do próprio Netlify depois de </html>. Não faz parte

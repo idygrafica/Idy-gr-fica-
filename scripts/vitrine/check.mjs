@@ -30,7 +30,7 @@ const require=createRequire(resolve('.preview-tools/package.json'));const {chrom
 const server=makeServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));const local='http://127.0.0.1:'+server.address().port;
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});
 const production=process.env.VERIFY_ORIGIN?.replace(/\/$/,'');
-if(production)assert.equal(production,'https://idygrafica.netlify.app');
+if(production)assert.equal(production,'https://idygrafica.com.br');
 const origins=production?[production]:[local,...(process.env.PREVIEW_ORIGIN?[process.env.PREVIEW_ORIGIN.replace(/\/$/,'')]:[])],checks=[];
 try{
  for(const origin of origins){

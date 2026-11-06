@@ -1,7 +1,7 @@
 """Confere somente leitura o HTML publicado das três URLs envolvidas."""
 import concurrent.futures,datetime,json,re,urllib.request
 from pathlib import Path
-ORIGIN='https://idygrafica.netlify.app'
+ORIGIN='https://idygrafica.com.br'
 PATHS=['/','/blocos-personalizados','/pastas-digitais-simples']
 def nodes(value):
  if isinstance(value,dict):

@@ -55,7 +55,7 @@ jobs:
       - name: Conferir produção autorizada no computador e celular
         if: github.event_name == 'push'
         env:
-          VERIFY_ORIGIN: https://idygrafica.netlify.app
+          VERIFY_ORIGIN: https://idygrafica.com.br
         run: node scripts/search-visibility/check.mjs
       - uses: actions/upload-artifact@v4
         if: always()

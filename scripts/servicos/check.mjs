@@ -21,7 +21,7 @@ const section=(s,start,end)=>s.slice(s.indexOf(start),s.indexOf(end,s.indexOf(st
 assert.equal(section(html,'<header','</header>'),section(reference,'<header','</header>'),'Cabeçalho deve seguir Livros Digitais');
 assert.equal(html.slice(html.indexOf('<footer')).trimEnd(),reference.slice(reference.indexOf('<footer')).trimEnd());
 assert(!/noindex|nofollow|R\$/i.test(html));
-const xml=await readFile('sitemap.xml','utf8');assert.equal((xml.match(/<loc>/g)||[]).length,12);assert.equal((xml.match(/https:\/\/idygrafica.netlify.app\/servicos</g)||[]).length,1);
+const xml=await readFile('sitemap.xml','utf8');assert.equal((xml.match(/<loc>/g)||[]).length,12);assert.equal((xml.match(/https:\/\/idygrafica\.com\.br\/servicos</g)||[]).length,1);
 for(const text of ['Cartões de visita','Panfletos','Livros, apostilas e catálogos','Adesivos personalizados','DTF','DTF UV','Camisetas','Comandas, blocos e formulários','Materiais gráficos para empresas','A4 e A3','pequenas tiragens','Banners, lonas e fachadas'])assert(html.toLowerCase().includes(text.toLowerCase()),'Serviço ausente: '+text);
 const shared=await readFile('assets/livros-digitais.css','utf8');assert.equal(shared,execFileSync('git',['show',base+':assets/livros-digitais.css'],{encoding:'utf8'}),'Estilo de Livros Digitais alterado');
 await mkdir('.preview/servicos',{recursive:true});
@@ -56,7 +56,7 @@ try{
    const hierarchy=await page.locator('main h1,main h2,main h3').evaluateAll(els=>els.map(e=>({level:Number(e.tagName.slice(1)),text:e.textContent.trim()})));
    assert.equal(hierarchy[0].level,1);for(let i=0;i<hierarchy.length;i++){assert(hierarchy[i].text.length>0);if(i>0)assert(hierarchy[i].level<=hierarchy[i-1].level+1,'Salto de nível nos títulos');}
    for(const article of await page.locator('.ed-service').all()){const id=await article.getAttribute('aria-labelledby');assert(id);assert.equal(await article.locator('h3#'+id).count(),1);}
-   assert.equal(await page.locator('link[rel="canonical"]').count(),1);assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.netlify.app/servicos');
+   assert.equal(await page.locator('link[rel="canonical"]').count(),1);assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://idygrafica.com.br/servicos');
    assert.match(await page.title(),/Serviços Gráficos e Comunicação Visual em Porto Alegre/);
    assert((await page.locator('meta[name="description"]').getAttribute('content')).includes('IDY Gráfica'));
    assert.equal(await page.locator('.ed-service').count(),6);assert.equal(await page.locator('.ed-material-nav a').count(),3);
@@ -108,7 +108,7 @@ try{
    assert.deepEqual(errors,[]);checks.push({origin:origin===preview?'Netlify':'local',width,brokenImages:broken,horizontalOverflow:false,whatsappVerified:true,javascriptErrors:errors});await ctx.close();
   }
  }
- const prod=await fetch('https://idygrafica.netlify.app/servicos');assert.equal(prod.status,200);const prodBody=await prod.text();assert(!prodBody.includes('<body class="editorial-page services-page">'),'Produção deve continuar na versão anterior');
+ const prod=await fetch('https://idygrafica.com.br/servicos');assert.equal(prod.status,200);const prodBody=await prod.text();assert(!prodBody.includes('<body class="editorial-page services-page">'),'Produção deve continuar na versão anterior');
  await writeFile('.preview/servicos/report.json',JSON.stringify({verified:true,base,priorHead,incremental,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),changed,checks,comparisons,headingHierarchyValidated:true,structuredDescriptionsMatchVisibleText:8,stylesImagesAndDestinationsUnchanged:true,importantPagesAccessible:12,serviceGroupsInInitialHtml:8,protectedSourcesUnchanged:true,productionPublished:false,realWhatsAppMessagesSent:0},null,2));
  console.log(JSON.stringify({verified:true,responsiveChecks:checks.length,visualComparisons:comparisons.length,productionPublished:false,realWhatsAppMessagesSent:0}));
 }finally{await browser.close();await Promise.all([current,previous].map(s=>new Promise(r=>s.close(r))));}

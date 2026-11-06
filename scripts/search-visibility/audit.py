@@ -3,7 +3,7 @@ import concurrent.futures,datetime,hashlib,json,re,sys,urllib.error,urllib.reque
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin,urlparse
-ORIGIN='https://idygrafica.netlify.app'
+ORIGIN='https://idygrafica.com.br'
 class Document(HTMLParser):
  def __init__(self,source):
   super().__init__(convert_charrefs=True);self.title=[];self.h1=[];self.visible=[];self.links=[];self.ids=set();self.metas={};self.canonicals=[];self.resources=[];self.schemas=[];self.schema_errors=[];self.script=False;self.style=False;self.ld=False;self.buffer=[];self.in_title=False;self.in_h1=False;self.h1_buffer=[];self.feed(source)
