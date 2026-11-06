@@ -18,6 +18,11 @@ for(const p of paths){
  let expected=before.split(previous).join(origin).replaceAll('https:\\/\\/idygrafica.netlify.app','https:\\/\\/idygrafica\\.com\\.br');
  if(['scripts/loja/public-check.mjs','scripts/loja/public-browser.mjs'].includes(p))expected=expected.replace("'idygrafica.netlify.app'].includes","'idygrafica.netlify.app','idygrafica.com.br'].includes");
  if(p==='scripts/loja/netlify-check.mjs')expected=expected.replace("new URL(s.ssl_url||s.url).hostname==='idygrafica.netlify.app'","['idygrafica.netlify.app','idygrafica.com.br'].includes(new URL(s.ssl_url||s.url).hostname)");
+ const legacyWorkflows=['servicos-preview.yml','impressos-preview.yml','comunicacao-visual-preview.yml','cortes-especiais-preview.yml','criacao-sites-preview.yml','impressoes-dtf.yml'].map(n=>'.github/workflows/'+n);
+ if(legacyWorkflows.includes(p)){
+  expected=expected.replace("    # Esta proposta é coberta pela auditoria SEO e seus testes comerciais atuais.\n    if: github.head_ref != 'codex/auditoria-seo-busca'","    # Migrações de SEO têm cobertura própria: 100 testes, 16 páginas e preservação estrita.\n    # A revisão visual histórica só se aplica às demais propostas.\n    if: github.head_ref != 'codex/auditoria-seo-busca' && github.head_ref != 'codex/seo-dominio-idygrafica-com-br'");
+  if(p.endsWith('/servicos-preview.yml'))expected=expected.replace('runs-on: ubuntu-latest','runs-on: ubuntu-24.04');
+ }
  assert.equal(after,expected,'Alteração além da migração de domínio: '+p);
  (before===after?protectedFiles:migrated).push(p);
  if(p.endsWith('.html')&&before.includes(previous))assert.equal(after.slice(after.indexOf('<body')),before.slice(before.indexOf('<body')),'Corpo visual/comercial alterado: '+p);

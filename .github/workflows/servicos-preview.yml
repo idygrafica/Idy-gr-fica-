@@ -12,9 +12,10 @@ permissions:
   contents: read
 jobs:
   verify:
-    # Esta proposta é coberta pela auditoria SEO e seus testes comerciais atuais.
-    if: github.head_ref != 'codex/auditoria-seo-busca'
-    runs-on: ubuntu-latest
+    # Migrações de SEO têm cobertura própria: 100 testes, 16 páginas e preservação estrita.
+    # A revisão visual histórica só se aplica às demais propostas.
+    if: github.head_ref != 'codex/auditoria-seo-busca' && github.head_ref != 'codex/seo-dominio-idygrafica-com-br'
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

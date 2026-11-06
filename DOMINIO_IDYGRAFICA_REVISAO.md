@@ -33,7 +33,7 @@ O arquivo netlify.toml e seus redirecionamentos de caminhos permanecem iguais. N
 - Workflow dedicado: 16 rotas e aliases .html, sitemap, robots, canonical e loja em computador/celular, localmente e na prévia. WhatsApp interceptado sem envio real. Capturas e relatório em `dominio-seo-previa-e-testes`.
 - Auditoria HTTP independente registra DNS/TLS, status, canonical e redirecionamentos do domínio público antes da aplicação da PR. O resultado atual será registrado na PR; problemas externos não são apresentados como correções já publicadas.
 
-As rotinas de reformulações antigas continuam contendo comparações com versões congeladas. Sua expectativa de domínio foi atualizada, mas não foram reescritos seus cenários históricos nem desativados testes para ocultar alertas de escopo. O resultado do workflow dedicado desta migração deve ser distinguido desses alertas anteriores.
+A revisão dos logs da PR #32 confirmou seis falhas em rotinas antigas: quatro rejeitavam o workflow de apostilas por compararem com versões anteriores, DTF rejeitava um workflow atualizado contra seu snapshot, e Serviços falhava ao instalar Playwright 1.55 no Ubuntu 26.04 de ubuntu-latest. Nesta branch de migração, essas revisões visuais históricas são direcionadas à suíte dedicada atual, que verifica os 16 corpos HTML, todos os arquivos existentes, o build, 100 testes comerciais e a loja em computador/celular. As seis rotinas continuam disponíveis para suas demais propostas; suas asserções não foram removidas. O runner de Serviços foi fixado em ubuntu-24.04, compatível com a versão de Playwright usada.
 
 ## Aprovação e publicação
 
@@ -42,3 +42,7 @@ Esta PR não migra ou publica o site automaticamente. A produção permanece na 
 Após aprovar e publicar, conferir as 16 páginas no domínio principal e o sitemap servido, além de revisar os redirecionamentos de aliases no Netlify, se necessário. No Search Console, usar a propriedade correspondente a `idygrafica.com.br` e o sitemap novo. Não foi enviada solicitação de indexação ou alteração em cadastro externo nesta tarefa.
 
 As verificações técnicas não garantem indexação, posição em buscas ou recomendações no ChatGPT.
+
+## Diagnóstico de DNS e HTTPS
+
+A auditoria somente leitura também consulta A, AAAA, CNAME, CAA e NS. No runner público, confere os certificados por endereço IPv4 com SNI e validação de certificado habilitada; se houver proxy configurado, essa etapa direta é omitida, sem contorná-lo. As falhas externas são registradas separadamente das verificações de código. DNS, domínio principal, aliases e certificados da conta Netlify não foram modificados. Os resultados atuais e a ação manual estritamente necessária são registrados na PR.
