@@ -6,6 +6,7 @@ permissions:
   contents: read
 jobs:
   verify:
+    name: Código, SEO e loja
     if: github.head_ref == 'codex/seo-dominio-idygrafica-com-br'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -33,12 +34,30 @@ jobs:
         env:
           PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--idygrafica.netlify.app
         run: node scripts/domain-migration/check.mjs
-      - name: Registrar estado público do novo domínio sem publicá-lo
-        if: always()
-        run: node scripts/domain-migration/audit-public.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: dominio-seo-previa-e-testes
+          include-hidden-files: true
+          path: .preview/domain-migration/
+  public-domain:
+    name: DNS e HTTPS públicos
+    if: github.head_ref == 'codex/seo-dominio-idygrafica-com-br'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Conferir DNS, certificado e sitemap público sem alterar hospedagem
+        run: node scripts/domain-migration/audit-public.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dominio-dns-https-auditoria
           include-hidden-files: true
           path: .preview/domain-migration/

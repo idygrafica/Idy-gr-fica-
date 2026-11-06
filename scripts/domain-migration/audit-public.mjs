@@ -1,5 +1,5 @@
 // Somente GET, sem contas, credenciais, alterações de DNS ou publicação.
-import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {readFile,writeFile,mkdir,appendFile} from 'node:fs/promises';
 import {Resolver} from 'node:dns/promises';
 import tls from 'node:tls';
 import {isIP} from 'node:net';
@@ -45,5 +45,10 @@ report.tlsByAddress=await Promise.all(report.dns.flatMap(d=>(d.A.answers||[]).sl
 report.codeState='PR não publicada; domínio antigo no HTML público é esperado até aprovação e merge.';
 report.externalIssues=report.tlsByAddress.filter(t=>t.ok===false).map(t=>({host:t.host,address:t.address,code:t.code,certificate:t.certificate}));
 report.transportFailures=report.pages.filter(p=>p.error||p.transientFailures).map(p=>({url:p.url,error:p.error,transientFailures:p.transientFailures}));
+report.externalHealthy=report.pages.length===paths.length&&report.pages.every(p=>p.status===200)&&report.sitemap?.status===200&&report.sitemap?.sitemapUrls===paths.length&&report.robots?.status===200&&report.externalIssues.length===0&&report.aliases.find(a=>a.url==='https://www.idygrafica.com.br/')?.status>=200&&report.aliases.find(a=>a.url==='https://www.idygrafica.com.br/')?.status<400;
 await mkdir('.preview/domain-migration',{recursive:true});await writeFile('.preview/domain-migration/public-domain-audit.json',JSON.stringify(report,null,2));
 console.log(JSON.stringify({primary:report.pages[0],pagesChecked:report.pages.length,statusProblems:report.pages.filter(p=>p.status!==200),aliases:report.aliases,dns:report.dns,tlsByAddress:report.tlsByAddress,externalIssues:report.externalIssues,productionModified:false}));
+if(process.env.GITHUB_STEP_SUMMARY){
+ const lines=['## DNS e HTTPS — somente leitura','',report.externalHealthy?'Verificação externa aprovada.':'Pendências externas identificadas; isto não é falha dos testes de código.','',...report.tlsByAddress.map(t=>`- ${t.host} / ${t.address}: ${t.ok?'certificado válido':t.code||t.skipped}`),'','Sitemap público: '+(report.sitemap?.status??'não lido')+'; URLs: '+(report.sitemap?.sitemapUrls??'não lidas')+'.','O domínio antigo no HTML público é esperado enquanto a PR não for aprovada e publicada.','DNS, certificados e produção não foram alterados.',''];await appendFile(process.env.GITHUB_STEP_SUMMARY,lines.join('\n'));
+}
+if(!report.externalHealthy)process.exitCode=1;
