@@ -10,14 +10,14 @@ test('campos vazios não viram zero nem preço de venda',()=>{
  assert.equal(r.status,'incomplete');assert.equal(r.saleCents,null);assert.equal(r.costCents,null);assert.equal(r.knownSubtotalCents,null);assert.equal(r.differenceCents,null);
  assert(r.missing.some(m=>m.path==='labourHourlyCents'));assert(r.missing.some(m=>m.path.endsWith('maintenanceCents')));
 });
-test('estimativas anteriores são identificadas e não inventam HP, manutenção ou mão de obra',()=>{
+test('referências novas prevalecem sobre estimativas e não inventam custos pendentes',()=>{
  const c=withLegacyEstimates(newProductionCostConfig());
- assert.equal(c.paperCents[75].A4,6);assert.equal(c.marginRate,0.3);assert(c.sources['paperCents.75.A4'].startsWith('Estimativa'));
+ assert.equal(c.paperCents[75].A4,5.2);assert.equal(c.marginRate,0.45);assert(c.sources['paperCents.75.A4'].startsWith('Referência de compra'));
  assert.equal(c.labourHourlyCents,null);assert.equal(c.equipment.xerox.formats.A4.maintenanceCents,null);
- assert.equal(c.equipment.hp.formats.A4.printCents.preta,null);assert.equal(c.equipment.hp.formats.A4.supported,null);
+ assert.equal(c.equipment.hp.formats.A4.printCents.preta,2);assert.equal(c.equipment.hp.formats.A3.supported,null);assert.equal(c.equipment.hp.formats.A3.printCents.preta,null);
  const a4=analyzeProductionCost(job,'xerox','A4',c),a3=analyzeProductionCost(job,'xerox','A3',c);
  assert.equal(a4.productionSheets,69);assert.equal(a3.productionSheets,36);
- assert.equal(a4.knownSubtotalCents,828);assert.equal(a3.knownSubtotalCents,792);assert.equal(a4.saleCents,null);assert.equal(a3.saleCents,null);
+ assert.equal(a4.knownSubtotalCents,772.8);assert.equal(a3.knownSubtotalCents,792);assert.equal(a4.saleCents,null);assert.equal(a3.saleCents,null);
 });
 test('carregar estimativas nunca sobrescreve custos informados',()=>{
  const c=newProductionCostConfig();c.paperCents[75].A4=9;c.sources['paperCents.75.A4']='Informado pelo usuário';
