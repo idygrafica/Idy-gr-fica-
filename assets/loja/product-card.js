@@ -1,3 +1,4 @@
+import {renderComandaCard} from './comandas-card.js';
 import {money} from './cart.js';
 import {renderCommercialControls} from './commercial.js';
 import {digitalProducts} from './digital-products.js';
@@ -15,4 +16,4 @@ function renderStandardCard(p){return `<article class="product" data-product="${
  <div class="product-action"><label for="qty-${p.id}">${p.id==='cartoes'?'Lotes':'Qtd.'}</label><input id="qty-${p.id}" type="number" min="1" max="100000" step="1" value="${p.defaultQuantity||1}" inputmode="numeric" aria-label="Quantidade de ${p.id==='cartoes'?'lotes de ':''}${p.name}"></div>${renderCommercialControls(p)}
  <button class="add-product" data-add="${p.id}">${p.id==='cartoes'||p.id==='a3'||p.quantityPrices||p.options[0].quantityTotals?'Adicionar ao carrinho':'Solicitar orçamento'}</button><p class="configuration-note">Personalização e disponibilidade confirmadas pela equipe.</p></div></details></div></article>`;}
 
-export function renderProductCard(p,options={}){return digitalProducts[p.id]?renderDigitalCard(p,options.detail===true):renderStandardCard(p);}
+export function renderProductCard(p,options={}){if(p.id==='comandas')return renderComandaCard(p);return digitalProducts[p.id]?renderDigitalCard(p,options.detail===true):renderStandardCard(p);}

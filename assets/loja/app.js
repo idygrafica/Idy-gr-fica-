@@ -1,3 +1,4 @@
+import {installComandaCalculator} from './comandas-form.js';
 import {installCommercialControls,commercialArtwork} from './commercial.js';
 import {installDigitalForms} from './digital-form.js';
 import {escapeHtml,digitalProducts} from './digital-products.js';
@@ -52,7 +53,7 @@ function renderCart(){
  $('#cart-title').textContent=`Meu carrinho (${cart.length})`;
  $('#cart-count').textContent=cart.length;
  $('#clear-cart').disabled=cart.length===0;
- $('#cart-items').innerHTML=summary.items.length?summary.items.map((i,n)=>`<article class="cart-item">${i.artwork&&digitalProducts[i.product.id]?`<img class="cart-product-photo digital-cart-photo" src="${digitalProducts[i.product.id].photo}" alt="" width="1536" height="1024">`:`<div class="cart-product-photo product-photo photo-${i.product.photo}" aria-hidden="true"></div>`}<div class="cart-item-copy"><h3>${digitalProducts[i.product.id]?.name||i.product.name}</h3><p>${i.option.label}</p>${i.artwork?`<p>${i.artwork.mode==='create'?'Criação: '+escapeHtml(i.artwork.reference)+' · R$ 100,00 por arte no pedido':'Arte pronta · sem custo de criação'}</p>`:''}<strong>${i.totalCents===null?'Sob orçamento':money(i.totalCents)}</strong>${i.totalCents!==null?`<small>${i.product.id==='cartoes'?'Por lote de '+i.option.label:'Unitário'}: ${money(i.option.priceCents)}</small>`:''}<div class="quantity-control"><button data-change="${n}" data-delta="-1" ${i.quantity===1?'disabled':''} aria-label="Diminuir quantidade de ${i.product.name}">−</button><input type="number" min="1" max="100000" step="1" value="${i.quantity}" data-quantity="${n}" aria-label="Quantidade no carrinho de ${i.product.name}" inputmode="numeric"><button data-change="${n}" data-delta="1" aria-label="Aumentar quantidade de ${i.product.name}">+</button><button class="remove" data-remove="${n}" aria-label="Remover ${i.product.name}">${icon('trash')}</button></div></div></article>`).join(''):'<div class="empty-cart">'+icon('cart')+'<b>Seu carrinho está vazio</b><p>Escolha os produtos para montar sua solicitação.</p></div>';
+ $('#cart-items').innerHTML=summary.items.length?summary.items.map((i,n)=>`<article class="cart-item">${i.artwork&&digitalProducts[i.product.id]?`<img class="cart-product-photo digital-cart-photo" src="${digitalProducts[i.product.id].photo}" alt="" width="1536" height="1024">`:`<div class="cart-product-photo product-photo photo-${i.product.photo}" aria-hidden="true"></div>`}<div class="cart-item-copy"><h3>${digitalProducts[i.product.id]?.name||i.product.name}</h3><p>${i.option.label}</p>${i.artwork?`<p>${i.artwork.mode==='create'?'Criação: '+escapeHtml(i.artwork.reference)+' · R$ 100,00 por arte no pedido':'Arte pronta · sem custo de criação'}</p>`:''}<strong>${i.totalCents===null?'Sob orçamento':money(i.totalCents)}</strong>${i.totalCents!==null?`<small>${i.product.id==='cartoes'?'Por lote de '+i.option.label:'Unitário'}: ${money(i.option.priceCents)}</small>`:''}<div class="quantity-control"><button data-change="${n}" data-delta="-1" ${i.quantity===1?'disabled':''} aria-label="Diminuir quantidade de ${i.product.name}">−</button><input type="number" min="1" max="${i.comandaEstimate?1000:100000}" step="1" value="${i.quantity}" data-quantity="${n}" aria-label="Quantidade no carrinho de ${i.product.name}" inputmode="numeric"><button data-change="${n}" data-delta="1" aria-label="Aumentar quantidade de ${i.product.name}">+</button><button class="remove" data-remove="${n}" aria-label="Remover ${i.product.name}">${icon('trash')}</button></div></div></article>`).join(''):'<div class="empty-cart">'+icon('cart')+'<b>Seu carrinho está vazio</b><p>Escolha os produtos para montar sua solicitação.</p></div>';
  $('#cart-totals').innerHTML=`${summary.items.some(i=>i.artwork)?`<div><span>Produtos com preço aprovado</span><strong>${money(summary.productionTotalCents)}</strong></div><div><span>Criação · ${summary.artworks.length} arte(s)</span><strong>${money(summary.artworkTotalCents)}</strong></div>`:''}<div><b>${summary.pending?'Subtotal calculado':'Subtotal'}</b><strong>${money(summary.knownTotalCents)}</strong></div>${summary.pending?`<p>${summary.pending} item(ns) sob orçamento, sem valor incluído no subtotal. O total final será informado pela equipe.</p>`:''}`;
  const checkout=$('#checkout');
  if(cart.length){checkout.href=whatsappUrl(cart);checkout.setAttribute('aria-disabled','false');}else{checkout.removeAttribute('href');checkout.setAttribute('aria-disabled','true');}
@@ -93,12 +94,12 @@ $('#product-grid').addEventListener('click',e=>{
 $('#cart-items').addEventListener('click',e=>{
  const remove=e.target.closest('[data-remove]');const change=e.target.closest('[data-change]');
  if(remove){cart=cart.filter((_,n)=>n!==Number(remove.dataset.remove));save();return;}
- if(change){try{const index=Number(change.dataset.change);cart[index].quantity=quantity(cart[index].quantity+Number(change.dataset.delta));save();}catch(error){toast(error.message);}}
+ if(change){try{const index=Number(change.dataset.change);const updated={...cart[index],quantity:quantity(cart[index].quantity+Number(change.dataset.delta))};itemDetails(updated);cart[index]=updated;save();}catch(error){toast(error.message);}}
 });
 $('#cart-items').addEventListener('change',e=>{
  if(!e.target.matches('[data-quantity]'))return;
  const i=Number(e.target.dataset.quantity);
- try{cart[i].quantity=quantity(e.target.value);save();}catch(error){e.target.value=cart[i].quantity;toast(error.message);}
+ try{const updated={...cart[i],quantity:quantity(e.target.value)};itemDetails(updated);cart[i]=updated;save();}catch(error){e.target.value=cart[i].quantity;toast(error.message);}
 });
 $('#clear-cart').addEventListener('click',()=>{cart=[];save();toast('Carrinho limpo.');});
 $('#checkout').addEventListener('click',e=>{if(!cart.length){e.preventDefault();toast('Adicione um produto antes de continuar.');}});
@@ -122,3 +123,5 @@ if($('#showcase-filter-slot'))$('#showcase-filter-slot').innerHTML=renderShowcas
 $('#category-filter')?.addEventListener('change',e=>{category=e.target.value;renderCategories();renderProducts();});
 $('#paper-filter')?.addEventListener('change',e=>{paper=e.target.value;renderProducts();});
 renderCategories();renderProducts();renderCart();
+
+installComandaCalculator({add:({optionId,blocks})=>{cart=addItem(cart,'comandas',optionId,blocks);save();},getWhatsApp:({optionId,blocks})=>whatsappUrl(addItem([],'comandas',optionId,blocks)),notify:toast});
