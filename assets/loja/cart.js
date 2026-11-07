@@ -54,8 +54,9 @@ export function whatsappUrl(cart) {
   const lines=['Olá! Vim pela loja virtual da IDY Gráfica e gostaria de atendimento para estes itens:', ...items.map(i=>[
     `• ${i.artwork?(digitalProducts[i.product.id]?.name||i.product.name):i.product.name} — ${i.option.label}`,
     ...(i.artwork?[i.artwork.mode==='create'?`Criação solicitada: ${i.artwork.reference}.`:'Arte pronta: sem custo adicional de criação.']:[]),
-    `Quantidade: ${i.quantity}${i.product.id==='a3'?' folha(s)':i.product.id==='cartoes'?' lote(s)':i.product.id==='pastas'?' pasta(s)':i.option.quantityTotals?' bloco(s)':' unidade(s)'}.`,
-    i.totalCents===null ? 'Preço a confirmar: solicito orçamento.' : `Unitário: ${money(i.option.priceCents)}. Total: ${money(i.totalCents)}.`
+    ...(i.product.id==='cartoes'?[`Especificações: ${i.product.description}.`]:[]),
+    i.product.id==='cartoes'?`Quantidade: ${i.quantity*Number(i.option.id)} cartões (${i.quantity} lote(s) de ${i.option.label}).`:`Quantidade: ${i.quantity}${i.product.id==='a3'?' folha(s)':i.product.id==='pastas'?' pasta(s)':i.option.quantityTotals?' bloco(s)':' unidade(s)'}.`,
+    i.totalCents===null ? 'Preço a confirmar: solicito orçamento.' : `${i.product.id==='cartoes'?'Por lote de '+i.option.label:'Unitário'}: ${money(i.option.priceCents)}. Total: ${money(i.totalCents)}.`
   ].join('\n'))];
   if(artworks.length)lines.push('Criação da arte (uma vez por arte, não por unidade):',...artworks.map(a=>`${a.reference}: ${money(a.priceCents)}.`),`Subtotal de criação: ${money(artworkTotalCents)}. Criação complexa sob orçamento.`);
   if (items.some(i=>i.totalCents!==null)||artworks.length) lines.push(`${pending?'Subtotal dos itens com preço aprovado':'Total dos itens'}: ${money(knownTotalCents)}.`);
