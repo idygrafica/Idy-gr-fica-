@@ -41,8 +41,9 @@ function auditValue(row){
 }
 function renderAudit(){
  const audit=auditCostInputs(config);
+ const openState=new Map([...root.querySelectorAll('[data-audit-category]')].map(el=>[el.dataset.auditCategory,el.open]));
  const table=(rows)=>`<div class="table-scroll"><table class="audit-table"><thead><tr><th>Item</th><th>Valor</th><th>Origem / condição</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${escapeHtml(row.label)}</td><td>${escapeHtml(auditValue(row))}</td><td>${escapeHtml(row.source||'')}</td></tr>`).join('')}</tbody></table></div>`;
- root.querySelector('#cost-audit').innerHTML=[['confirmed','1. CUSTOS CONFIRMADOS',true],['estimated','2. CUSTOS ESTIMADOS',false],['pending','3. CUSTOS PENDENTES',false]].map(([key,label,open])=>`<details class="audit-group" data-audit-category="${key}" ${open?'open':''}><summary>${label} (${audit[key].length})</summary>${table(audit[key])}</details>`).join('')+`<details class="audit-group"><summary>Imposto, margens e condições informadas — não são custos de compra</summary>${table([...audit.rules,...audit.conditions])}</details><p class="help">Para 54 g, o custo A4/A3 é uma estimativa de desmembramento: 9 A4 ou 4 A3 por folha 66 × 96 cm, sem custo de refilo e ainda sem rendimento/perdas de corte confirmados. Os valores por folha são arredondados para cima a quatro casas em reais. O preço de compra A4 75 g não confirma o preço de uma folha A3 75 g.</p>`;
+ root.querySelector('#cost-audit').innerHTML=[['confirmed','1. CUSTOS CONFIRMADOS',true],['estimated','2. CUSTOS ESTIMADOS',false],['pending','3. CUSTOS PENDENTES',false]].map(([key,label,open])=>`<details class="audit-group" data-audit-category="${key}" ${(openState.get(key)??open)?'open':''}><summary>${label} (${audit[key].length})</summary>${table(audit[key])}</details>`).join('')+`<details class="audit-group"><summary>Imposto, margens e condições informadas — não são custos de compra</summary>${table([...audit.rules,...audit.conditions])}</details><p class="help">Para 54 g, o custo A4/A3 é uma estimativa de desmembramento: 9 A4 ou 4 A3 por folha 66 × 96 cm, sem custo de refilo e ainda sem rendimento/perdas de corte confirmados. Os valores por folha são arredondados para cima a quatro casas em reais. O preço de compra A4 75 g não confirma o preço de uma folha A3 75 g.</p>`;
 }
 function refresh(){
  const error=root.querySelector('#lab-error'),results=root.querySelector('#cost-results');
@@ -56,8 +57,9 @@ function edit(e){
  if(path&&allowed.has(path)){
   const kind=allowed.get(path)[2],v=e.target.value;
   const value=kind==='support'?(v===''?null:v==='yes'):v===''?null:Number(v.replace(',','.'))/(kind==='money'?0.01:kind==='percent'?100:1);
+  if(Object.is(read(path),value))return;
   set(path,value);config.sources[path]='Informado nesta simulação; não auditado.';updateSources();refresh();
- }else if(key&&['widthCm','heightCm','paper','color','blocks'].includes(key)){job[key]=e.target.value;refresh();}
+ }else if(key&&['widthCm','heightCm','paper','color','blocks'].includes(key)){if(String(job[key])===e.target.value)return;job[key]=e.target.value;refresh();}
 }
 if(!isCostPreviewHost(location.hostname)){
  root.innerHTML='<div class="notice"><strong>Análise disponível somente na prévia de testes.</strong> Nenhuma simulação de custos ou venda foi ativada neste domínio.</div>';
