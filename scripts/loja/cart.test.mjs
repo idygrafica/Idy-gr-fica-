@@ -5,8 +5,8 @@ import {addItem,itemDetails,restoreCart,summarize,whatsappUrl,quantity,money} fr
 test('os oito produtos originais e dois novos estão cadastrados com IDs únicos',()=>{
  assert.equal(products.length,10);assert.equal(new Set(products.map(p=>p.id)).size,10);
 });
-test('somente as opções por folha aprovadas têm preço fixo; opções sob consulta não recebem valores inventados',()=>{
- for(const p of products)for(const o of p.options)assert.equal(o.priceCents,p.id==='a3'?({frente:300,duplex:600,'a4-75g-frente':220,'a3-couche-300g-frente':450,'a3-supremo-250g-frente':500}[o.id]):null);
+test('somente opções aprovadas por folha ou lote têm preço fixo; opções sob consulta não recebem valores inventados',()=>{
+ for(const p of products)for(const o of p.options)assert.equal(o.priceCents,p.id==='a3'?({frente:300,duplex:600,'a4-75g-frente':220,'a3-couche-300g-frente':450,'a3-supremo-250g-frente':500}[o.id]):p.id==='cartoes'?({100:2000,500:8900,1000:14000}[o.id]):null);
 });
 for (const [qty,side,total] of [[1,'frente',300],[3,'frente',900],[10,'frente',3000],[100,'frente',30000],[1,'duplex',600],[3,'duplex',1800],[10,'duplex',6000],[100,'duplex',60000]]) {
  test(`${qty} folha(s) A3 ${side}: ${total} centavos`,()=>assert.equal(summarize(addItem([],'a3',side,qty)).knownTotalCents,total));
@@ -16,7 +16,7 @@ test('mesma opção acumula quantidades, frente e verso permanece separado',()=>
  assert.equal(cart.length,2);assert.equal(cart[0].quantity,3);assert.equal(summarize(cart).knownTotalCents,2100);
 });
 test('itens sob orçamento não recebem preço fictício nem viram total fechado',()=>{
- const cart=addItem(addItem([],'a3','frente',3),'cartoes','500',1);const summary=summarize(cart);
+ const cart=addItem(addItem([],'a3','frente',3),'adesivos','personalizado',1);const summary=summarize(cart);
  assert.equal(summary.knownTotalCents,900);assert.equal(summary.pending,1);assert.equal(summary.items[1].totalCents,null);
  const text=new URL(whatsappUrl(cart)).searchParams.get('text');
  assert.match(text,/Subtotal dos itens com preço aprovado/);assert.match(text,/Preço a confirmar/);assert.doesNotMatch(text,/85,00|94,00/);
