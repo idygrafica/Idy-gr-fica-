@@ -1,0 +1,66 @@
+import {newProductionCostConfig,withLegacyEstimates,isCostPreviewHost} from './comandas-cost-config.js';
+import {compareProductionCosts} from './comandas-cost-pricing.js';
+import {escapeHtml} from './digital-products.js';
+
+const root=document.querySelector('#cost-lab');
+let config=newProductionCostConfig(),job={widthCm:10,heightCm:7,paper:75,color:'preta',blocks:10};
+const money=(v,digits=2)=>v===null||v===undefined?'—':new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:digits}).format(v/100);
+const percent=v=>v===null||v===undefined?'—':(v*100).toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';
+const read=path=>path.split('.').reduce((o,k)=>o?.[k],config);
+const groups=[
+ {title:'Papel por folha — separado da impressão',fields:[['paperCents.54.A4','A4 · 54 g','money'],['paperCents.54.A3','A3 · 54 g','money'],['paperCents.75.A4','A4 · 75 g','money'],['paperCents.75.A3','A3 · 75 g','money']]},
+ {title:'Produção, imposto e margem',fields:[['taxRate','Imposto sobre a venda (%)','percent'],['marginRate','Margem de lucro sobre a venda (%)','percent'],['wasteRate','Perdas de produção (%)','percent'],['setupSheets','Folhas extras de preparação','integer'],['gutterCm','Espaçamento entre peças (cm)','number'],['preparationCents','Preparação fixa (R$, sem mão de obra)','money']]},
+ {title:'Mão de obra por tempo',fields:[['labourHourlyCents','Custo de mão de obra por hora (R$)','money'],['preparationMinutes','Tempo de preparação (min)','number'],['labourMinutesPerBlock','Tempo de montagem/acabamento por bloco (min)','number']]},
+ {title:'Corte, cola e acabamento',fields:[['cuttingFixedCents','Corte fixo por trabalho (R$)','money'],['cuttingPerBlockCents','Corte adicional por bloco (R$)','money'],['glueFixedCents','Cola fixa por trabalho (R$)','money'],['gluePerBlockCents','Cola por bloco (R$)','money'],['finishingFixedCents','Acabamento fixo (R$)','money'],['finishingPerBlockCents','Acabamento por bloco (R$)','money']]}
+];
+function profileFields(id,format){const p=`equipment.${id}.formats.${format}`;return [[p+'.supported','Equipamento atende este formato?','support'],[p+'.marginCm','Margem não imprimível por lado (cm)','number'],[p+'.printCents.preta','Impressão preta por face (R$)','money'],[p+'.printCents.colorida','Impressão colorida por face (R$)','money'],[p+'.maintenanceCents','Manutenção por folha produzida (R$)','money'],[p+'.operatorMinutesPerSheet','Tempo ativo do operador por folha (min)','number']];}
+const definitions=[...groups.flatMap(g=>g.fields),...['xerox','hp'].flatMap(id=>['A4','A3'].flatMap(format=>profileFields(id,format)))];
+const allowed=new Map(definitions.map(d=>[d[0],d]));
+function field([path,label,kind]){
+ const value=read(path),id='cost-'+path.replaceAll('.','-'),inputValue=value===null?'':kind==='money'?value/100:kind==='percent'?value*100:value;
+ const control=kind==='support'?`<select id="${id}" data-cost-path="${path}" data-cost-kind="support"><option value=""${value===null?' selected':''}>A confirmar</option><option value="yes"${value===true?' selected':''}>Sim</option><option value="no"${value===false?' selected':''}>Não</option></select>`:`<input id="${id}" data-cost-path="${path}" data-cost-kind="${kind}" type="number" min="0" step="${kind==='money'?'0.0001':kind==='integer'?'1':'0.01'}" value="${inputValue}" inputmode="decimal" placeholder="Não informado">`;
+ return `<div class="field"><label for="${id}">${label}</label>${control}<span class="source" data-source-for="${path}"></span></div>`;
+}
+function updateSources(){
+ root.querySelectorAll('[data-source-for]').forEach(el=>{
+  const path=el.dataset.sourceFor,value=read(path),source=config.sources[path]||'';
+  el.textContent=value===null?'Não informado':source||'Informado nesta simulação; não auditado.';
+  el.classList.toggle('estimated',source.startsWith('Estimativa'));
+ });
+}
+function render(){
+ root.innerHTML=`<p class="eyebrow">PRÉVIA · ANÁLISE INTERNA · SIMULAÇÃO 2</p><h1>Comandas: preço pelos custos de produção</h1><p class="intro">Compare Xerox Color 560 e HP pigmentada, em A4 e A3. A simulação anterior foi preservada. Aqui não existe ajuste de calibração: a tabela atual serve apenas para comparar o resultado.</p><div class="notice"><strong>Sem vendas ou alteração dos preços da loja.</strong> Campo vazio significa custo não informado, não R$ 0,00. Preencha explicitamente zero apenas quando não houver custo adicional. O preço fica pendente enquanto faltar qualquer parcela necessária. Este painel da prévia não é uma área com autenticação; os dados preenchidos ficam apenas nesta sessão do navegador.</div><section class="panel"><h2>Trabalho para analisar</h2><div class="job-grid"><div class="field"><label for="lab-width">Largura (cm)</label><input id="lab-width" data-job="widthCm" type="number" min="1" max="42" step="0.01" value="${job.widthCm}"></div><div class="field"><label for="lab-height">Altura (cm)</label><input id="lab-height" data-job="heightCm" type="number" min="1" max="42" step="0.01" value="${job.heightCm}"></div><div class="field"><label for="lab-paper">Papel</label><select id="lab-paper" data-job="paper"><option value="54"${Number(job.paper)===54?' selected':''}>54 g</option><option value="75"${Number(job.paper)===75?' selected':''}>75 g</option></select></div><div class="field"><label for="lab-color">Impressão</label><select id="lab-color" data-job="color"><option value="preta"${job.color==='preta'?' selected':''}>Preta</option><option value="colorida"${job.color==='colorida'?' selected':''}>Colorida</option></select></div><div class="field"><label for="lab-blocks">Blocos</label><input id="lab-blocks" data-job="blocks" type="number" min="1" max="1000" step="1" value="${job.blocks}"></div></div><p class="help">Somente 1 via, 50 folhas por bloco. As comparações abaixo repetem o trabalho para 1, 10, 20, 50 e 100 blocos.</p></section><section class="panel"><h2>Premissas configuráveis</h2><p class="help">Apenas o imposto de 6% foi informado como regra. Os demais campos começam vazios. O botão de estimativas reaproveita somente hipóteses já existentes na simulação 1, identificadas como não confirmadas; não cria custos para HP, manutenção ou mão de obra.</p><div class="actions"><button type="button" id="legacy-estimates">Carregar estimativas anteriores</button><button class="secondary" type="button" id="reset-costs">Limpar e restaurar campos</button><button class="secondary" type="button" id="export-costs">Baixar parâmetros JSON</button></div></section>${groups.map(g=>`<section class="panel"><h2>${g.title}</h2><div class="fields">${g.fields.map(field).join('')}</div>${g.title.startsWith('Corte')?'<p class="help">Informe materiais, terceiros e custos não incluídos na mão de obra por tempo. Não conte a mesma despesa duas vezes.</p>':''}</section>`).join('')}<section class="panel"><h2>Equipamentos e área imprimível</h2><p class="help">O modelo e a capacidade da HP precisam de confirmação. Se o custo por clique já incluir manutenção, informe zero no campo de manutenção em vez de repetir essa despesa. O tempo por folha considera apenas o tempo ativo de trabalho do operador.</p></section><div class="equipment-grid">${['xerox','hp'].flatMap(id=>['A4','A3'].map(format=>`<section class="panel"><h3>${config.equipment[id].name} · ${format}</h3><div class="fields">${profileFields(id,format).map(field).join('')}</div></section>`)).join('')}</div><section class="panel"><h2>Como o preço é formado</h2><p class="formula">Venda = custo total ÷ (1 − imposto − margem)</p><p class="help">A margem é sobre o faturamento após os custos e o imposto. O custo inclui papel, impressão e manutenção de todas as folhas produzidas, inclusive perdas e preparação, mais mão de obra, preparação fixa, corte, cola e acabamento. A4 e A3 têm seu próprio aproveitamento e custo. Não existe interpolação de preços ou calibração nesta simulação.</p></section><div class="error" id="lab-error" role="alert" hidden></div><section aria-labelledby="results-heading"><h2 id="results-heading">Comparação dos cenários</h2><p class="help">Diferença = venda calculada − referência. A referência é sempre 10 × 7 cm, 75 g; nenhuma comparação libera um preço comercial.</p><div id="cost-results" class="results-grid" aria-live="polite"></div></section>`;
+ updateSources();refresh();
+}
+function routeCard(route){
+ const r=route.selected,labels={paper:'Papel',printing:'Impressão',maintenance:'Manutenção',labour:'Mão de obra',preparation:'Preparação',cutting:'Corte',glue:'Cola',finishing:'Acabamento'};
+ const statusText=r.status==='unsupported'?'Formato marcado como não suportado.':r.status==='does-not-fit'?'O trabalho não cabe na área imprimível deste cenário.':r.status==='invalid'?r.errors.join(' '):r.status==='calculated'?'Simulação calculada com os custos informados. Sem preço aprovado para venda.':`Preço pendente: ${r.missing.length} campo(s) necessário(s) sem informação.`;
+ const line=r.status==='calculated'?`<span class="sale">${money(r.saleCents)}</span><span>${money(r.perBlockCents)} por bloco · ${percent(r.actualMarginRate)} de margem após custo e imposto</span>`:'';
+ return `<article class="panel" data-cost-route="${route.equipmentId}-${route.format}"><h3>${r.equipmentName} · ${route.format}</h3><div class="result-state ${r.status}">${escapeHtml(statusText)}${line}</div><div class="result-meta"><span>${r.totalLeaves.toLocaleString('pt-BR')} folhas de comanda</span><span>${r.layout?.perSheet??'—'} peças/folha</span><span>${r.productionSheets??'—'} folhas de produção</span></div>${r.layout?`<p class="help">Folhas úteis: ${r.goodSheets}. Perdas: ${r.wasteSheets??'—'}. Preparação: ${r.setupSheets??'—'}. Aproveitamento da área útil: ${percent(r.utilization)}.</p>`:''}<dl class="breakdown">${Object.entries(labels).map(([key,label])=>`<dt>${label}</dt><dd>${money(r.costs[key])}</dd>`).join('')}<dt>${r.status==='calculated'?'Custo total':'Subtotal conhecido (incompleto)'}</dt><dd>${money(r.status==='calculated'?r.costCents:r.knownSubtotalCents)}</dd><dt>Imposto sobre a venda</dt><dd>${money(r.taxCents)}</dd><dt>Lucro da simulação</dt><dd>${money(r.profitCents)}</dd><dt>Papel + impressão + manutenção/folha</dt><dd>${money(r.perProductionSheetCents,4)}</dd><dt>Esses custos por folha de comanda</dt><dd>${money(r.materialPerFinishedLeafCents,4)}</dd></dl>${r.missing.length?`<details class="pending"><summary>Ver campos pendentes</summary><ul>${r.missing.map(m=>`<li>${escapeHtml(m.label)}</li>`).join('')}</ul></details>`:''}${!r.comparableReference?'<p class="help">Medidas ou papel diferentes da referência: compare com essa ressalva.</p>':''}<div class="table-scroll"><table><caption>Tabela atual versus cálculo por custos</caption><thead><tr><th>Blocos</th><th>Custo</th><th>Venda</th><th>Referência</th><th>Diferença</th></tr></thead><tbody>${route.references.map(s=>`<tr><td>${s.job.blocks}</td><td>${money(s.costCents)}</td><td>${money(s.saleCents)}</td><td>${money(s.referenceCents)}</td><td>${s.differenceCents>0?'+':''}${money(s.differenceCents)}</td></tr>`).join('')}</tbody></table></div></article>`;
+}
+function refresh(){
+ const error=root.querySelector('#lab-error'),results=root.querySelector('#cost-results');
+ try{const rows=compareProductionCosts(job,config);error.hidden=true;error.textContent='';results.innerHTML=rows.map(routeCard).join('');}
+ catch(e){error.hidden=false;error.textContent=e.message;results.replaceChildren();}
+}
+function set(path,value){const keys=path.split('.');let o=config;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;}
+function edit(e){
+ const path=e.target.dataset.costPath,key=e.target.dataset.job;
+ if(path&&allowed.has(path)){
+  const kind=allowed.get(path)[2],v=e.target.value;
+  const value=kind==='support'?(v===''?null:v==='yes'):v===''?null:Number(v.replace(',','.'))/(kind==='money'?0.01:kind==='percent'?100:1);
+  set(path,value);config.sources[path]='Informado nesta simulação; não auditado.';updateSources();refresh();
+ }else if(key&&['widthCm','heightCm','paper','color','blocks'].includes(key)){job[key]=e.target.value;refresh();}
+}
+if(!isCostPreviewHost(location.hostname)){
+ root.innerHTML='<div class="notice"><strong>Análise disponível somente na prévia de testes.</strong> Nenhuma simulação de custos ou venda foi ativada neste domínio.</div>';
+}else{
+ render();root.addEventListener('input',edit);root.addEventListener('change',edit);
+ root.addEventListener('click',e=>{
+  if(e.target.closest('#legacy-estimates')){config=withLegacyEstimates(config);render();}
+  if(e.target.closest('#reset-costs')){config=newProductionCostConfig();render();}
+  if(e.target.closest('#export-costs')){
+   const blob=new Blob([JSON.stringify({job,config},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='comandas-parametros-simulacao-2.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+ });
+}

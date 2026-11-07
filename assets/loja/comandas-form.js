@@ -1,3 +1,4 @@
+import {isCostPreviewHost} from './comandas-cost-config.js';
 import {estimateComanda,comandaOption} from './comandas-pricing.js';
 import {renderComandaResult} from './comandas-card.js';
 
@@ -27,7 +28,7 @@ export function installComandaCalculator({add,getWhatsApp,notify}){
   });
   // Catálogo e filtros recriam os cartões: recalcular os links sem duplicar listeners.
   const grid=document.querySelector('#product-grid');
-  const initialize=()=>grid?.querySelectorAll('[data-comanda-calculator]').forEach(refresh);
+  const initialize=()=>grid?.querySelectorAll('[data-comanda-calculator]').forEach(root=>{refresh(root);const link=root.querySelector('[data-comanda-cost-link]');if(link)link.hidden=!isCostPreviewHost(location.hostname);});
   if(grid)new MutationObserver(records=>{if(records.some(r=>r.target===grid))initialize();}).observe(grid,{childList:true});
   initialize();
 }
