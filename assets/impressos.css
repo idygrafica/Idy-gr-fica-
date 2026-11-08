@@ -7,9 +7,9 @@
 .impressos-page .ed-material-nav a{padding:12px;font-size:14px}
 .impressos-page .ed-service-image{height:auto;aspect-ratio:1.64;flex:none}
 .impressos-page .ip-approved-photo{background-image:url('/assets/loja/referencia-aprovada.jpg');background-repeat:no-repeat;background-size:595% auto;background-color:#f1f2f3}
-.impressos-page .ip-photo-cards{background-position:2.3% 49%}
+.impressos-page .ip-photo-cards{background-image:url('/assets/loja/produtos/cartoes.webp');background-size:contain;background-position:center}
 .impressos-page .ip-photo-color{background-position:23.6% 49%}
-.impressos-page .ip-photo-folders{background-position:44.75% 49%}
+.impressos-page .ip-photo-folders{background-image:url('/assets/loja/produtos/pastas.webp');background-size:contain;background-position:center}
 .impressos-page .ip-photo-blocks{background-position:65.9% 49%}
 .impressos-page .ip-machine{background:linear-gradient(120deg,#f0f7fc,#e7f3ed)}
 .impressos-page .ip-machine img{object-fit:contain;padding:10px}
