@@ -30,7 +30,7 @@ assert.deepEqual(config.redirects.filter(r=>r.from!==path+'.html'),beforeConfig.
 assert.deepEqual(config.redirects.find(r=>r.from===path+'.html'),{from:path+'.html',to:path,status:301,force:true});
 const source=await readFile('impressao-de-apostilas.html','utf8');
 assert.equal(source.match(/<title>(.*?)<\/title>/)[1],title);assert.equal([...source.matchAll(/<h1\b/g)].length,1);assert(source.includes('rel="canonical" href="'+origin+path+'"'));assert(!/noindex/i.test(source));
-for(const text of ['A4','A5','75 g','preto e branco','pequenas tiragens','PDF','Travessa da Luz, 845','exclusivamente online','Xerox Color 560'])assert(source.includes(text),text);
+for(const text of ['A4','A5','75 g','preto e branco','pequenas tiragens','PDF','Passagem da Luz, 845','exclusivamente online','Xerox Color 560'])assert(source.includes(text),text);
 assert(!/R\$|aggregateRating|priceCurrency|"offers"|"@type":"Product"/.test(source),'Preço ou avaliação indevida');
 const schemas=[...source.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]));
 const service=schemas.flatMap(s=>s['@graph']||[s]).find(n=>n['@type']==='Service');assert(service);assert.equal(service.url,origin+path);assert.equal(service.areaServed.name,'Porto Alegre');assert.equal(service.provider['@id'],origin+'/#business');
