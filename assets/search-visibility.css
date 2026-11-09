@@ -7,6 +7,8 @@
 /* Botão de localização nas páginas públicas. */
   .contact-map, footer a.contact-map, .quick-page footer a.contact-map {
     display: inline-flex;
+    position: relative;
+    top: -.25rem;
     align-items: center;
     gap: .75rem;
     width: fit-content;
