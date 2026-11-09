@@ -1,3 +1,4 @@
+import {isComandaOption,comandaFromOption,comandaOption,estimateComanda,comandaLabel} from './comandas-pricing.js';
 import {digitalProductId,digitalProducts,isDigitalOption,digitalOption,normalizeArtwork,digitalPrice,artworkKey,ARTWORK_PRICE_CENTS} from './digital-products.js';
 import { products } from './catalog.js';
 export const CART_KEY = 'loja-idy.cart.v1';
@@ -10,6 +11,11 @@ export function quantity(value) {
 export function itemDetails(item) {
   const productId=isDigitalOption(item.optionId)?digitalProductId(item.productId):item.productId;
   const product = products.find(p=>p.id===productId);
+  if(product?.id==='comandas'&&isComandaOption(item.optionId)){
+    const job=comandaFromOption(item.optionId,item.quantity),estimate=estimateComanda(job);
+    if(estimate.status!=='provisional')throw Error('Medidas de comanda exigem avaliação da equipe.');
+    return {productId:product.id,optionId:comandaOption(job),quantity:job.blocks,product,option:{id:comandaOption(job),label:comandaLabel(job),priceCents:null},totalCents:null,comandaEstimate:estimate};
+  }
   const digital=isDigitalOption(item.optionId);
   const option = digital?digitalOption(product?.id,item.optionId):product?.options.find(o=>o.id===item.optionId);
   if (!option) throw new Error('Produto ou opção indisponível.');
@@ -36,9 +42,10 @@ export function addItem(cart, productId, optionId, amount, artwork) {
   const details=itemDetails({productId,optionId,quantity:amount,artwork});
   productId=details.product.id;
   artwork=details.artwork;
+  if(details.comandaEstimate)optionId=details.optionId;
   const next = cart.map(i=>({...i}));
   const item = next.find(i=>i.productId===productId && i.optionId===optionId && (!artwork?!i.artwork:(i.artwork?.mode===artwork.mode&&artworkKey(i.artwork)===artworkKey(artwork))));
-  if (item) item.quantity=quantity(item.quantity+quantity(amount));
+  if (item){const combined=quantity(item.quantity+quantity(amount));if(details.comandaEstimate)itemDetails({...item,quantity:combined});item.quantity=combined;}
   else next.push({productId,optionId,quantity:quantity(amount),...(artwork?{artwork}: {})});
   return next;
 }
@@ -55,7 +62,8 @@ export function whatsappUrl(cart) {
     `• ${i.artwork?(digitalProducts[i.product.id]?.name||i.product.name):i.product.name} — ${i.option.label}`,
     ...(i.artwork?[i.artwork.mode==='create'?`Criação solicitada: ${i.artwork.reference}.`:'Arte pronta: sem custo adicional de criação.']:[]),
     ...(i.product.id==='cartoes'?[`Especificações: ${i.product.description}.`]:[]),
-    i.product.id==='cartoes'?`Quantidade: ${i.quantity*Number(i.option.id)} cartões (${i.quantity} lote(s) de ${i.option.label}).`:`Quantidade: ${i.quantity}${i.product.id==='a3'?' folha(s)':i.product.id==='pastas'?' pasta(s)':i.option.quantityTotals?' bloco(s)':' unidade(s)'}.`,
+    i.product.id==='cartoes'?`Quantidade: ${i.quantity*Number(i.option.id)} cartões (${i.quantity} lote(s) de ${i.option.label}).`:`Quantidade: ${i.quantity}${i.product.id==='a3'?' folha(s)':i.product.id==='pastas'?' pasta(s)':i.comandaEstimate||i.option.quantityTotals?' bloco(s)':' unidade(s)'}.`,
+    ...(i.comandaEstimate?[`Total de folhas: ${i.comandaEstimate.totalLeaves}.`,`Simulação provisória: ${money(i.comandaEstimate.totalCents)} no total, ${money(i.comandaEstimate.perBlockCents)} por bloco. Não é preço de venda aprovado; confirmar com a equipe.`]:[]),
     i.totalCents===null ? 'Preço a confirmar: solicito orçamento.' : `${i.product.id==='cartoes'?'Por lote de '+i.option.label:'Unitário'}: ${money(i.option.priceCents)}. Total: ${money(i.totalCents)}.`
   ].join('\n'))];
   if(artworks.length)lines.push('Criação da arte (uma vez por arte, não por unidade):',...artworks.map(a=>`${a.reference}: ${money(a.priceCents)}.`),`Subtotal de criação: ${money(artworkTotalCents)}. Criação complexa sob orçamento.`);
