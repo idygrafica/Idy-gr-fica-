@@ -36,7 +36,7 @@ class Document(HTMLParser):
   self.visible.append(data)
  def summary(self):
   nodes=[n for s in self.schemas for n in s.get('@graph',[s])];text=' '.join(' '.join(self.visible).split())
-  return {'title':''.join(self.title),'description':self.metas.get('description'),'canonical':self.canonicals,'metaRobots':self.metas.get('robots'),'h1':self.h1,'schemaTypes':[n.get('@type')for n in nodes],'schemaErrors':self.schema_errors,'textCharacters':len(text),'addressMentions':re.findall(r'.{0,20}(?:Travessa da Luz|Rua Umbu|Estamos online|100% online|exclusivamente online|retirada|Retirada|horário|presencial).{0,100}',text),'structuredAddresses':re.findall(r'"streetAddress"\s*:\s*"([^"]+)"',json.dumps(self.schemas,ensure_ascii=False))}
+  return {'title':''.join(self.title),'description':self.metas.get('description'),'canonical':self.canonicals,'metaRobots':self.metas.get('robots'),'h1':self.h1,'schemaTypes':[n.get('@type')for n in nodes],'schemaErrors':self.schema_errors,'textCharacters':len(text),'addressMentions':re.findall(r'.{0,20}(?:Passagem da Luz|Rua Umbu|Estamos online|100% online|exclusivamente online|retirada|Retirada|horário|presencial).{0,100}',text),'structuredAddresses':re.findall(r'"streetAddress"\s*:\s*"([^"]+)"',json.dumps(self.schemas,ensure_ascii=False))}
 def fetch(url,agent='IDY-ReadOnly-SEO-Audit/1.0'):
  req=urllib.request.Request(url,headers={'User-Agent':agent,'Cache-Control':'no-cache'})
  try:
