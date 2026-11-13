@@ -77,3 +77,73 @@
   outline: 2px solid #146b35;
   outline-offset: 3px;
 }
+
+/* Mantém o Maps junto ao atendimento por IA no cabeçalho da loja. */
+.header-quick-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.header-map {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid #cbd8ce;
+  border-radius: 8px;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.header-map svg {
+  display: block;
+}
+
+.header-map:hover {
+  background: #f0f7f1;
+}
+
+.header-map:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .header-quick-links {
+    gap: 7px;
+  }
+
+  .header-map {
+    gap: 4px;
+    padding: 0 6px;
+    font-size: 11px;
+    line-height: 1.15;
+  }
+}
+
+@media (max-width: 430px) {
+  .header {
+    column-gap: 8px;
+  }
+
+  .header .brand img {
+    width: clamp(72px, 24vw, 102px);
+  }
+
+  .header .ai {
+    gap: 4px;
+  }
+
+  .header .ai svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .header-map > span:last-child {
+    max-width: 38px;
+  }
+}
