@@ -12,11 +12,18 @@
   gap: 7px;
   min-height: 44px;
   padding: 0 10px;
-  border: 1px solid #cbd8ce;
+  border: 2px solid #4285f4;
+  background: #e8f0fe;
   border-radius: 8px;
-  color: var(--navy);
+  color: #174ea6;
   font-size: 13px;
   font-weight: 700;
+}
+
+.header-map-label {
+  max-width: 94px;
+  line-height: 1.15;
+  white-space: normal;
 }
 
 .header-map svg {
@@ -24,11 +31,11 @@
 }
 
 .header-map:hover {
-  background: #f0f7f1;
+  background: #d2e3fc;
 }
 
 .header-map:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid #174ea6;
   outline-offset: 3px;
 }
 
@@ -63,8 +70,8 @@
     height: 21px;
   }
 
-  .header-map > span:last-child {
-    max-width: 38px;
+  .header-map-label {
+    max-width: 68px;
   }
 }
 
@@ -85,13 +92,11 @@
 }
 
 .nav[data-nav-compact] .header-map {
-  color: #122849;
-  background: #fff;
   white-space: nowrap;
 }
 
 .nav[data-nav-compact] .header-map:hover {
-  background: #f0f7f1;
+  background: #d2e3fc;
 }
 
 @media (min-width: 981px) and (max-width: 1200px) {
