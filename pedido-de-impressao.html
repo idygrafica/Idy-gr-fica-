@@ -43,7 +43,8 @@
     .folio { width: 100%; min-width: 0; margin: .2rem 0 .85rem; }
     .folio-pages { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: .6rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #94baac #12384c; }
     .folio-sheet { min-width: 0; display: flex; flex-direction: column; gap: .45rem; scroll-snap-align: start; padding: .75rem; border-radius: .8rem; background: #f5fbf7; color: #132535; }
-    .folio-sheet img, .folio-graphic { display: block; width: 100%; height: clamp(8.5rem, 36vw, 11.25rem); border-radius: .5rem; object-fit: cover; }
+    .folio-sheet img, .folio-sheet video, .folio-graphic { display: block; width: 100%; height: clamp(8.5rem, 36vw, 11.25rem); border-radius: .5rem; object-fit: cover; }
+    .folio-sheet video { background: #102942; }
     .folio-cover { background: linear-gradient(140deg, #fff, #e9f4f7); border: 1px solid #b9d8d5; }
     .folio-cover img { object-fit: contain; padding: .25rem; background: radial-gradient(ellipse at 50% 72%, #c7e6ed, #eaf6fa 66%); }
     .folio-cover strong { color: #0d354c; font-size: clamp(1.2rem, 4vw, 1.55rem); }
@@ -114,9 +115,19 @@
               <p>Impressão digital e digitalização de documentos.</p>
             </article>
             <article class="folio-sheet">
-              <img src="https://idygrafica.com.br/assets/loja/produtos/a3.webp" alt="Exemplos de folhas impressas em cores" width="1536" height="1024" loading="lazy">
+              <video src="/assets/folheto/impresso-colorido.mp4" poster="/assets/folheto/impresso-colorido.webp" width="384" height="240" preload="none" muted playsinline loop controls aria-label="Vídeo de um material informativo impresso em cores"></video>
               <strong>Impressão digital</strong>
               <p>Documentos, provas e trabalhos escolares em A4 ou A3.</p>
+            </article>
+            <article class="folio-sheet">
+              <video src="/assets/folheto/folhas-impressas.mp4" poster="/assets/folheto/folhas-impressas.webp" width="384" height="240" preload="none" muted playsinline loop controls aria-label="Vídeo de folhas com códigos impressos pela IDY"></video>
+              <strong>Folhas impressas</strong>
+              <p>Um lote de folhas com códigos, direto da produção da IDY.</p>
+            </article>
+            <article class="folio-sheet">
+              <video src="/assets/folheto/papel-nos-rolos.mp4" poster="/assets/folheto/papel-nos-rolos.webp" width="384" height="240" preload="none" muted playsinline loop controls aria-label="Vídeo do papel passando pelos rolos"></video>
+              <strong>Papel em produção</strong>
+              <p>Veja a passagem das folhas pelos rolos do equipamento.</p>
             </article>
             <article class="folio-sheet">
               <img src="https://idygrafica.com.br/assets/personalizacao/camiseta-bone-estudio.jpg" alt="Exemplo ilustrativo de camiseta e boné para personalização" width="1800" height="1200" loading="lazy">
@@ -137,7 +148,7 @@
           <p class="folio-help" id="folio-help">Deslize para folhear os serviços.</p>
           <div class="folio-controls" hidden>
             <button class="folio-arrow" type="button" data-folio-prev aria-label="Lâmina anterior" aria-controls="folio-pages">‹</button>
-            <span class="folio-counter" aria-live="polite">1 / 5</span>
+            <span class="folio-counter" aria-live="polite">1 / 7</span>
             <button class="folio-arrow" type="button" data-folio-next aria-label="Próxima lâmina" aria-controls="folio-pages">›</button>
             <button type="button" data-folio-auto aria-controls="folio-pages">Passar sozinho</button>
           </div>
@@ -179,6 +190,7 @@
     const folio = document.querySelector('.folio');
     const pages = folio.querySelector('.folio-pages');
     const sheets = Array.from(pages.children);
+    const videos = sheets.map((sheet) => sheet.querySelector('video'));
     const counter = folio.querySelector('.folio-counter');
     const autoButton = folio.querySelector('[data-folio-auto]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -199,11 +211,25 @@
       pages.scrollTo({ left: offset(sheets[index]), behavior: wrap || reducedMotion.matches ? 'instant' : 'smooth' });
     }
 
+    function syncVideos() {
+      const active = currentPage();
+      videos.forEach((video, index) => {
+        if (!video) return;
+        if (index === active && playing && inView && !document.hidden) {
+          video.muted = true;
+          if (video.paused) video.play().catch(() => {});
+        } else if (!video.paused) {
+          video.pause();
+        }
+      });
+    }
+
     function syncTimer() {
       if (timer !== null) window.clearInterval(timer);
       timer = playing && inView && !document.hidden
         ? window.setInterval(() => turnPage(1), 6000)
         : null;
+      syncVideos();
     }
 
     function setPlaying(value) {
@@ -230,7 +256,10 @@
     });
     pages.addEventListener('scroll', () => {
       const label = (currentPage() + 1) + ' / ' + sheets.length;
-      if (counter.textContent !== label) counter.textContent = label;
+      if (counter.textContent !== label) {
+        counter.textContent = label;
+        syncVideos();
+      }
     }, { passive: true });
     document.addEventListener('visibilitychange', syncTimer);
     reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) stop(); });
