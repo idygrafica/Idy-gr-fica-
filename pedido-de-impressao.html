@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impressão após as 18h em Porto Alegre | IDY Gráfica</title>
+  <meta name="description" content="Envie seu pedido de impressão digital, DTF ou sublimação pelo WhatsApp mesmo depois das 18h. A IDY Gráfica confirma o prazo e combina a retirada.">
+  <link rel="canonical" href="https://idygrafica.com.br/pedido-de-impressao">
+  <link rel="icon" href="https://idygrafica.com.br/favicon.ico">
+  <style>
+    :root { font-family: Inter, system-ui, sans-serif; color: #132535; background: #edf4fa; line-height: 1.55; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: #065baa; }
+    header, main, footer { max-width: 68rem; margin-inline: auto; padding-inline: 1.25rem; }
+    header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; padding-block: 1rem; }
+    header img { display: block; width: 108px; height: auto; }
+    main { padding-block: clamp(1rem, 5vw, 4rem) 2rem; }
+    .order { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 5vw, 4rem); align-items: start; }
+    h1 { font-size: clamp(2.3rem, 5vw, 4.1rem); line-height: 1.05; margin: .25em 0; letter-spacing: -.04em; }
+    h2 { line-height: 1.2; margin: 0 0 .75rem; }
+    p { margin: 0 0 1rem; }
+    .location { font-weight: 650; color: #176248; }
+    .intro { position: relative; overflow: hidden; padding: clamp(1.25rem, 4vw, 2.5rem); background: #102942; color: #fff; border-radius: 1.2rem; }
+    .intro .location { color: #b9f589; }
+    .intro h1 strong { color: #c1f68c; }
+    .intro img { display: block; width: min(100%, 13rem); height: auto; margin: 0 auto; }
+    .intro .note { color: #e0eaf0; }
+    fieldset { border: 0; padding: 0; margin: 0 0 1rem; min-inline-size: 0; }
+    legend { font-weight: 700; margin-bottom: .5rem; }
+    .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: .55rem; }
+    .service { display: flex; align-items: center; gap: .5rem; margin: 0; padding: .65rem .6rem; border: 1px solid #657b7a; border-radius: .5rem; cursor: pointer; font-size: .9rem; }
+    .service:has(:checked) { border-color: #126247; background: #e8f7ee; }
+    .service input { width: auto; min-height: auto; margin: 0; accent-color: #126247; }
+    [hidden] { display: none !important; }
+    .wide { grid-column: 1 / -1; }
+    .details { margin-bottom: 1rem; }
+    form { background: white; border: 1px solid #ccd9e3; border-radius: 1.2rem; box-shadow: 0 12px 32px #10294212; padding: clamp(1rem, 4vw, 2rem); }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    label { display: block; font-weight: 650; margin-bottom: .3rem; }
+    select, input, button { font: inherit; }
+    select, input { width: 100%; min-height: 2.8rem; padding: .45rem; border: 1px solid #657b7a; border-radius: .4rem; background: white; color: inherit; }
+    button { display: block; width: 100%; margin: 1.25rem 0 .5rem; padding: .7rem 1rem; border: 0; border-radius: .5rem; background: #126247; color: white; font-weight: 700; cursor: pointer; }
+    button:hover { background: #0d4f38; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #0876cd; outline-offset: 3px; }
+    .note { color: #435661; font-size: .93rem; margin-bottom: 0; }
+    .faq { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid #c9d8d5; }
+    footer { padding-block: 0 1.75rem; color: #435661; }
+    @media (max-width: 700px) { .order { grid-template-columns: 1fr; } }
+    @media (max-width: 360px) { .fields { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="https://idygrafica.com.br/" aria-label="IDY Gráfica, início">
+      <img src="https://idygrafica.com.br/assets/logo-idy-grafica.png" alt="IDY Gráfica" width="108">
+    </a>
+    <a href="https://idygrafica.com.br/impressoes-rapidas">Ver Impressões Rápidas</a>
+  </header>
+  <main>
+    <div class="order">
+      <section class="intro" aria-labelledby="title">
+        <p class="location">IDY Gráfica · Passo d’Areia, Porto Alegre</p>
+        <h1 id="title">Precisa imprimir <strong>depois das 18h?</strong></h1>
+        <p>Monte o pedido de impressão digital, DTF ou sublimação e envie pelo WhatsApp, mesmo depois das 18h.</p>
+        <img src="https://idygrafica.com.br/assets/xerox-color-560-home.webp" alt="Impressora digital Xerox Color 560 da IDY Gráfica" width="960" height="960">
+        <p class="note">A equipe confirma o valor, o prazo e o horário da retirada pelo WhatsApp.</p>
+      </section>
+      <form id="pedido" action="https://wa.me/5551981687562" aria-labelledby="order-title">
+        <h2 id="order-title">Monte seu pedido</h2>
+        <fieldset>
+          <legend>O que tu quer imprimir?</legend>
+          <div class="services">
+            <label class="service"><input type="radio" name="servico" value="digital" checked> Digital</label>
+            <label class="service"><input type="radio" name="servico" value="dtf"> DTF</label>
+            <label class="service"><input type="radio" name="servico" value="sublimacao"> Sublimação</label>
+          </div>
+        </fieldset>
+        <p class="details" id="service-details">Impressão A4 ou A3 a partir de uma folha, em cores ou em preto e branco.</p>
+        <div class="fields">
+          <div data-digital>
+            <label for="formato">Formato do papel</label>
+            <select id="formato"><option>A4</option><option>A3</option></select>
+          </div>
+          <div>
+            <label for="quantidade" id="quantity-label">Cópias do arquivo</label>
+            <input id="quantidade" type="number" inputmode="numeric" min="1" step="1" value="1" required>
+          </div>
+          <div data-digital>
+            <label for="cor">Cor</label>
+            <select id="cor"><option>Preto e branco</option><option>Colorida</option></select>
+          </div>
+          <div data-digital>
+            <label for="faces">Lados</label>
+            <select id="faces"><option>Só frente</option><option>Frente e verso</option></select>
+          </div>
+          <div id="art-field" class="wide" hidden>
+            <label for="arte">Peça ou medida da arte (opcional)</label>
+            <input id="arte" type="text" maxlength="150">
+          </div>
+        </div>
+        <button type="submit">Pedir orçamento pelo WhatsApp</button>
+        <p class="note">Anexe o PDF ou a arte na conversa do WhatsApp.</p>
+      </form>
+    </div>
+    <section class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Procurando por “Click Impresso” em Porto Alegre?</h2>
+      <p>A Click Impresso é outra gráfica da cidade. Nesta página, tu pode pedir orçamento de impressão digital, DTF ou sublimação com a IDY Gráfica. O atendimento é online e a retirada é combinada no Passo d’Areia, perto do Bourbon Country e do Iguatemi.</p>
+    </section>
+  </main>
+  <footer>IDY Gráfica · Porto Alegre, RS</footer>
+  <script>
+    const form = document.getElementById('pedido');
+    const digitalFields = form.querySelectorAll('[data-digital]');
+    const descriptions = {
+      digital: 'Impressão A4 ou A3 a partir de uma folha, em cores ou em preto e branco.',
+      dtf: 'Para personalizar camisetas e outras peças. Informe a quantidade, a peça e o tamanho da arte.',
+      sublimacao: 'Para materiais compatíveis com sublimação. Se precisar de plotagem para sublimação, informe as medidas da arte.'
+    };
+    const serviceNames = {
+      digital: 'Impressão digital',
+      dtf: 'DTF',
+      sublimacao: 'Sublimação'
+    };
+
+    function selectedService() {
+      return form.elements.servico.value;
+    }
+
+    function updateFields() {
+      const service = selectedService();
+      const isDigital = service === 'digital';
+      digitalFields.forEach((field) => { field.hidden = !isDigital; });
+      document.getElementById('art-field').hidden = isDigital;
+      document.getElementById('quantity-label').textContent = isDigital ? 'Cópias do arquivo' : 'Quantidade';
+      document.getElementById('service-details').textContent = descriptions[service];
+    }
+
+    form.querySelectorAll('input[name="servico"]').forEach((option) => {
+      option.addEventListener('change', updateFields);
+    });
+    updateFields();
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const service = selectedService();
+      const quantity = document.getElementById('quantidade').value;
+      const message = [
+        'Olá, IDY Gráfica! Gostaria de um orçamento.',
+        'Serviço: ' + serviceNames[service],
+        'Quantidade: ' + quantity
+      ];
+
+      if (service === 'digital') {
+        message.push(
+          'Formato: ' + document.getElementById('formato').value,
+          'Cor: ' + document.getElementById('cor').value,
+          'Lados: ' + document.getElementById('faces').value
+        );
+      } else {
+        const art = document.getElementById('arte').value.trim();
+        if (art) message.push('Peça ou medida: ' + art);
+      }
+
+      message.push('Vou anexar o arquivo aqui na conversa.');
+      const destination = new URL(form.action);
+      destination.searchParams.set('text', message.join('\n'));
+      window.location.assign(destination.href);
+    });
+  </script>
+</body>
+</html>
