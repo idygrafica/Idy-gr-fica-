@@ -51,12 +51,10 @@
     .folio-graphic { display: grid; place-items: center; background: #deeffa; color: #095a91; font-size: 2.1rem; font-weight: 800; }
     .folio-sheet strong { display: block; font-size: 1.1rem; line-height: 1.2; }
     .folio .folio-sheet p { margin: 0; font-size: .9rem; }
-    .folio .folio-help { margin: .45rem 0; font-size: .84rem; color: #e0eaf0; }
-    .folio-controls { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; margin-top: .45rem; }
+    .folio-controls { display: flex; align-items: center; justify-content: space-between; gap: .45rem; margin-top: .45rem; }
     .folio-controls[hidden] { display: none; }
-    .folio-controls button { min-height: 44px; padding: .35rem .6rem; border: 1px solid #96bcba; border-radius: .45rem; background: #143a4e; color: #fff; font: 650 .85rem/1.2 system-ui, sans-serif; cursor: pointer; }
+    .folio-controls button { min-height: 44px; padding: .35rem .65rem; border: 0; border-radius: .45rem; background: transparent; color: #fff; font: 650 .85rem/1.2 system-ui, sans-serif; cursor: pointer; }
     .folio-controls button:hover { background: #205170; }
-    .folio-controls .folio-arrow { min-width: 44px; font-size: 1.3rem; }
     .folio-counter { min-width: 2.6em; text-align: center; font-size: .86rem; }
     .folio-controls button:focus-visible, .folio-pages:focus-visible { outline: 2px solid #c8f698; outline-offset: 2px; }
     .intro .note { color: #e0eaf0; }
@@ -108,24 +106,24 @@
         <h1 id="title">Precisa imprimir <strong>depois das 18h?</strong></h1>
         <p>Envia teu pedido pelo WhatsApp. Quando a IDY avisar que ficou pronto, passa aqui e retira na porta.</p>
         <div class="folio" role="group" aria-label="Mostruário de serviços da IDY">
-          <div class="folio-pages" id="folio-pages" tabindex="0" aria-label="Lâminas do mostruário" aria-describedby="folio-help">
+          <div class="folio-pages" id="folio-pages" tabindex="0" aria-label="Lâminas do mostruário">
             <article class="folio-sheet folio-cover">
               <img src="https://idygrafica.com.br/assets/xerox-color-560-home.webp" alt="Impressora digital da IDY Gráfica" width="960" height="960">
               <strong>Xerox Color 560</strong>
               <p>Impressão digital e digitalização de documentos.</p>
             </article>
             <article class="folio-sheet">
-              <video src="/assets/folheto/impresso-colorido.mp4" poster="/assets/folheto/impresso-colorido.webp" width="384" height="240" preload="none" muted playsinline loop controls aria-label="Vídeo de um material informativo impresso em cores"></video>
+              <video src="/assets/folheto/impresso-colorido.mp4" poster="/assets/folheto/impresso-colorido.webp" width="384" height="240" preload="none" muted playsinline loop aria-label="Vídeo de um material informativo impresso em cores"></video>
               <strong>Impressão digital</strong>
               <p>Documentos, provas e trabalhos escolares em A4 ou A3.</p>
             </article>
             <article class="folio-sheet">
-              <video src="/assets/folheto/folhas-impressas.mp4" poster="/assets/folheto/folhas-impressas.webp" width="384" height="240" preload="none" muted playsinline loop controls aria-label="Vídeo de folhas com códigos impressos pela IDY"></video>
+              <video src="/assets/folheto/folhas-impressas.mp4" poster="/assets/folheto/folhas-impressas.webp" width="384" height="240" preload="none" muted playsinline loop aria-label="Vídeo de folhas com códigos impressos pela IDY"></video>
               <strong>Folhas impressas</strong>
               <p>Um lote de folhas com códigos, direto da produção da IDY.</p>
             </article>
             <article class="folio-sheet">
-              <video src="/assets/folheto/papel-nos-rolos.mp4" poster="/assets/folheto/papel-nos-rolos.webp" width="384" height="240" preload="none" muted playsinline loop controls aria-label="Vídeo do papel passando pelos rolos"></video>
+              <video src="/assets/folheto/papel-nos-rolos.mp4" poster="/assets/folheto/papel-nos-rolos.webp" width="384" height="240" preload="none" muted playsinline loop aria-label="Vídeo do papel passando pelos rolos"></video>
               <strong>Papel em produção</strong>
               <p>Veja a passagem das folhas pelos rolos do equipamento.</p>
             </article>
@@ -145,12 +143,9 @@
               <p>Digitalização de documentos e lotes de folhas em alta resolução.</p>
             </article>
           </div>
-          <p class="folio-help" id="folio-help">Deslize para folhear os serviços.</p>
           <div class="folio-controls" hidden>
-            <button class="folio-arrow" type="button" data-folio-prev aria-label="Lâmina anterior" aria-controls="folio-pages">‹</button>
             <span class="folio-counter" aria-live="polite">1 / 7</span>
-            <button class="folio-arrow" type="button" data-folio-next aria-label="Próxima lâmina" aria-controls="folio-pages">›</button>
-            <button type="button" data-folio-auto aria-controls="folio-pages">Passar sozinho</button>
+            <button type="button" data-folio-auto aria-controls="folio-pages">Pausar</button>
           </div>
         </div>
         <p class="note">A gente confirma o valor e o prazo pelo WhatsApp.</p>
@@ -204,10 +199,9 @@
       Math.abs(offset(sheet) - pages.scrollLeft) < Math.abs(offset(sheets[closest]) - pages.scrollLeft) ? index : closest,
     0);
 
-    function turnPage(direction) {
-      const next = currentPage() + direction;
-      const index = (next + sheets.length) % sheets.length;
-      const wrap = next !== index;
+    function advancePage() {
+      const index = (currentPage() + 1) % sheets.length;
+      const wrap = index === 0;
       pages.scrollTo({ left: offset(sheets[index]), behavior: wrap || reducedMotion.matches ? 'instant' : 'smooth' });
     }
 
@@ -227,14 +221,14 @@
     function syncTimer() {
       if (timer !== null) window.clearInterval(timer);
       timer = playing && inView && !document.hidden
-        ? window.setInterval(() => turnPage(1), 6000)
+        ? window.setInterval(advancePage, 6000)
         : null;
       syncVideos();
     }
 
     function setPlaying(value) {
       playing = value;
-      autoButton.textContent = playing ? 'Pausar' : 'Passar sozinho';
+      autoButton.textContent = playing ? 'Pausar' : 'Reproduzir';
       counter.setAttribute('aria-live', playing ? 'off' : 'polite');
       syncTimer();
     }
@@ -245,20 +239,11 @@
 
     autoButton.addEventListener('click', () => setPlaying(!playing));
 
-    folio.querySelector('[data-folio-prev]').addEventListener('click', () => { stop(); turnPage(-1); });
-    folio.querySelector('[data-folio-next]').addEventListener('click', () => { stop(); turnPage(1); });
-    pages.addEventListener('pointerdown', stop);
-    pages.addEventListener('keydown', (event) => {
-      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-      event.preventDefault();
-      stop();
-      turnPage(event.key === 'ArrowLeft' ? -1 : 1);
-    });
     pages.addEventListener('scroll', () => {
       const label = (currentPage() + 1) + ' / ' + sheets.length;
       if (counter.textContent !== label) {
         counter.textContent = label;
-        syncVideos();
+        syncTimer();
       }
     }, { passive: true });
     document.addEventListener('visibilitychange', syncTimer);
