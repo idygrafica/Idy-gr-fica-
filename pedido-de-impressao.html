@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impressão e Digitalização em Porto Alegre | IDY Gráfica</title>
+  <meta name="description" content="Impressão A4 e A3, DTF, sublimação e digitalização de documentos em PDF no Passo d’Areia. Peça orçamento à IDY Gráfica pelo WhatsApp, mesmo depois das 18h.">
+  <link rel="canonical" href="https://idygrafica.com.br/pedido-de-impressao">
+  <link rel="icon" href="https://idygrafica.com.br/favicon.ico">
+  <link rel="stylesheet" href="https://idygrafica.com.br/assets/style.css">
+  <link rel="stylesheet" href="https://idygrafica.com.br/assets/navegacao.css">
+  <link rel="stylesheet" href="https://idygrafica.com.br/assets/search-visibility.css">
+  <link rel="stylesheet" href="https://idygrafica.com.br/assets/header-map.css">
+  <style>
+    body.order-page { margin: 0; background: radial-gradient(ellipse at 8% 0%, #e0f0ff 0%, #f4f8fb 52%); }
+    .order-page .order-main { max-width: 68rem; margin-inline: auto; padding: clamp(.75rem, 2.5vw, 2rem) 1.25rem 2rem; color: #132535; line-height: 1.55; }
+    .order-page .skip-link { position: absolute; z-index: 200; top: .5rem; left: .5rem; padding: .75rem; color: #132535; background: #fff; transform: translateY(-160%); }
+    .order-page .skip-link:focus { transform: translateY(0); }
+    .order-page .order-contact { max-width: 68rem; margin: .7rem auto 0; padding: 0 1.25rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+    .order-page .order-contact a { box-sizing: border-box; display: flex; justify-content: center; align-items: center; gap: .4rem; width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: .4rem .45rem; border-radius: .55rem; border: 1px solid transparent; font: 700 .87rem/1.2 system-ui, sans-serif; text-decoration: none; color: #132535; }
+    .order-page .order-contact svg { display: block; width: 1.2rem; height: 1.2rem; flex: none; }
+    .order-page .order-contact .contact-whatsapp { background: #107047; color: #fff; }
+    .order-page .order-contact .contact-maps { background: #e8f0fe; border-color: #8fb6fa; color: #174ea6; white-space: normal; }
+    .order-page .order-contact .contact-label { min-width: 0; overflow-wrap: anywhere; }
+    .order-page .order-contact .contact-instagram { background: #ffeff7; border-color: #edb4d8; color: #8b1c5a; }
+    .order-page .order-contact .contact-ai { background: #edf1ff; border-color: #b0c0f3; color: #243e87; }
+    .order-page .order-contact .contact-icon { display: grid; place-items: center; width: auto; height: auto; color: inherit; background: transparent; }
+    .order-page .order-contact a:focus-visible { outline: 3px solid #0876cd; outline-offset: 2px; }
+    .order-page .order-contact a:hover { box-shadow: inset 0 0 0 1px currentColor; }
+    @media (max-width: 620px) {
+      .order-page .nav[data-nav-compact] { position: relative; }
+      .order-page .nav[data-nav-compact] .mobile-menu-toggle { margin-inline-start: auto; }
+      .order-page .order-contact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .order-page .order-contact a { justify-content: flex-start; padding-inline: .6rem; }
+    }
+    .order { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); align-items: stretch; }
+    .order-main h1 { font-size: clamp(2.3rem, 5vw, 4.1rem); line-height: 1.05; margin: .25em 0; letter-spacing: -.04em; }
+    .order-main h2 { line-height: 1.2; margin: 0 0 .75rem; }
+    .order-main p { margin: 0 0 1rem; }
+    .intro { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(1.25rem, 4vw, 2.5rem); background: linear-gradient(150deg, #102942 30%, #154c68 76%, #176248); color: #fff; border-radius: 1.2rem; }
+    .intro .location { color: #c8f698; font-size: .9rem; font-weight: 700; margin-bottom: .35rem; }
+    .intro h1 strong { display: block; color: #c8f698; }
+    .folio { width: 100%; min-width: 0; margin: .2rem 0 .85rem; }
+    .folio-pages { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: .6rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #94baac #12384c; }
+    .folio-sheet { min-width: 0; display: flex; flex-direction: column; gap: .45rem; scroll-snap-align: start; padding: .75rem; border-radius: .8rem; background: #f5fbf7; color: #132535; }
+    .folio-sheet img, .folio-sheet video, .folio-graphic { display: block; width: 100%; height: clamp(8.5rem, 36vw, 11.25rem); border-radius: .5rem; object-fit: cover; }
+    .folio-sheet video { background: #102942; }
+    .folio-cover { background: linear-gradient(140deg, #fff, #e9f4f7); border: 1px solid #b9d8d5; }
+    .folio-cover img { object-fit: contain; padding: .25rem; background: radial-gradient(ellipse at 50% 72%, #c7e6ed, #eaf6fa 66%); }
+    .folio-cover strong { color: #0d354c; font-size: clamp(1.2rem, 4vw, 1.55rem); }
+    .folio-graphic { display: grid; place-items: center; background: #deeffa; color: #095a91; font-size: 2.1rem; font-weight: 800; }
+    .folio-sheet strong { display: block; font-size: 1.1rem; line-height: 1.2; }
+    .folio .folio-sheet p { margin: 0; font-size: .9rem; }
+    .folio-controls { display: flex; align-items: center; justify-content: space-between; gap: .45rem; margin-top: .45rem; }
+    .folio-controls[hidden] { display: none; }
+    .folio-controls button { min-height: 44px; padding: .35rem .65rem; border: 0; border-radius: .45rem; background: transparent; color: #fff; font: 650 .85rem/1.2 system-ui, sans-serif; cursor: pointer; }
+    .folio-controls button:hover { background: #205170; }
+    .folio-counter { min-width: 2.6em; text-align: center; font-size: .86rem; }
+    .folio-controls button:focus-visible, .folio-pages:focus-visible { outline: 2px solid #c8f698; outline-offset: 2px; }
+    .intro .note { color: #e0eaf0; }
+    .order-options { background: white; border: 1px solid #ccd9e3; border-radius: 1.2rem; padding: clamp(1rem, 4vw, 2rem); box-shadow: 0 12px 32px #10294212; }
+    .order-options h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
+    .services { display: grid; gap: .65rem; padding: 0; margin: 0; list-style: none; }
+    .service { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .85rem; padding: .75rem 1rem; border: 1px solid #bdd6c9; border-radius: .65rem; background: #f1f9f4; color: #114d36; text-decoration: none; transition: background-color .18s; }
+    .service strong, .service small { display: block; }
+    .service small { font-size: .92rem; }
+    .service .arrow { font-size: 1.35rem; }
+    .service:hover { background: #dcf3e5; }
+    .service-scan { background: #095a91; border-color: #095a91; color: #fff; }
+    .service-scan:hover { background: #064a78; }
+    .scan { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem 2rem; align-items: start; margin-top: 1.25rem; padding: clamp(1rem, 3vw, 1.75rem); background: #fff; border: 1px solid #ccd9e3; border-radius: 1rem; }
+    .scan h2 { font-size: clamp(1.25rem, 3vw, 1.7rem); margin: 0; }
+    .scan p { margin-bottom: 0; }
+    .order-main a:focus-visible { outline: 3px solid #0876cd; outline-offset: 3px; }
+    .note { color: #435661; font-size: .93rem; margin-bottom: 0; }
+    .faq { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid #c9d8d5; }
+    .order-page .footer .quick-instagram { display: flex; width: fit-content; gap: .5rem; align-items: center; }
+    .order-page .footer .quick-instagram svg { width: 18px; height: 18px; flex: none; }
+    .order-page .footer address { font-style: normal; }
+    @media (max-width: 700px) {
+      .order, .scan { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .order-page .footer > .container { padding-bottom: 4.5rem; }
+      body.order-page .whats-widget { position: fixed !important; top: auto !important; right: 12px !important; bottom: max(12px, env(safe-area-inset-bottom)) !important; left: auto !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; }
+      body.order-page .whats-widget .whats-note { display: none !important; }
+      body.order-page .whats-widget .whats-new { visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; }
+    }
+    @media (prefers-reduced-motion: reduce) { .service { transition: none; } }
+  </style>
+</head>
+<body class="order-page">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <div class="topbar"><div class="container"><span>Atendimento em Porto Alegre e região</span><span>WhatsApp: (51) 98168-7562 · idygrafica@gmail.com</span></div></div>
+<header class="nav" data-nav-compact><div class="container"><a class="logo" href="https://idygrafica.com.br/"><img alt="IDY Gráfica" src="https://idygrafica.com.br/assets/logo-idy-grafica.png"/></a><nav class="navlinks" id="site-menu"><a class="" href="https://idygrafica.com.br/">Início</a><a class="" href="https://idygrafica.com.br/sobre">Sobre a IDY</a><div class="nav-service-group"><a class="active" href="https://idygrafica.com.br/servicos">Serviços</a><details class="nav-service-menu"><summary aria-label="Abrir submenu de serviços"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="nav-service-links"><a href="https://idygrafica.com.br/impressoes-do-dia-a-dia">Impressões do Dia a Dia</a><a href="https://idygrafica.com.br/impressoes-rapidas">Impressões Rápidas</a></div></details></div><a class="" href="https://idygrafica.com.br/criacao-sites">Criação de Sites</a><a class="" href="https://idygrafica.com.br/portfolio">Portfólio</a><a class="" href="https://idygrafica.com.br/contato">Contato</a></nav><button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-menu"><span></span><span></span><span></span></button></div></header>
+  <nav class="order-contact" aria-label="Contatos da IDY Gráfica">
+    <a class="contact-whatsapp" href="https://wa.me/5551981687562" target="_blank" rel="noopener"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6.5c-9.65 0-17.5 7.35-17.5 16.4 0 3.12.94 6.02 2.56 8.5L6.5 41.5l10.52-2.7a18.25 18.25 0 0 0 6.98 1.38c9.65 0 17.5-7.35 17.5-16.4S33.65 6.5 24 6.5Z" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round"/><path d="M17.2 16.6c.55-1.1 1.12-1.13 1.64-1.15h.44c.38 0 .78.12.98.63l1.53 3.58c.17.4.11.72-.12 1.05l-1.12 1.55c-.2.28-.42.58-.18 1.02.25.44 1.1 1.76 2.36 2.85 1.63 1.4 3 1.84 3.46 2.05.45.2.72.17 1-.11l1.9-2.2c.3-.36.64-.3 1.08-.14l3.42 1.6c.45.22.75.32.86.5.12.2.12 1.12-.26 2.2-.38 1.08-2.18 2.06-3.02 2.2-.78.14-1.77.2-2.86-.18-.66-.23-1.5-.5-2.58-.96-4.55-1.95-7.5-6.48-7.72-6.78-.22-.3-1.84-2.45-1.84-4.67 0-1.15.3-2 .62-2.64Z" fill="currentColor"/></svg><span>WhatsApp</span></a>
+    <a class="contact-maps" href="https://www.google.com/maps/place/IDY+Gr%C3%A1fica/@-30.0193134,-51.1633067,17z/data=!3m1!4b1!4m6!3m5!1s0x95197764bd0fc383:0xc1aabc86c4e5da73!8m2!3d-30.0193134!4d-51.1633067!16s%2Fg%2F11yt5w_z33?entry=ttu" target="_blank" rel="noopener" aria-label="Localização da gráfica no Google Maps (abre em nova aba)"><span aria-hidden="true"><svg width="17" height="20" viewBox="0 0 24 28" fill="none" focusable="false"><defs><linearGradient id="header-map-pin-colors" x1="1" y1="2" x2="23" y2="25" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4285f4"/><stop offset="37%" stop-color="#4285f4"/><stop offset="37%" stop-color="#34a853"/><stop offset="60%" stop-color="#34a853"/><stop offset="60%" stop-color="#fbbc04"/><stop offset="76%" stop-color="#fbbc04"/><stop offset="76%" stop-color="#ea4335"/></linearGradient></defs><path fill="url(#header-map-pin-colors)" d="M12 1a9.5 9.5 0 0 0-9.5 9.5c0 5.7 6.6 9.7 8.4 15.5a1.15 1.15 0 0 0 2.2 0c1.8-5.8 8.4-9.8 8.4-15.5A9.5 9.5 0 0 0 12 1Z"/><circle cx="12" cy="10.5" r="3.5" fill="white"/></svg></span><span class="contact-label">Localização da gráfica</span></a>
+    <a class="contact-instagram" href="https://www.instagram.com/idygrafica/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a>
+    <a class="contact-ai" href="https://atendimento-idy.netlify.app" target="_blank" rel="noopener" aria-label="Fazer orçamento com a IA da IDY Gráfica"><span class="contact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 18.5 3.5 21v-4.8A8.8 8.8 0 0 1 3 13.3C3 8.7 7 5 12 5s9 3.7 9 8.3-4 8.2-9 8.2c-1.8 0-3.5-.5-5-1.3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8.5" cy="13" r="1" fill="currentColor"/><circle cx="12" cy="13" r="1" fill="currentColor"/><circle cx="15.5" cy="13" r="1" fill="currentColor"/></svg></span><span class="contact-label">Orçamento com IA</span></a>
+  </nav>
+  <main id="conteudo" class="order-main">
+    <div class="order">
+      <section class="intro" aria-labelledby="title">
+        <p class="location">IDY Gráfica · Passo d’Areia, Porto Alegre</p>
+        <h1 id="title">Precisa imprimir <strong>depois das 18h?</strong></h1>
+        <p>Envia teu pedido pelo WhatsApp. Quando a IDY avisar que ficou pronto, passa aqui e retira na porta.</p>
+        <div class="folio" role="group" aria-label="Mostruário de serviços da IDY">
+          <div class="folio-pages" id="folio-pages" tabindex="0" aria-label="Lâminas do mostruário">
+            <article class="folio-sheet folio-cover">
+              <img src="https://idygrafica.com.br/assets/xerox-color-560-home.webp" alt="Impressora digital da IDY Gráfica" width="960" height="960">
+              <strong>Xerox Color 560</strong>
+              <p>Impressão digital e digitalização de documentos.</p>
+            </article>
+            <article class="folio-sheet">
+              <video src="/assets/folheto/impresso-colorido.mp4" poster="/assets/folheto/impresso-colorido.webp" width="384" height="240" preload="none" muted playsinline loop aria-label="Vídeo de um material informativo impresso em cores"></video>
+              <strong>Impressão digital</strong>
+              <p>Documentos, provas e trabalhos escolares em A4 ou A3.</p>
+            </article>
+            <article class="folio-sheet">
+              <video src="/assets/folheto/folhas-impressas.mp4" poster="/assets/folheto/folhas-impressas.webp" width="384" height="240" preload="none" muted playsinline loop aria-label="Vídeo de folhas com códigos impressos pela IDY"></video>
+              <strong>Folhas impressas</strong>
+              <p>Um lote de folhas com códigos, direto da produção da IDY.</p>
+            </article>
+            <article class="folio-sheet">
+              <video src="/assets/folheto/papel-nos-rolos.mp4" poster="/assets/folheto/papel-nos-rolos.webp" width="384" height="240" preload="none" muted playsinline loop aria-label="Vídeo do papel passando pelos rolos"></video>
+              <strong>Papel em produção</strong>
+              <p>Veja a passagem das folhas pelos rolos do equipamento.</p>
+            </article>
+            <article class="folio-sheet">
+              <img src="https://idygrafica.com.br/assets/personalizacao/camiseta-bone-estudio.jpg" alt="Exemplo ilustrativo de camiseta e boné para personalização" width="1800" height="1200" loading="lazy">
+              <strong>DTF</strong>
+              <p>Personalização de camisetas e outras peças com a tua arte.</p>
+            </article>
+            <article class="folio-sheet">
+              <img src="https://idygrafica.com.br/assets/loja/produtos/brindes.webp" alt="Imagem ilustrativa com caneca, camiseta e caderno" width="1536" height="1024" loading="lazy">
+              <strong>Sublimação</strong>
+              <p>Personalização e consulta de plotagem para sublimação.</p>
+            </article>
+            <article class="folio-sheet">
+              <div class="folio-graphic" aria-hidden="true">PDF</div>
+              <strong>Digitalização em PDF</strong>
+              <p>Digitalização de documentos e lotes de folhas em alta resolução.</p>
+            </article>
+          </div>
+          <div class="folio-controls" hidden>
+            <span class="folio-counter" aria-live="polite">1 / 7</span>
+            <button type="button" data-folio-auto aria-controls="folio-pages">Pausar</button>
+          </div>
+        </div>
+        <p class="note">A gente confirma o valor e o prazo pelo WhatsApp.</p>
+      </section>
+      <section class="order-options" aria-labelledby="order-title">
+        <h2 id="order-title">O que tu precisa fazer?</h2>
+        <p>Escolhe o serviço pra abrir o WhatsApp. Para imprimir, é só anexar o arquivo na conversa.</p>
+        <ul class="services">
+          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+impress%C3%A3o+digital+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><span><strong>Impressão digital</strong><small>A4 e A3, colorido ou preto e branco</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
+          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+DTF+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><span><strong>DTF</strong><small>Personalização com a tua arte</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
+          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+sublima%C3%A7%C3%A3o+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><span><strong>Sublimação</strong><small>Sublimação e consulta de plotagem</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
+          <li><a class="service service-scan" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+um+or%C3%A7amento+de+digitaliza%C3%A7%C3%A3o+em+PDF.+Vou+informar+o+tipo+de+material+e+o+n%C3%BAmero+aproximado+de+p%C3%A1ginas."><span><strong>Digitalização em PDF</strong><small>Alta resolução para documentos e lotes de páginas</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
+        </ul>
+      </section>
+    </div>
+    <section class="scan" aria-labelledby="scan-title">
+      <h2 id="scan-title">Tem muitas páginas pra digitalizar?</h2>
+      <p>Digitalizamos folhas avulsas e documentos em alta resolução e reunimos as páginas em PDF. Pra orçar, manda pelo WhatsApp o tipo de material e uma estimativa de páginas. Se for um livro encadernado, manda uma foto pra gente avaliar como digitalizar. A entrega do material físico é combinada no atendimento.</p>
+    </section>
+    <section class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Procurando por “Click Impresso” em Porto Alegre?</h2>
+      <p>A Click Impresso é outra gráfica da cidade. Nesta página, tu pode pedir orçamento de impressão digital, DTF, sublimação ou digitalização com a IDY Gráfica. O atendimento é online e a retirada é na porta da IDY, no Passo d’Areia, perto do Bourbon Country e do Iguatemi.</p>
+    </section>
+  </main>
+  <footer class="footer"><div class="container"><div class="footergrid"><div><img src="https://idygrafica.com.br/assets/logo-idy-grafica.png" alt="IDY Gráfica" style="width:150px;background:white;border-radius:10px;padding:10px"><p>Impressão gráfica, comunicação visual, cortes especiais, editoração digital e criação de sites em Porto Alegre.</p></div><div><h4>Serviços</h4><a href="https://idygrafica.com.br/impressoes-rapidas">Impressões Rápidas</a><a href="https://idygrafica.com.br/dtf-personalizacao">DTF e personalização</a><a href="https://idygrafica.com.br/cortes-especiais">Cortes especiais</a><a href="https://idygrafica.com.br/livros-digitais">Livros digitais</a><a href="https://idygrafica.com.br/impressos">Impressos gráficos</a><a href="https://idygrafica.com.br/comunicacao-visual">Comunicação visual</a><a href="https://idygrafica.com.br/criacao-sites">Criação de sites</a></div><div><h4>Contato</h4><a href="https://wa.me/5551981687562">WhatsApp (51) 98168-7562</a><a href="mailto:idygrafica@gmail.com">idygrafica@gmail.com</a><a class="quick-instagram" href="https://www.instagram.com/idygrafica/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/></svg><span>Instagram @idygrafica</span></a><address>Passagem da Luz, 845<br>Passo d’Areia · Porto Alegre/RS</address><a class="contact-map" href="https://www.google.com/maps/place/IDY+Gr%C3%A1fica/@-30.0193134,-51.1633067,17z/data=!3m1!4b1!4m6!3m5!1s0x95197764bd0fc383:0xc1aabc86c4e5da73!8m2!3d-30.0193134!4d-51.1633067!16s%2Fg%2F11yt5w_z33?entry=ttu"><span class="contact-map-pin" aria-hidden="true"><svg width="24" height="28" viewBox="0 0 24 28" fill="none" focusable="false"><defs><linearGradient id="contact-map-pin-colors" x1="1" y1="2" x2="23" y2="25" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4285f4"/><stop offset="37%" stop-color="#4285f4"/><stop offset="37%" stop-color="#34a853"/><stop offset="60%" stop-color="#34a853"/><stop offset="60%" stop-color="#fbbc04"/><stop offset="76%" stop-color="#fbbc04"/><stop offset="76%" stop-color="#ea4335"/></linearGradient></defs><path fill="url(#contact-map-pin-colors)" d="M12 1a9.5 9.5 0 0 0-9.5 9.5c0 5.7 6.6 9.7 8.4 15.5a1.15 1.15 0 0 0 2.2 0c1.8-5.8 8.4-9.8 8.4-15.5A9.5 9.5 0 0 0 12 1Z"/><circle cx="12" cy="10.5" r="3.5" fill="white"/></svg></span><span class="contact-map-label"><strong>Ver no Google Maps</strong><small>Localização da gráfica</small></span><span class="contact-map-arrow" aria-hidden="true">↗</span></a><span class="search-contact-policy">Atendimento online por WhatsApp e e-mail. Retirada na porta após o aviso da equipe.</span></div></div><div class="copyright">© <span id="year"></span> IDY Gráfica. Todos os direitos reservados.</div></div></footer><div class="whats-widget" aria-label="Atendimento pelo WhatsApp">
+  <div class="whats-note">Atendimento online<br>Clique aqui e fale<br>com a IDY Gráfica.<span class="whats-note-arrow">↙</span></div>
+  <a class="whats whats-pro whats-new" href="https://wa.me/5551981687562" aria-label="Fale pelo WhatsApp e peça seu orçamento" target="_blank" rel="noopener">
+    <span class="whats-icon whats-icon-clean" aria-hidden="true">
+      <svg viewBox="0 0 48 48" role="img"><path d="M24 6.5c-9.65 0-17.5 7.35-17.5 16.4 0 3.12.94 6.02 2.56 8.5L6.5 41.5l10.52-2.7a18.25 18.25 0 0 0 6.98 1.38c9.65 0 17.5-7.35 17.5-16.4S33.65 6.5 24 6.5Z" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round"/><path d="M17.2 16.6c.55-1.1 1.12-1.13 1.64-1.15h.44c.38 0 .78.12.98.63l1.53 3.58c.17.4.11.72-.12 1.05l-1.12 1.55c-.2.28-.42.58-.18 1.02.25.44 1.1 1.76 2.36 2.85 1.63 1.4 3 1.84 3.46 2.05.45.2.72.17 1-.11l1.9-2.2c.3-.36.64-.3 1.08-.14l3.42 1.6c.45.22.75.32.86.5.12.2.12 1.12-.26 2.2-.38 1.08-2.18 2.06-3.02 2.2-.78.14-1.77.2-2.86-.18-.66-.23-1.5-.5-2.58-.96-4.55-1.95-7.5-6.48-7.72-6.78-.22-.3-1.84-2.45-1.84-4.67 0-1.15.3-2 .62-2.64Z" fill="currentColor"/></svg>
+    </span>
+    <span class="whats-copy"><strong>Fale pelo WhatsApp</strong><small>Peça seu orçamento</small></span>
+    <span class="whats-arrow" aria-hidden="true">›</span>
+  </a>
+</div><script src="https://idygrafica.com.br/assets/app.js"></script>
+<script>
+  (() => {
+    const folio = document.querySelector('.folio');
+    const pages = folio.querySelector('.folio-pages');
+    const sheets = Array.from(pages.children);
+    const videos = sheets.map((sheet) => sheet.querySelector('video'));
+    const counter = folio.querySelector('.folio-counter');
+    const autoButton = folio.querySelector('[data-folio-auto]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const supportsObserver = typeof window.IntersectionObserver === 'function';
+    let inView = !supportsObserver;
+    let playing = !reducedMotion.matches;
+    let timer = null;
+
+    const offset = (sheet) => sheet.offsetLeft - sheets[0].offsetLeft;
+    const currentPage = () => sheets.reduce((closest, sheet, index) =>
+      Math.abs(offset(sheet) - pages.scrollLeft) < Math.abs(offset(sheets[closest]) - pages.scrollLeft) ? index : closest,
+    0);
+
+    function advancePage() {
+      const index = (currentPage() + 1) % sheets.length;
+      const wrap = index === 0;
+      pages.scrollTo({ left: offset(sheets[index]), behavior: wrap || reducedMotion.matches ? 'instant' : 'smooth' });
+    }
+
+    function syncVideos() {
+      const active = currentPage();
+      videos.forEach((video, index) => {
+        if (!video) return;
+        if (index === active && playing && inView && !document.hidden) {
+          video.muted = true;
+          if (video.paused) video.play().catch(() => {});
+        } else if (!video.paused) {
+          video.pause();
+        }
+      });
+    }
+
+    function syncTimer() {
+      if (timer !== null) window.clearInterval(timer);
+      timer = playing && inView && !document.hidden
+        ? window.setInterval(advancePage, 6000)
+        : null;
+      syncVideos();
+    }
+
+    function setPlaying(value) {
+      playing = value;
+      autoButton.textContent = playing ? 'Pausar' : 'Reproduzir';
+      counter.setAttribute('aria-live', playing ? 'off' : 'polite');
+      syncTimer();
+    }
+
+    function stop() {
+      if (playing) setPlaying(false);
+    }
+
+    autoButton.addEventListener('click', () => setPlaying(!playing));
+
+    pages.addEventListener('scroll', () => {
+      const label = (currentPage() + 1) + ' / ' + sheets.length;
+      if (counter.textContent !== label) {
+        counter.textContent = label;
+        syncTimer();
+      }
+    }, { passive: true });
+    document.addEventListener('visibilitychange', syncTimer);
+    reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) stop(); });
+    if (supportsObserver) {
+      const observer = new window.IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting && entry.intersectionRatio >= .4;
+        syncTimer();
+      }, { threshold: .4 });
+      observer.observe(pages);
+    }
+    setPlaying(playing);
+    folio.querySelector('.folio-controls').hidden = false;
+  })();
+</script>
+</body>
+</html>
