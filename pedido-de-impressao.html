@@ -43,8 +43,10 @@
     .folio { width: 100%; min-width: 0; margin: .2rem 0 .85rem; }
     .folio-pages { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: .6rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #94baac #12384c; }
     .folio-sheet { min-width: 0; display: flex; flex-direction: column; gap: .45rem; scroll-snap-align: start; padding: .75rem; border-radius: .8rem; background: #f5fbf7; color: #132535; }
-    .folio-sheet img, .folio-graphic { display: block; width: 100%; height: clamp(7rem, 30vw, 9rem); border-radius: .5rem; object-fit: cover; }
-    .folio-sheet:first-child img { object-fit: contain; }
+    .folio-sheet img, .folio-graphic { display: block; width: 100%; height: clamp(8.5rem, 36vw, 11.25rem); border-radius: .5rem; object-fit: cover; }
+    .folio-cover { background: linear-gradient(140deg, #fff, #e9f4f7); border: 1px solid #b9d8d5; }
+    .folio-cover img { object-fit: contain; padding: .25rem; background: radial-gradient(ellipse at 50% 72%, #c7e6ed, #eaf6fa 66%); }
+    .folio-cover strong { color: #0d354c; font-size: clamp(1.2rem, 4vw, 1.55rem); }
     .folio-graphic { display: grid; place-items: center; background: #deeffa; color: #095a91; font-size: 2.1rem; font-weight: 800; }
     .folio-sheet strong { display: block; font-size: 1.1rem; line-height: 1.2; }
     .folio .folio-sheet p { margin: 0; font-size: .9rem; }
@@ -106,7 +108,7 @@
         <p>Envia teu pedido pelo WhatsApp. Quando a IDY avisar que ficou pronto, passa aqui e retira na porta.</p>
         <div class="folio" role="group" aria-label="Mostruário de serviços da IDY">
           <div class="folio-pages" id="folio-pages" tabindex="0" aria-label="Lâminas do mostruário" aria-describedby="folio-help">
-            <article class="folio-sheet">
+            <article class="folio-sheet folio-cover">
               <img src="https://idygrafica.com.br/assets/xerox-color-560-home.webp" alt="Impressora digital da IDY Gráfica" width="960" height="960">
               <strong>Xerox Color 560</strong>
               <p>Impressão digital e digitalização de documentos.</p>
@@ -137,7 +139,7 @@
             <button class="folio-arrow" type="button" data-folio-prev aria-label="Lâmina anterior" aria-controls="folio-pages">‹</button>
             <span class="folio-counter" aria-live="polite">1 / 5</span>
             <button class="folio-arrow" type="button" data-folio-next aria-label="Próxima lâmina" aria-controls="folio-pages">›</button>
-            <button type="button" data-folio-auto aria-controls="folio-pages" aria-pressed="false">Passar sozinho</button>
+            <button type="button" data-folio-auto aria-controls="folio-pages">Passar sozinho</button>
           </div>
         </div>
         <p class="note">A gente confirma o valor e o prazo pelo WhatsApp.</p>
@@ -180,6 +182,9 @@
     const counter = folio.querySelector('.folio-counter');
     const autoButton = folio.querySelector('[data-folio-auto]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const supportsObserver = typeof window.IntersectionObserver === 'function';
+    let inView = !supportsObserver;
+    let playing = !reducedMotion.matches;
     let timer = null;
 
     const offset = (sheet) => sheet.offsetLeft - sheets[0].offsetLeft;
@@ -194,26 +199,25 @@
       pages.scrollTo({ left: offset(sheets[index]), behavior: wrap || reducedMotion.matches ? 'instant' : 'smooth' });
     }
 
-    function stop() {
-      if (timer === null) return;
-      window.clearInterval(timer);
-      timer = null;
-      autoButton.textContent = 'Passar sozinho';
-      autoButton.setAttribute('aria-pressed', 'false');
-      counter.setAttribute('aria-live', 'polite');
+    function syncTimer() {
+      if (timer !== null) window.clearInterval(timer);
+      timer = playing && inView && !document.hidden
+        ? window.setInterval(() => turnPage(1), 6000)
+        : null;
     }
 
-    autoButton.addEventListener('click', () => {
-      if (timer !== null) {
-        stop();
-        return;
-      }
-      autoButton.textContent = 'Pausar';
-      autoButton.setAttribute('aria-pressed', 'true');
-      counter.setAttribute('aria-live', 'off');
-      timer = window.setInterval(() => turnPage(1), 5000);
-      turnPage(1);
-    });
+    function setPlaying(value) {
+      playing = value;
+      autoButton.textContent = playing ? 'Pausar' : 'Passar sozinho';
+      counter.setAttribute('aria-live', playing ? 'off' : 'polite');
+      syncTimer();
+    }
+
+    function stop() {
+      if (playing) setPlaying(false);
+    }
+
+    autoButton.addEventListener('click', () => setPlaying(!playing));
 
     folio.querySelector('[data-folio-prev]').addEventListener('click', () => { stop(); turnPage(-1); });
     folio.querySelector('[data-folio-next]').addEventListener('click', () => { stop(); turnPage(1); });
@@ -228,7 +232,16 @@
       const label = (currentPage() + 1) + ' / ' + sheets.length;
       if (counter.textContent !== label) counter.textContent = label;
     }, { passive: true });
-    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+    document.addEventListener('visibilitychange', syncTimer);
+    reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) stop(); });
+    if (supportsObserver) {
+      const observer = new window.IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting && entry.intersectionRatio >= .4;
+        syncTimer();
+      }, { threshold: .4 });
+      observer.observe(pages);
+    }
+    setPlaying(playing);
     folio.querySelector('.folio-controls').hidden = false;
   })();
 </script>
