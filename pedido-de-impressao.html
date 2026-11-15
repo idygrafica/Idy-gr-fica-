@@ -33,14 +33,29 @@
       .order-page .order-contact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .order-page .order-contact a { justify-content: flex-start; padding-inline: .6rem; }
     }
-    .order { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 3vw, 2rem); align-items: stretch; }
+    .order { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); align-items: stretch; }
     .order-main h1 { font-size: clamp(2.3rem, 5vw, 4.1rem); line-height: 1.05; margin: .25em 0; letter-spacing: -.04em; }
     .order-main h2 { line-height: 1.2; margin: 0 0 .75rem; }
     .order-main p { margin: 0 0 1rem; }
     .intro { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(1.25rem, 4vw, 2.5rem); background: linear-gradient(150deg, #102942 30%, #154c68 76%, #176248); color: #fff; border-radius: 1.2rem; }
     .intro .location { color: #c8f698; font-size: .9rem; font-weight: 700; margin-bottom: .35rem; }
     .intro h1 strong { display: block; color: #c8f698; }
-    .intro img { display: block; width: min(100%, 14rem); height: auto; margin: auto auto 0; }
+    .folio { width: 100%; min-width: 0; margin: .2rem 0 .85rem; }
+    .folio-pages { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: .6rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #94baac #12384c; }
+    .folio-sheet { min-width: 0; display: flex; flex-direction: column; gap: .45rem; scroll-snap-align: start; padding: .75rem; border-radius: .8rem; background: #f5fbf7; color: #132535; }
+    .folio-sheet img, .folio-graphic { display: block; width: 100%; height: clamp(7rem, 30vw, 9rem); border-radius: .5rem; object-fit: cover; }
+    .folio-sheet:first-child img { object-fit: contain; }
+    .folio-graphic { display: grid; place-items: center; background: #deeffa; color: #095a91; font-size: 2.1rem; font-weight: 800; }
+    .folio-sheet strong { display: block; font-size: 1.1rem; line-height: 1.2; }
+    .folio .folio-sheet p { margin: 0; font-size: .9rem; }
+    .folio .folio-help { margin: .45rem 0; font-size: .84rem; color: #e0eaf0; }
+    .folio-controls { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; margin-top: .45rem; }
+    .folio-controls[hidden] { display: none; }
+    .folio-controls button { min-height: 44px; padding: .35rem .6rem; border: 1px solid #96bcba; border-radius: .45rem; background: #143a4e; color: #fff; font: 650 .85rem/1.2 system-ui, sans-serif; cursor: pointer; }
+    .folio-controls button:hover { background: #205170; }
+    .folio-controls .folio-arrow { min-width: 44px; font-size: 1.3rem; }
+    .folio-counter { min-width: 2.6em; text-align: center; font-size: .86rem; }
+    .folio-controls button:focus-visible, .folio-pages:focus-visible { outline: 2px solid #c8f698; outline-offset: 2px; }
     .intro .note { color: #e0eaf0; }
     .order-options { background: white; border: 1px solid #ccd9e3; border-radius: 1.2rem; padding: clamp(1rem, 4vw, 2rem); box-shadow: 0 12px 32px #10294212; }
     .order-options h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
@@ -63,7 +78,6 @@
     .order-page .footer address { font-style: normal; }
     @media (max-width: 700px) {
       .order, .scan { grid-template-columns: 1fr; }
-      .intro img { width: min(100%, 9.5rem); }
     }
     @media (max-width: 620px) {
       .order-page .footer > .container { padding-bottom: 4.5rem; }
@@ -90,7 +104,42 @@
         <p class="location">IDY Gráfica · Passo d’Areia, Porto Alegre</p>
         <h1 id="title">Precisa imprimir <strong>depois das 18h?</strong></h1>
         <p>Envia teu pedido pelo WhatsApp. Quando a IDY avisar que ficou pronto, passa aqui e retira na porta.</p>
-        <img src="https://idygrafica.com.br/assets/xerox-color-560-home.webp" alt="Impressora digital Xerox Color 560 da IDY Gráfica" width="960" height="960">
+        <div class="folio" role="group" aria-label="Mostruário de serviços da IDY">
+          <div class="folio-pages" id="folio-pages" tabindex="0" aria-label="Lâminas do mostruário" aria-describedby="folio-help">
+            <article class="folio-sheet">
+              <img src="https://idygrafica.com.br/assets/xerox-color-560-home.webp" alt="Impressora digital da IDY Gráfica" width="960" height="960">
+              <strong>Xerox Color 560</strong>
+              <p>Impressão digital e digitalização de documentos.</p>
+            </article>
+            <article class="folio-sheet">
+              <img src="https://idygrafica.com.br/assets/loja/produtos/a3.webp" alt="Exemplos de folhas impressas em cores" width="1536" height="1024" loading="lazy">
+              <strong>Impressão digital</strong>
+              <p>Documentos, provas e trabalhos escolares em A4 ou A3.</p>
+            </article>
+            <article class="folio-sheet">
+              <img src="https://idygrafica.com.br/assets/personalizacao/camiseta-bone-estudio.jpg" alt="Exemplo ilustrativo de camiseta e boné para personalização" width="1800" height="1200" loading="lazy">
+              <strong>DTF</strong>
+              <p>Personalização de camisetas e outras peças com a tua arte.</p>
+            </article>
+            <article class="folio-sheet">
+              <img src="https://idygrafica.com.br/assets/loja/produtos/brindes.webp" alt="Imagem ilustrativa com caneca, camiseta e caderno" width="1536" height="1024" loading="lazy">
+              <strong>Sublimação</strong>
+              <p>Personalização e consulta de plotagem para sublimação.</p>
+            </article>
+            <article class="folio-sheet">
+              <div class="folio-graphic" aria-hidden="true">PDF</div>
+              <strong>Digitalização em PDF</strong>
+              <p>Digitalização de documentos e lotes de folhas em alta resolução.</p>
+            </article>
+          </div>
+          <p class="folio-help" id="folio-help">Deslize para folhear os serviços.</p>
+          <div class="folio-controls" hidden>
+            <button class="folio-arrow" type="button" data-folio-prev aria-label="Lâmina anterior" aria-controls="folio-pages">‹</button>
+            <span class="folio-counter" aria-live="polite">1 / 5</span>
+            <button class="folio-arrow" type="button" data-folio-next aria-label="Próxima lâmina" aria-controls="folio-pages">›</button>
+            <button type="button" data-folio-auto aria-controls="folio-pages" aria-pressed="false">Passar sozinho</button>
+          </div>
+        </div>
         <p class="note">A gente confirma o valor e o prazo pelo WhatsApp.</p>
       </section>
       <section class="order-options" aria-labelledby="order-title">
@@ -123,5 +172,65 @@
     <span class="whats-arrow" aria-hidden="true">›</span>
   </a>
 </div><script src="https://idygrafica.com.br/assets/app.js"></script>
+<script>
+  (() => {
+    const folio = document.querySelector('.folio');
+    const pages = folio.querySelector('.folio-pages');
+    const sheets = Array.from(pages.children);
+    const counter = folio.querySelector('.folio-counter');
+    const autoButton = folio.querySelector('[data-folio-auto]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let timer = null;
+
+    const offset = (sheet) => sheet.offsetLeft - sheets[0].offsetLeft;
+    const currentPage = () => sheets.reduce((closest, sheet, index) =>
+      Math.abs(offset(sheet) - pages.scrollLeft) < Math.abs(offset(sheets[closest]) - pages.scrollLeft) ? index : closest,
+    0);
+
+    function turnPage(direction) {
+      const next = currentPage() + direction;
+      const index = (next + sheets.length) % sheets.length;
+      const wrap = next !== index;
+      pages.scrollTo({ left: offset(sheets[index]), behavior: wrap || reducedMotion.matches ? 'instant' : 'smooth' });
+    }
+
+    function stop() {
+      if (timer === null) return;
+      window.clearInterval(timer);
+      timer = null;
+      autoButton.textContent = 'Passar sozinho';
+      autoButton.setAttribute('aria-pressed', 'false');
+      counter.setAttribute('aria-live', 'polite');
+    }
+
+    autoButton.addEventListener('click', () => {
+      if (timer !== null) {
+        stop();
+        return;
+      }
+      autoButton.textContent = 'Pausar';
+      autoButton.setAttribute('aria-pressed', 'true');
+      counter.setAttribute('aria-live', 'off');
+      timer = window.setInterval(() => turnPage(1), 5000);
+      turnPage(1);
+    });
+
+    folio.querySelector('[data-folio-prev]').addEventListener('click', () => { stop(); turnPage(-1); });
+    folio.querySelector('[data-folio-next]').addEventListener('click', () => { stop(); turnPage(1); });
+    pages.addEventListener('pointerdown', stop);
+    pages.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      stop();
+      turnPage(event.key === 'ArrowLeft' ? -1 : 1);
+    });
+    pages.addEventListener('scroll', () => {
+      const label = (currentPage() + 1) + ' / ' + sheets.length;
+      if (counter.textContent !== label) counter.textContent = label;
+    }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+    folio.querySelector('.folio-controls').hidden = false;
+  })();
+</script>
 </body>
 </html>
