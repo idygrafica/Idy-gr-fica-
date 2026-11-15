@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Impressão após as 18h em Porto Alegre | IDY Gráfica</title>
-  <meta name="description" content="Envie seu arquivo pelo WhatsApp mesmo depois das 18h. Impressão digital, DTF e sublimação com retirada na porta da IDY Gráfica, no Passo d’Areia, após o aviso.">
+  <title>Impressão e Digitalização em Porto Alegre | IDY Gráfica</title>
+  <meta name="description" content="Impressão A4 e A3, DTF, sublimação e digitalização de documentos em PDF no Passo d’Areia. Peça orçamento à IDY Gráfica pelo WhatsApp, mesmo depois das 18h.">
   <link rel="canonical" href="https://idygrafica.com.br/pedido-de-impressao">
   <link rel="icon" href="https://idygrafica.com.br/favicon.ico">
   <style>
-    :root { font-family: Inter, system-ui, sans-serif; color: #132535; background: #edf4fa; line-height: 1.55; }
+    :root { font-family: Inter, system-ui, sans-serif; color: #132535; background: radial-gradient(ellipse at 8% 0%, #e0f0ff 0%, #f4f8fb 52%); line-height: 1.55; }
     * { box-sizing: border-box; }
     body { margin: 0; }
     a { color: #065baa; }
@@ -16,27 +16,37 @@
     header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; padding-block: 1rem; }
     header img { display: block; width: 108px; height: auto; }
     main { padding-block: clamp(1rem, 5vw, 4rem) 2rem; }
-    .order { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 5vw, 4rem); align-items: start; }
+    .order { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 3vw, 2rem); align-items: stretch; }
     h1 { font-size: clamp(2.3rem, 5vw, 4.1rem); line-height: 1.05; margin: .25em 0; letter-spacing: -.04em; }
     h2 { line-height: 1.2; margin: 0 0 .75rem; }
     p { margin: 0 0 1rem; }
-    .location { font-weight: 650; color: #176248; }
-    .intro { position: relative; overflow: hidden; padding: clamp(1.25rem, 4vw, 2.5rem); background: #102942; color: #fff; border-radius: 1.2rem; }
-    .intro .location { color: #b9f589; }
-    .intro h1 strong { color: #c1f68c; }
-    .intro img { display: block; width: min(100%, 13rem); height: auto; margin: 0 auto; }
+    .intro { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(1.25rem, 4vw, 2.5rem); background: linear-gradient(150deg, #102942 30%, #154c68 76%, #176248); color: #fff; border-radius: 1.2rem; }
+    .intro .location { color: #c8f698; font-size: .9rem; font-weight: 700; margin-bottom: .35rem; }
+    .intro h1 strong { display: block; color: #c8f698; }
+    .intro img { display: block; width: min(100%, 14rem); height: auto; margin: auto auto 0; }
     .intro .note { color: #e0eaf0; }
     .order-options { background: white; border: 1px solid #ccd9e3; border-radius: 1.2rem; padding: clamp(1rem, 4vw, 2rem); box-shadow: 0 12px 32px #10294212; }
-    .services { display: grid; gap: .65rem; padding: 0; margin: 0 0 1rem; list-style: none; }
-    .service { display: block; padding: .75rem 1rem; border: 1px solid #8bae9e; border-radius: .55rem; background: #eff9f3; color: #114d36; text-decoration: none; }
-    .service strong, .service span { display: block; }
-    .service span { font-size: .92rem; }
+    .order-options h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
+    .services { display: grid; gap: .65rem; padding: 0; margin: 0; list-style: none; }
+    .service { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .85rem; padding: .75rem 1rem; border: 1px solid #bdd6c9; border-radius: .65rem; background: #f1f9f4; color: #114d36; text-decoration: none; transition: background-color .18s; }
+    .service strong, .service small { display: block; }
+    .service small { font-size: .92rem; }
+    .service .arrow { font-size: 1.35rem; }
     .service:hover { background: #dcf3e5; }
+    .service-scan { background: #095a91; border-color: #095a91; color: #fff; }
+    .service-scan:hover { background: #064a78; }
+    .scan { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem 2rem; align-items: start; margin-top: 1.25rem; padding: clamp(1rem, 3vw, 1.75rem); background: #fff; border: 1px solid #ccd9e3; border-radius: 1rem; }
+    .scan h2 { font-size: clamp(1.25rem, 3vw, 1.7rem); margin: 0; }
+    .scan p { margin-bottom: 0; }
     a:focus-visible { outline: 3px solid #0876cd; outline-offset: 3px; }
     .note { color: #435661; font-size: .93rem; margin-bottom: 0; }
     .faq { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid #c9d8d5; }
     footer { padding-block: 0 1.75rem; color: #435661; }
-    @media (max-width: 700px) { .order { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) {
+      .order, .scan { grid-template-columns: 1fr; }
+      .intro img { width: min(100%, 9.5rem); }
+    }
+    @media (prefers-reduced-motion: reduce) { .service { transition: none; } }
   </style>
 </head>
 <body>
@@ -51,23 +61,28 @@
       <section class="intro" aria-labelledby="title">
         <p class="location">IDY Gráfica · Passo d’Areia, Porto Alegre</p>
         <h1 id="title">Precisa imprimir <strong>depois das 18h?</strong></h1>
-        <p>Manda o arquivo pelo WhatsApp, mesmo depois das 18h. Quando a IDY avisar que ficou pronto, passa aqui e retira na porta.</p>
+        <p>Envia teu pedido pelo WhatsApp. Quando a IDY avisar que ficou pronto, passa aqui e retira na porta.</p>
         <img src="https://idygrafica.com.br/assets/xerox-color-560-home.webp" alt="Impressora digital Xerox Color 560 da IDY Gráfica" width="960" height="960">
         <p class="note">A gente confirma o valor e o prazo pelo WhatsApp.</p>
       </section>
       <section class="order-options" aria-labelledby="order-title">
-        <h2 id="order-title">Enviar arquivo pelo WhatsApp</h2>
-        <p>Escolhe o serviço e anexa o arquivo na conversa.</p>
+        <h2 id="order-title">O que tu precisa fazer?</h2>
+        <p>Escolhe o serviço pra abrir o WhatsApp. Para imprimir, é só anexar o arquivo na conversa.</p>
         <ul class="services">
-          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+impress%C3%A3o+digital+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><strong>Impressão digital</strong><span>A4 e A3, colorido ou preto e branco</span></a></li>
-          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+DTF+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><strong>DTF</strong><span>Personalização com a tua arte</span></a></li>
-          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+sublima%C3%A7%C3%A3o+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><strong>Sublimação</strong><span>Sublimação e consulta de plotagem</span></a></li>
+          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+impress%C3%A3o+digital+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><span><strong>Impressão digital</strong><small>A4 e A3, colorido ou preto e branco</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
+          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+DTF+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><span><strong>DTF</strong><small>Personalização com a tua arte</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
+          <li><a class="service" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+pedir+um+or%C3%A7amento+de+sublima%C3%A7%C3%A3o+e+retirar+na+porta.+Vou+anexar+meu+arquivo+aqui."><span><strong>Sublimação</strong><small>Sublimação e consulta de plotagem</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
+          <li><a class="service service-scan" href="https://wa.me/5551981687562?text=Ol%C3%A1%2C+IDY+Gr%C3%A1fica%21+Quero+um+or%C3%A7amento+de+digitaliza%C3%A7%C3%A3o+em+PDF.+Vou+informar+o+tipo+de+material+e+o+n%C3%BAmero+aproximado+de+p%C3%A1ginas."><span><strong>Digitalização em PDF</strong><small>Alta resolução para documentos e lotes de páginas</small></span><span class="arrow" aria-hidden="true">↗</span></a></li>
         </ul>
       </section>
     </div>
+    <section class="scan" aria-labelledby="scan-title">
+      <h2 id="scan-title">Tem muitas páginas pra digitalizar?</h2>
+      <p>Digitalizamos folhas avulsas e documentos em alta resolução e reunimos as páginas em PDF. Pra orçar, manda pelo WhatsApp o tipo de material e uma estimativa de páginas. Se for um livro encadernado, manda uma foto pra gente avaliar como digitalizar. A entrega do material físico é combinada no atendimento.</p>
+    </section>
     <section class="faq" aria-labelledby="faq-title">
       <h2 id="faq-title">Procurando por “Click Impresso” em Porto Alegre?</h2>
-      <p>A Click Impresso é outra gráfica da cidade. Nesta página, tu pode pedir orçamento de impressão digital, DTF ou sublimação com a IDY Gráfica. O atendimento é online e a retirada é na porta da IDY, no Passo d’Areia, perto do Bourbon Country e do Iguatemi.</p>
+      <p>A Click Impresso é outra gráfica da cidade. Nesta página, tu pode pedir orçamento de impressão digital, DTF, sublimação ou digitalização com a IDY Gráfica. O atendimento é online e a retirada é na porta da IDY, no Passo d’Areia, perto do Bourbon Country e do Iguatemi.</p>
     </section>
   </main>
   <footer>IDY Gráfica · Porto Alegre, RS</footer>
