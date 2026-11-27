@@ -48,3 +48,18 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.print-showcase-comparison {
+  grid-template-columns: repeat(2, minmax(0, 270px));
+  justify-content: center;
+}
+.print-showcase-comparison video {
+  aspect-ratio: 9 / 16;
+  max-height: 410px;
+  object-fit: contain;
+}
+@media (max-width: 640px) {
+  .print-showcase-comparison {
+    grid-template-columns: minmax(0, 270px);
+  }
+}
