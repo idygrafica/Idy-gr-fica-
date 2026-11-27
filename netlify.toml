@@ -114,3 +114,9 @@
   to = "/impressao-de-apostilas"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/pedido-de-impressao.html"
+  to = "/pedido-de-impressao"
+  status = 301
+  force = true
