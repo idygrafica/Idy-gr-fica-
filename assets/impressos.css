@@ -7,7 +7,6 @@
 .impressos-page .ed-material-nav a{padding:12px;font-size:14px}
 .impressos-page .ed-service-image{height:auto;aspect-ratio:1.64;flex:none}
 .impressos-page .ip-approved-photo{background-image:url('/assets/loja/referencia-aprovada.jpg');background-repeat:no-repeat;background-size:595% auto;background-color:#f1f2f3}
-.impressos-page .ip-photo-cards{background-image:url('/assets/loja/produtos/cartoes.webp');background-size:contain;background-position:center}
 .impressos-page .ip-photo-blocks{background-position:65.9% 49%}
 .impressos-page .ip-machine{background:linear-gradient(120deg,#f0f7fc,#e7f3ed)}
 .impressos-page .ip-machine img{object-fit:contain;padding:10px}
@@ -53,4 +52,22 @@
   .impressos-page .ip-folder-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.impressos-page .ip-card-sample {
+  margin: 0;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: auto;
+  align-self: center;
+}
+.impressos-page .ip-card-sample img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.impressos-page .ip-card-sample figcaption {
+  padding: 8px 12px;
+  font-size: .875rem;
+  color: var(--ed-gray);
 }
