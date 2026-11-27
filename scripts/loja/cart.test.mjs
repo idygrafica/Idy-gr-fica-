@@ -6,14 +6,14 @@ test('os oito produtos originais e dois novos estão cadastrados com IDs únicos
  assert.equal(products.length,10);assert.equal(new Set(products.map(p=>p.id)).size,10);
 });
 test('somente opções aprovadas por folha ou lote têm preço fixo; opções sob consulta não recebem valores inventados',()=>{
- for(const p of products)for(const o of p.options)assert.equal(o.priceCents,p.id==='a3'?({frente:450,duplex:600,'a4-75g-frente':220,'a3-couche-300g-frente':450,'a3-supremo-250g-frente':500}[o.id]):p.id==='cartoes'?({100:2000,500:8900,1000:14000}[o.id]):null);
+ for(const p of products)for(const o of p.options)assert.equal(o.priceCents,p.id==='a3'?({frente:450,duplex:700,'a4-75g-frente':220,'a3-couche-300g-frente':450,'a3-supremo-250g-frente':500}[o.id]):p.id==='cartoes'?({100:2000,500:8900,1000:14000}[o.id]):null);
 });
-for (const [qty,side,total] of [[1,'frente',450],[3,'frente',1350],[10,'frente',4500],[100,'frente',45000],[1,'duplex',600],[3,'duplex',1800],[10,'duplex',6000],[100,'duplex',60000]]) {
+for (const [qty,side,total] of [[1,'frente',450],[3,'frente',1350],[10,'frente',4500],[100,'frente',45000],[1,'duplex',700],[3,'duplex',2100],[10,'duplex',7000],[100,'duplex',70000]]) {
  test(`${qty} folha(s) A3 ${side}: ${total} centavos`,()=>assert.equal(summarize(addItem([],'a3',side,qty)).knownTotalCents,total));
 }
 test('mesma opção acumula quantidades, frente e verso permanece separado',()=>{
  let cart=addItem([],'a3','frente',2);cart=addItem(cart,'a3','frente',1);cart=addItem(cart,'a3','duplex',2);
- assert.equal(cart.length,2);assert.equal(cart[0].quantity,3);assert.equal(summarize(cart).knownTotalCents,2550);
+ assert.equal(cart.length,2);assert.equal(cart[0].quantity,3);assert.equal(summarize(cart).knownTotalCents,2750);
 });
 test('itens sob orçamento não recebem preço fictício nem viram total fechado',()=>{
  const cart=addItem(addItem([],'a3','frente',3),'adesivos','personalizado',1);const summary=summarize(cart);
