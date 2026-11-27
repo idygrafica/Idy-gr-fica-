@@ -63,3 +63,11 @@
     grid-template-columns: minmax(0, 270px);
   }
 }
+
+.print-showcase-single video {
+  width: min(100%, 270px);
+  margin-inline: auto;
+  aspect-ratio: 9 / 16;
+  max-height: 410px;
+  object-fit: contain;
+}
